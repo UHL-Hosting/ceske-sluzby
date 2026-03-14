@@ -1,9 +1,10 @@
 === České služby pro WordPress ===
 Donate link: http://www.separatista.net
 Tags: Heureka.cz, Sklik.cz, WooCommerce, Ulozenka.cz, Srovname.cz, DPD, Zbozi.cz, Pricemania.cz, Google
-Requires at least: 4.0
-Tested up to: 4.7.1
-Stable tag: 0.5
+Requires at least: 6.6
+Requires PHP: 7.4
+Tested up to: 6.9
+Stable tag: 1.0.0
 
 Implementace různých českých služeb do WordPressu (zejména pro WooCommerce)
 
@@ -20,9 +21,9 @@ Potom můžete použít přímo Github: https://github.com/pavelevap/ceske-sluzb
 Nějaká funkce chybí?
 Můžete ji sponzorovat a urychlit její implementaci.
 
-Plugin už sice bez problémů používá více než 1500 různých webů, ale berte ho prosím stále jako testovací verzi.
+Plugin už bez problémů používá více než 1500 různých webů a od verze 1.0.0 je vydáván jako první stabilní major release.
 
-Pro správnou funkčnost vyžaduje WooCommerce verzi 2.2.x.
+Pro správnou funkčnost vyžaduje WooCommerce verzi 8.6+ (testováno do 10.6).
 
 Plugin zatím podporuje následující služby a pluginy:
 
@@ -57,6 +58,29 @@ Fórum podpory: http://www.separatista.net/forum
 Aktivovat plugin a přejít do menu WooCommerce - Nastavení - záložka České služby.
 
 == Changelog ==
+
+= 1.0.0 =
+* První stabilní major release pluginu.
+* Bump verze pluginu na `1.0.0` a aktualizace release metadat pro současný WordPress a WooCommerce baseline.
+* Přidán oficiální WordPress text domain `ceske-sluzby`, načítání překladů přes `load_plugin_textdomain()`, a adresář `languages/`.
+* Přidána anglická lokalizace (`en_US`) pro nové kompatibilitní a Blocks integrační plochy.
+* Přidána React administrace kompatibility s přehledem stavu providerů a odkazů na aktuální oficiální zdroje.
+* Přidána částečná podpora WooCommerce Checkout Blocks pro pickup-point pole doprav Uloženka, DPD Pickup a Zásilkovna.
+* Legacy načítání pickup-pointů nyní bezpečně degraduje a nerozbije checkout při výpadku externího zdroje.
+
+= 0.8.0 =
+* Nahrazení zastaralých WooCommerce term meta funkcí (`get_woocommerce_term_meta` a souvisejících) za core WordPress term meta API.
+* Úprava administrace objednávek pro kompatibilitu s WooCommerce HPOS i klasickými order screeny.
+* Meta boxy a indikátory EET i sledování zásilek se nyní načítají na správných order screens včetně HPOS.
+* Admin skripty pluginu se načítají i na moderní WooCommerce order administraci.
+* Přidán interní plán další kompatibility a modernizace v `docs/compatibility-bump-plan.md`.
+
+= 0.7.0 =
+* Kompatibilita s moderním prostředím WordPress/WooCommerce.
+* Přidána deklarace kompatibility s WooCommerce HPOS (custom order tables).
+* Výslovně deklarována nekompatibilita s Cart/Checkout Blocks (plugin aktuálně používá klasický checkout flow).
+* Nahrazení zastaralého `is_ajax()` za `wp_doing_ajax()` pro stabilnější kompatibilitu.
+* Oprava podpisu metody `SoapClient::__doRequest()` pro PHP 8+ (EET integrace).
 
 = 0.6 =
 * WooCommerce: Elektronická evidence tržeb (EET)
@@ -179,3 +203,8 @@ Screenshoty budou doplněny.
 == Installation ==
 
 Instalovat plugin, aktivovat a přejít do menu WooCommerce - Nastavení - záložka České služby.
+
+== Upgrade Notice ==
+
+= 1.0.0 =
+První stabilní major release s oficiálním WordPress text domainem, anglickým překladem nových administračních a Blocks částí a částečnou modernizací checkout integrací.

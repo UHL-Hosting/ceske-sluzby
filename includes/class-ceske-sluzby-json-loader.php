@@ -3,13 +3,27 @@
 class Ceske_Sluzby_Json_Loader {
   function load( $params = null ) {
     $url = $this->build( $params );
-    $result = $this->fetch( $url );
-    $body = $this->verify( $result );
+    $cache_key = 'ceske_sluzby_json_' . md5( $url );
+    $body = get_transient( $cache_key );
+
+    if ( false === $body ) {
+      $result = $this->fetch( $url );
+      $body = $this->verify( $result );
+      set_transient( $cache_key, $body, HOUR_IN_SECONDS );
+    }
+
     return $this->parse( $body );
   }
 
   function fetch( $url ) {
-    return wp_remote_get( $url );
+    return wp_remote_get(
+      $url,
+      array(
+        'timeout' => 15,
+        'redirection' => 3,
+        'user-agent' => 'Ceske Sluzby/' . CS_VERSION . '; ' . home_url( '/' ),
+      )
+    );
   }
 
   function verify( $result ) {
@@ -17,7 +31,7 @@ class Ceske_Sluzby_Json_Loader {
       throw new Exception( 'Ceske_Sluzby_Json_Loader Failed: Nepodařilo se získat obsah z URL adresy.' );
     }
 
-    $code = $result['response']['code'];
+    $code = wp_remote_retrieve_response_code( $result );
     if ( $code != 200 ) {
       throw new Exception( 'Ceske_Sluzby_Json_Loader Failed: Neplatná HTTP reakce ze serveru - ' . $code );
     }
@@ -54,7 +68,11 @@ class Ceske_Sluzby_Json_Loader {
   function build( $params ) {
     $base_url = 'https://api.ulozenka.cz/v3/transportservices/';
     $available_shipping = WC()->shipping->load_shipping_methods();
-    $settings = $available_shipping[ "ceske_sluzby_ulozenka" ]->settings;
+    $settings = array();
+
+    if ( isset( $available_shipping['ceske_sluzby_ulozenka'] ) ) {
+      $settings = $available_shipping['ceske_sluzby_ulozenka']->settings;
+    }
 
     if ( ! is_null( $params ) ) {
       if ( ! empty( $params['provider'] ) ) {

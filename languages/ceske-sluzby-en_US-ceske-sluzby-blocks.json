@@ -1,0 +1,23 @@
+{
+  "translation-revision-date": "2026-03-14 03:35+0100",
+  "generator": "Codex",
+  "domain": "messages",
+  "locale_data": {
+    "messages": {
+      "": {
+        "domain": "messages",
+        "lang": "en_US",
+        "plural-forms": "nplurals=2; plural=(n != 1);"
+      },
+      "Widget Zásilkovny není momentálně dostupný. Výdejní místo doplňte ručně.": [
+        "The Zásilkovna widget is currently unavailable. Enter the pickup point manually."
+      ],
+      "Zvolit pobočku Zásilkovny": [
+        "Choose Zásilkovna pickup point"
+      ],
+      "Tlačítko otevře widget Zásilkovny a vybranou pobočku automaticky doplní do pole.": [
+        "The button opens the Zásilkovna widget and automatically fills the selected pickup point into the field."
+      ]
+    }
+  }
+}

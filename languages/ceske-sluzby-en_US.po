@@ -1,0 +1,362 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: České služby pro WordPress 1.0.0\n"
+"POT-Creation-Date: 2026-03-14 03:35+0100\n"
+"PO-Revision-Date: 2026-03-14 03:35+0100\n"
+"Last-Translator: Codex <noreply@example.com>\n"
+"Language-Team: English\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Codex\n"
+
+#: ceske-sluzby.php:474
+#, php-format
+msgid ""
+"Seznam poboček pro dopravu %s je momentálně nedostupný. Zvolte prosím jiný "
+"způsob dopravy nebo opakujte pokus později."
+msgstr ""
+"The pickup-point list for %s shipping is currently unavailable. Please "
+"choose another shipping method or try again later."
+
+#: ceske-sluzby.php:526
+msgid "Uloženka"
+msgstr "Uloženka"
+
+#: ceske-sluzby.php:528
+msgid "Uloženka: výběr pobočky"
+msgstr "Uloženka: pickup point selection"
+
+#: ceske-sluzby.php:532 ceske-sluzby.php:569 ceske-sluzby.php:664
+#: ceske-sluzby.php:701
+msgid "Vyberte pobočku"
+msgstr "Select a pickup point"
+
+#: ceske-sluzby.php:570
+msgid ""
+"Pokud chcete doručit zboží prostřednictvím Uloženky, zvolte prosím pobočku."
+msgstr "If you want delivery via Uloženka, please select a pickup point."
+
+#: ceske-sluzby.php:658
+msgid "DPD Pickup"
+msgstr "DPD Pickup"
+
+#: ceske-sluzby.php:660
+msgid "DPD Pickup: výběr pobočky"
+msgstr "DPD Pickup: pickup point selection"
+
+#: ceske-sluzby.php:702
+msgid ""
+"Pokud chcete doručit zboží prostřednictvím DPD Pickup, zvolte prosím "
+"pobočku."
+msgstr "If you want delivery via DPD Pickup, please select a pickup point."
+
+#: ceske-sluzby.php:767
+msgid "Zásilkovna"
+msgstr "Zásilkovna"
+
+#: ceske-sluzby.php:769
+msgid "Zvolit pobočku"
+msgstr "Choose pickup point"
+
+#: ceske-sluzby.php:770
+msgid "Pobočka:"
+msgstr "Pickup point:"
+
+#: ceske-sluzby.php:772
+msgid "Zatím nevybráno"
+msgstr "Not selected yet"
+
+#: ceske-sluzby.php:804
+msgid ""
+"Pokud chcete doručit zboží prostřednictvím Zásilkovny, zvolte prosím "
+"pobočku."
+msgstr "If you want delivery via Zásilkovna, please select a pickup point."
+
+#: ceske-sluzby.php:2178
+msgid "On-hold"
+msgstr "On-hold"
+
+#: ceske-sluzby.php:2187 ceske-sluzby.php:2197
+msgid "Complete"
+msgstr "Complete"
+
+#: includes/class-ceske-sluzby-blocks.php:75
+#, php-format
+msgid "Doplňte prosím výdejní místo pro dopravu %s."
+msgstr "Please enter a pickup point for %s shipping."
+
+#: includes/class-ceske-sluzby-blocks.php:84
+#, php-format
+msgid "Hodnota pole \"%s\" je příliš krátká."
+msgstr "The value of \"%s\" is too short."
+
+#: includes/class-ceske-sluzby-blocks.php:174
+msgid "Uloženka: výdejní místo"
+msgstr "Uloženka: pickup point"
+
+#: includes/class-ceske-sluzby-blocks.php:178
+msgid "DPD Pickup: výdejní místo nebo box"
+msgstr "DPD Pickup: pickup point or box"
+
+#: includes/class-ceske-sluzby-blocks.php:181
+msgid "Zásilkovna: výdejní místo nebo Z-BOX"
+msgstr "Zásilkovna: pickup point or Z-BOX"
+
+#: includes/class-ceske-sluzby-blocks.php:186
+msgid "Zadejte název vybrané pobočky Uloženky"
+msgstr "Enter the name of the selected Uloženka pickup point"
+
+#: includes/class-ceske-sluzby-blocks.php:190
+msgid "Zadejte název vybraného výdejního místa DPD"
+msgstr "Enter the name of the selected DPD pickup point"
+
+#: includes/class-ceske-sluzby-blocks.php:193
+msgid "Vyberte výdejní místo pomocí tlačítka nebo doplňte název ručně"
+msgstr "Choose a pickup point using the button or enter the name manually"
+
+#: includes/class-ceske-sluzby-compatibility.php:19
+#: includes/class-ceske-sluzby-compatibility.php:20
+#: includes/class-ceske-sluzby-compatibility.php:30
+msgid "České služby: kompatibilita"
+msgstr "Czech Services: Compatibility"
+
+#: includes/class-ceske-sluzby-compatibility.php:32
+msgid ""
+"Přehled aktuálního stavu integrací, zdrojů a blokového checkoutu. Plná "
+"deklarace kompatibility Cart and Checkout Blocks zůstává vypnutá, dokud "
+"nebudou migrovány i zbývající klasické checkout hooky."
+msgstr ""
+"Overview of current integrations, sources, and Blocks checkout status. Full "
+"Cart and Checkout Blocks compatibility remains disabled until the remaining "
+"classic checkout hooks are migrated."
+
+#: includes/class-ceske-sluzby-compatibility.php:113
+msgid ""
+"Souhlas pro Heureku je stále vykreslován pouze přes klasické checkout hooky."
+msgstr "Heureka consent is still rendered only through classic checkout hooks."
+
+#: includes/class-ceske-sluzby-compatibility.php:114
+msgid ""
+"Uloženka a DPD stále v klasickém checkoutu spoléhají na starší zdroje "
+"pickup pointů."
+msgstr ""
+"Uloženka and DPD still rely on older pickup-point sources in classic "
+"checkout."
+
+#: includes/class-ceske-sluzby-compatibility.php:115
+msgid ""
+"Plugin zatím stále deklaruje Cart and Checkout Blocks kompatibilitu jako "
+"false, aby ji nepřehlašoval předčasně."
+msgstr ""
+"The plugin still declares Cart and Checkout Blocks compatibility as false to "
+"avoid over-declaring support too early."
+
+#: includes/class-ceske-sluzby-compatibility.php:135
+msgid "Aktuální"
+msgstr "Current"
+
+#: includes/class-ceske-sluzby-compatibility.php:136
+msgid "Hostovaný Packeta widget plus dedikované Checkout Block pole."
+msgstr "Hosted Packeta widget plus a dedicated Checkout Block field."
+
+#: includes/class-ceske-sluzby-compatibility.php:141
+msgid ""
+"Packeta oznámila ukončení zastaralých verzí widgetu 10. února 2025; plugin "
+"proto používá aktuální hostovaný vstupní bod widgetu místo starších "
+"verzovaných embedů."
+msgstr ""
+"Packeta announced the retirement of obsolete widget versions on February 10, "
+"2025; the plugin therefore uses the current hosted widget entry point "
+"instead of older versioned embeds."
+
+#: includes/class-ceske-sluzby-compatibility.php:142
+msgid ""
+"Checkout Blocks nyní mají provider-specific pickup-point pole a při "
+"vyplněném API klíči i tlačítko pro otevření Packeta pickeru."
+msgstr ""
+"Checkout Blocks now provide a provider-specific pickup-point field and, when "
+"the API key is configured, a button to open the Packeta picker."
+
+#: includes/class-ceske-sluzby-compatibility.php:150
+msgid "Legacy"
+msgstr "Legacy"
+
+#: includes/class-ceske-sluzby-compatibility.php:151
+msgid "Legacy transportservices branch feed s bezpečným checkout fallbackem."
+msgstr "Legacy transportservices branch feed with a safe checkout fallback."
+
+#: includes/class-ceske-sluzby-compatibility.php:156
+msgid ""
+"Ulozenka.cz zveřejnila 7. dubna 2025 postupné ukončení portálu, takže "
+"stávající zdroj poboček je potřeba považovat za legacy integraci."
+msgstr ""
+"Ulozenka.cz published the phased shutdown of the portal on April 7, 2025, so "
+"the current pickup-point source should be treated as a legacy integration."
+
+#: includes/class-ceske-sluzby-compatibility.php:157
+msgid ""
+"Checkout flow nyní degraduje bezpečně i ve chvíli, kdy seznam poboček z "
+"externího zdroje není dostupný."
+msgstr ""
+"The checkout flow now degrades safely even when the branch list from the "
+"external source is unavailable."
+
+#: includes/class-ceske-sluzby-compatibility.php:165
+msgid "Přechodné"
+msgstr "Transitional"
+
+#: includes/class-ceske-sluzby-compatibility.php:166
+msgid ""
+"Legacy branch feed v klasickém checkoutu plus dedikované Checkout Block "
+"pole."
+msgstr ""
+"Legacy branch feed in classic checkout plus a dedicated Checkout Block field."
+
+#: includes/class-ceske-sluzby-compatibility.php:171
+msgid ""
+"DPD aktuálně propaguje Pickup parcelshopy a boxy přes současné stránky "
+"Pickup sítě."
+msgstr ""
+"DPD currently promotes Pickup parcelshops and boxes through its current "
+"Pickup network pages."
+
+#: includes/class-ceske-sluzby-compatibility.php:172
+msgid ""
+"Pro plnou paritu plugin ještě potřebuje navazující migraci z legacy feedu "
+"na oficiální DPD Pickup zdroj."
+msgstr ""
+"For full parity, the plugin still needs a follow-up migration from the "
+"legacy feed to the official DPD Pickup source."
+
+#: js/ceske-sluzby-blocks.js:17
+msgid ""
+"Widget Zásilkovny není momentálně dostupný. Výdejní místo doplňte ručně."
+msgstr "The Zásilkovna widget is currently unavailable. Enter the pickup point manually."
+
+#: js/ceske-sluzby-blocks.js:63
+msgid "Zvolit pobočku Zásilkovny"
+msgstr "Choose Zásilkovna pickup point"
+
+#: js/ceske-sluzby-blocks.js:72
+msgid ""
+"Tlačítko otevře widget Zásilkovny a vybranou pobočku automaticky doplní do "
+"pole."
+msgstr ""
+"The button opens the Zásilkovna widget and automatically fills the selected "
+"pickup point into the field."
+
+#: js/ceske-sluzby-compatibility.js:59
+msgid "Aktivní v pluginu"
+msgstr "Active in plugin"
+
+#: js/ceske-sluzby-compatibility.js:60
+msgid "Ano"
+msgstr "Yes"
+
+#: js/ceske-sluzby-compatibility.js:60
+msgid "Ne"
+msgstr "No"
+
+#: js/ceske-sluzby-compatibility.js:61
+msgid "API / klíč"
+msgstr "API / key"
+
+#: js/ceske-sluzby-compatibility.js:62
+msgid "Nastaveno"
+msgstr "Configured"
+
+#: js/ceske-sluzby-compatibility.js:62
+msgid "Nenastaveno"
+msgstr "Not configured"
+
+#: js/ceske-sluzby-compatibility.js:82
+msgid "Oficiální zdroj"
+msgstr "Official source"
+
+#: js/ceske-sluzby-compatibility.js:90
+msgid "Nastavení pluginu"
+msgstr "Plugin settings"
+
+#: js/ceske-sluzby-compatibility.js:134
+msgid "Nepodařilo se načíst data kompatibility."
+msgstr "Could not load compatibility data."
+
+#: js/ceske-sluzby-compatibility.js:148
+msgid "Načítám kompatibilitní report…"
+msgstr "Loading compatibility report…"
+
+#: js/ceske-sluzby-compatibility.js:176
+msgid "Prostředí"
+msgstr "Environment"
+
+#: js/ceske-sluzby-compatibility.js:183
+msgid "WordPress"
+msgstr "WordPress"
+
+#: js/ceske-sluzby-compatibility.js:189
+msgid "WooCommerce"
+msgstr "WooCommerce"
+
+#: js/ceske-sluzby-compatibility.js:195
+msgid "PHP"
+msgstr "PHP"
+
+#: js/ceske-sluzby-compatibility.js:201
+msgid "React root API"
+msgstr "React root API"
+
+#: js/ceske-sluzby-compatibility.js:202
+msgid "createRoot k dispozici"
+msgstr "createRoot available"
+
+#: js/ceske-sluzby-compatibility.js:202
+#: js/ceske-sluzby-compatibility.js:208
+msgid "Nedostupné"
+msgstr "Unavailable"
+
+#: js/ceske-sluzby-compatibility.js:207
+msgid "Checkout fields API"
+msgstr "Checkout fields API"
+
+#: js/ceske-sluzby-compatibility.js:208
+msgid "K dispozici"
+msgstr "Available"
+
+#: js/ceske-sluzby-compatibility.js:215
+msgid ""
+"Checkout Blocks podpora je nyní částečná: pickup-point pole jsou "
+"registrovaná, ale plná deklarace kompatibility zůstává záměrně vypnutá."
+msgstr ""
+"Checkout Blocks support is currently partial: pickup-point fields are "
+"registered, but full compatibility remains intentionally disabled."
+
+#: js/ceske-sluzby-compatibility.js:233
+msgid "WooCommerce Additional Checkout Fields reference"
+msgstr "WooCommerce Additional Checkout Fields reference"
+
+#: js/ceske-sluzby-compatibility.js:243
+msgid "Externí integrace"
+msgstr "External integrations"
+
+#: js/ceske-sluzby-compatibility.js:245
+msgid "Filtrovat poskytovatele"
+msgstr "Filter providers"
+
+#: js/ceske-sluzby-compatibility.js:248
+msgid "např. Packeta, DPD…"
+msgstr "e.g. Packeta, DPD…"
+
+#: js/ceske-sluzby-upload-button-admin.js:9
+msgid "Zvolit certifikát"
+msgstr "Select certificate"
+
+#: js/ceske-sluzby-upload-button-admin.js:14
+msgid "Použít certifikát"
+msgstr "Use certificate"
+
+#: js/ceske-sluzby-upload-button-admin.js:27
+msgid "Nahrát certifikát"
+msgstr "Upload certificate"

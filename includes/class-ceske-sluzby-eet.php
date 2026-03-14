@@ -1,16 +1,19 @@
 <?php
-function spustit_Ceske_Sluzby_EET() {
-  $screen = get_current_screen();
-  if ( $screen->post_type == 'shop_order' ) {
-    new Ceske_Sluzby_EET();
+function spustit_Ceske_Sluzby_EET( $screen = null ) {
+  static $booted = false;
+
+  if ( $booted || ! ceske_sluzby_is_order_admin_screen( $screen ) ) {
+    return;
   }
+
+  $booted = true;
+  new Ceske_Sluzby_EET();
 }
 
 if ( is_admin() ) {
   $eet_aktivace = get_option( 'wc_ceske_sluzby_dalsi_nastaveni_eet-aktivace' );
   if ( $eet_aktivace == "yes" ) {
-    add_action( 'load-post.php', 'spustit_Ceske_Sluzby_EET' );
-    add_action( 'load-edit.php', 'spustit_Ceske_Sluzby_EET' );
+    add_action( 'current_screen', 'spustit_Ceske_Sluzby_EET' );
   }
 }
 
@@ -23,6 +26,7 @@ class Ceske_Sluzby_EET {
     add_action( 'woocommerce_order_action_smazat_eet_uctenky', array( $this, 'ceske_sluzby_smazat_eet_uctenky' ) );
     add_action( 'woocommerce_admin_order_items_after_shipping', array( $this, 'ceske_sluzby_zobrazit_eet_uctenku_administrace' ) );
     add_action( 'manage_shop_order_posts_custom_column' , array( $this, 'zobrazit_eet_uctenky_administrace_prehled' ), 10, 2 );
+    add_action( 'manage_woocommerce_page_wc-orders_custom_column', array( $this, 'zobrazit_eet_uctenky_administrace_prehled' ), 10, 2 );
     if ( version_compare( WC_VERSION, '3.0', '>' ) ) {
       // https://github.com/woocommerce/woocommerce/issues/14961
       add_filter( 'woocommerce_order_type_to_group', array( $this, 'ceske_sluzby_eet_group' ) );
@@ -48,23 +52,25 @@ class Ceske_Sluzby_EET {
     return $stores;
   }
 
-  public function add_meta_box_eet( $post_type ) {
-    $post_types = array( 'shop_order' );
-    if ( in_array( $post_type, $post_types )) {
-      add_meta_box(
-        'ceske_sluzby_eet',
-        'Elektronická evidence tržeb',
-        array( $this, 'zobrazit_meta_box_eet' ),
-        $post_type,
-        'side',
-        'high'
-      );
-    }
+  public function add_meta_box_eet() {
+    add_meta_box(
+      'ceske_sluzby_eet',
+      'Elektronická evidence tržeb',
+      array( $this, 'zobrazit_meta_box_eet' ),
+      ceske_sluzby_get_order_screen_ids(),
+      'side',
+      'high'
+    );
   }
   
-  public function zobrazit_eet_uctenky_administrace_prehled( $column, $post_id ) {
+  public function zobrazit_eet_uctenky_administrace_prehled( $column, $order_reference ) {
     if ( $column == 'order_notes' ) {
-      $eet_uctenky = $this->ceske_sluzby_zpracovat_data_pro_eet_uctenky( $post_id );
+      $order = ceske_sluzby_get_order_from_reference( $order_reference );
+      if ( ! $order ) {
+        return;
+      }
+
+      $eet_uctenky = $this->ceske_sluzby_zpracovat_data_pro_eet_uctenky( $order->get_id() );
       $celkem = count( $eet_uctenky );
       $pocet = 0;
       $test = '';
@@ -429,7 +435,13 @@ class Ceske_Sluzby_EET {
     }
   }
 
-  public function ceske_sluzby_zobrazit_eet_uctenku_administrace( $order_id ) {
+  public function ceske_sluzby_zobrazit_eet_uctenku_administrace( $order_reference ) {
+    $order = ceske_sluzby_get_order_from_reference( $order_reference );
+    if ( ! $order ) {
+      return;
+    }
+
+    $order_id = $order->get_id();
     $this->ceske_sluzby_zobrazit_eet_uctenku( $order_id, true, '<tr><td colspan=7 class="ceske_sluzby_eet_items">', '</td></tr>' );
   }
 
@@ -618,9 +630,13 @@ class Ceske_Sluzby_EET {
     }
   }
 
-  public function zobrazit_meta_box_eet( $post ) {
-    $item_id = $post->ID;
-    $order = wc_get_order( $post->ID );
+  public function zobrazit_meta_box_eet( $order_reference ) {
+    $order = ceske_sluzby_get_order_from_reference( $order_reference );
+    if ( ! $order ) {
+      return;
+    }
+
+    $order_id = $order->get_id();
 
     $eet_podminka = zkontrolovat_nastavenou_hodnotu( $order, array( 'wc_ceske_sluzby_nastaveni_pokladna', 'wc_ceske_sluzby_nastaveni_pokladna_doprava' ), 'wc_ceske_sluzby_eet_podminka', 'eet_podminka', 'ceske_sluzby_eet_podminka' );
     $eet_format = zkontrolovat_nastavenou_hodnotu( $order, array( 'wc_ceske_sluzby_nastaveni_pokladna', 'wc_ceske_sluzby_nastaveni_pokladna_doprava' ), 'wc_ceske_sluzby_eet_format', 'eet_format', 'ceske_sluzby_eet_format' );
@@ -649,7 +665,7 @@ class Ceske_Sluzby_EET {
         $eet_podminka_text = $eet_podminka_array[$eet_podminka];
         echo '<p>- Podmínka odeslání: <strong>' . $eet_podminka_text . '</strong></p>';
       }
-      $eet_uctenky = $this->ceske_sluzby_zpracovat_data_pro_eet_uctenky( $item_id );
+      $eet_uctenky = $this->ceske_sluzby_zpracovat_data_pro_eet_uctenky( $order_id );
       if ( ! empty( $eet_uctenky ) && is_array( $eet_uctenky ) ) {
         foreach ( $eet_uctenky as $item_id => $uctenka ) {
           if ( array_key_exists( 'Odpoved', $uctenka ) && array_key_exists( 'fik', $uctenka['Odpoved'] ) ) {

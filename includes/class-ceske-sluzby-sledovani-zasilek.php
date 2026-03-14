@@ -1,15 +1,19 @@
 <?php
-function spustit_Ceske_Sluzby_Sledovani_Zasilek() {
-  $screen = get_current_screen();
-  if ( $screen->post_type == 'shop_order' ) {
-    new Ceske_Sluzby_Sledovani_Zasilek();
+function spustit_Ceske_Sluzby_Sledovani_Zasilek( $screen = null ) {
+  static $booted = false;
+
+  if ( $booted || ! ceske_sluzby_is_order_admin_screen( $screen ) ) {
+    return;
   }
+
+  $booted = true;
+  new Ceske_Sluzby_Sledovani_Zasilek();
 }
 
 if ( is_admin() ) {
   $sledovani_zasilek = get_option( 'wc_ceske_sluzby_dalsi_nastaveni_sledovani-zasilek' );
   if ( $sledovani_zasilek == "yes" ) {
-    add_action( 'load-post.php', 'spustit_Ceske_Sluzby_Sledovani_Zasilek' );
+    add_action( 'current_screen', 'spustit_Ceske_Sluzby_Sledovani_Zasilek' );
   }
 }
 
@@ -109,18 +113,15 @@ class Ceske_Sluzby_Sledovani_Zasilek {
     do_action( 'woocommerce_ceske_sluzby_sledovani_zasilek_email_akce', $order );
   }
 
-  public function add_meta_box( $post_type ) {
-    $post_types = array( 'shop_order' );
-    if ( in_array( $post_type, $post_types )) {
-      add_meta_box(
-        'ceske_sluzby_sledovani_zasilek',
-        'Sledování zásilek',
-        array( $this, 'render_meta_box_content' ),
-        $post_type,
-        'side',
-        'default'
-      );
-    }
+  public function add_meta_box() {
+    add_meta_box(
+      'ceske_sluzby_sledovani_zasilek',
+      'Sledování zásilek',
+      array( $this, 'render_meta_box_content' ),
+      ceske_sluzby_get_order_screen_ids(),
+      'side',
+      'default'
+    );
   }
 
   public function moznost_odesilat_email_sledovani_zasilek_deprecated( $available_emails ) {
@@ -139,22 +140,26 @@ class Ceske_Sluzby_Sledovani_Zasilek {
     return $keys;
   }
 
-  public function save( $post_id ) {
-    $item_id = $post_id;
+  public function save( $order_id, $order = null ) {
+    $item_id = $order_id;
     if ( ! isset( $_POST['ceske_sluzby_sledovani_zasilek_box_nonce'] ) )
-      return $post_id;
+      return $order_id;
 
     $nonce = $_POST['ceske_sluzby_sledovani_zasilek_box_nonce'];
     if ( ! wp_verify_nonce( $nonce, 'ceske_sluzby_sledovani_zasilek_box' ) )
-      return $post_id;
+      return $order_id;
 
     if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
-      return $post_id;
+      return $order_id;
 
-    if ( ! current_user_can( 'edit_post', $post_id ) )
-      return $post_id;
+    if ( ! current_user_can( 'edit_shop_order', $order_id ) && ! current_user_can( 'edit_post', $order_id ) )
+      return $order_id;
 
-    $order = wc_get_order( $post_id );
+    $order = ceske_sluzby_get_order_from_reference( $order ? $order : $order_id );
+    if ( ! $order ) {
+      return $order_id;
+    }
+
     $shipping = $order->get_shipping_methods();
     if ( ! empty( $shipping ) && is_array ( $shipping ) ) {
       $shipping_item_id = key( $shipping );
@@ -189,11 +194,15 @@ class Ceske_Sluzby_Sledovani_Zasilek {
     }
   }
 
-  public function render_meta_box_content( $post ) {
-    $item_id = $post->ID;
+  public function render_meta_box_content( $order_reference ) {
+    $order = ceske_sluzby_get_order_from_reference( $order_reference );
+    if ( ! $order ) {
+      return;
+    }
+
+    $item_id = $order->get_id();
     wp_nonce_field( 'ceske_sluzby_sledovani_zasilek_box', 'ceske_sluzby_sledovani_zasilek_box_nonce' );
 
-    $order = wc_get_order( $post->ID );
     $shipping = $order->get_shipping_methods();
     if ( ! empty( $shipping ) && is_array ( $shipping ) ) {
       $shipping_item_id = key( $shipping );
@@ -209,7 +218,7 @@ class Ceske_Sluzby_Sledovani_Zasilek {
     } ?>
 
     <label for="ceske_sluzby_sledovani_zasilek_id_zasilky">ID zásilky: </label>
-    <input type="text" id="ceske_sluzby_sledovani_zasilek_id_zasilky" name="ceske_sluzby_sledovani_zasilek_id_zasilky" value="<?php esc_attr_e( $id_zasilky ); ?>" size="20" />
+    <input type="text" id="ceske_sluzby_sledovani_zasilek_id_zasilky" name="ceske_sluzby_sledovani_zasilek_id_zasilky" value="<?php echo esc_attr( $id_zasilky ); ?>" size="20" />
     <br />
     <br />
     <label for="ceske_sluzby_sledovani_zasilek_dopravce">Dopravce: </label>

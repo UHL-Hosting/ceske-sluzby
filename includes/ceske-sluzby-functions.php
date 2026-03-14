@@ -4,6 +4,76 @@ function ceske_sluzby_procistit_hodnoty( &$hodnota ) {
   $hodnota = trim( $hodnota ); 
 }
 
+function ceske_sluzby_get_term_meta( $term_id, $key = '', $single = false ) {
+  return get_term_meta( $term_id, $key, $single );
+}
+
+function ceske_sluzby_update_term_meta( $term_id, $key, $value, $prev_value = '' ) {
+  return update_term_meta( $term_id, $key, $value, $prev_value );
+}
+
+function ceske_sluzby_delete_term_meta( $term_id, $key, $value = '' ) {
+  return delete_term_meta( $term_id, $key, $value );
+}
+
+function ceske_sluzby_get_order_screen_id() {
+  if ( function_exists( 'wc_get_page_screen_id' ) ) {
+    return wc_get_page_screen_id( 'shop-order' );
+  }
+
+  return 'shop_order';
+}
+
+function ceske_sluzby_get_order_screen_ids() {
+  $screen_ids = array( 'shop_order' );
+  $order_screen_id = ceske_sluzby_get_order_screen_id();
+
+  if ( ! empty( $order_screen_id ) && ! in_array( $order_screen_id, $screen_ids, true ) ) {
+    $screen_ids[] = $order_screen_id;
+  }
+
+  return $screen_ids;
+}
+
+function ceske_sluzby_is_order_admin_screen( $screen = null ) {
+  if ( ! is_admin() ) {
+    return false;
+  }
+
+  if ( ! $screen && function_exists( 'get_current_screen' ) ) {
+    $screen = get_current_screen();
+  }
+
+  if ( ! $screen ) {
+    return false;
+  }
+
+  $screen_id = isset( $screen->id ) ? $screen->id : '';
+  $post_type = isset( $screen->post_type ) ? $screen->post_type : '';
+
+  return 'shop_order' === $post_type || in_array( $screen_id, ceske_sluzby_get_order_screen_ids(), true );
+}
+
+function ceske_sluzby_get_order_from_reference( $order_reference ) {
+  if ( $order_reference instanceof WC_Order ) {
+    return $order_reference;
+  }
+
+  $order_id = 0;
+
+  if ( is_numeric( $order_reference ) ) {
+    $order_id = (int) $order_reference;
+  } elseif ( is_object( $order_reference ) && isset( $order_reference->ID ) ) {
+    $order_id = (int) $order_reference->ID;
+  }
+
+  if ( $order_id <= 0 ) {
+    return false;
+  }
+
+  return wc_get_order( $order_id );
+}
+
 function ceske_sluzby_prehled_xml_feedu() {
   $feeds = array(
     'heureka' => 'Heureka',
@@ -439,7 +509,7 @@ function ceske_sluzby_zobrazit_xml_hodnotu( $postmeta_id, $product_id, $post, $t
   $product_categories = wp_get_post_terms( $post->ID, 'product_cat' );
   if ( ! empty( $product_categories ) ) {
     foreach ( $product_categories as $kategorie_produktu ) {
-      $kategorie = get_woocommerce_term_meta( $kategorie_produktu->term_id, $termmeta_id, true );
+      $kategorie = ceske_sluzby_get_term_meta( $kategorie_produktu->term_id, $termmeta_id, true );
       if ( ! empty( $kategorie ) ) {
         if ( $kategorie == $aktualni_kategorie_nazev_produkt ) {
           $kategorie_url = '<a href="' . admin_url(). 'edit-tags.php?action=edit&taxonomy=product_cat&tag_ID=' . $kategorie_produktu->term_id . '">' . $kategorie_produktu->name . '</a>';

@@ -1,0 +1,148 @@
+.ceske-sluzby-compatibility__panel {
+  background: #fff;
+  border: 1px solid #dcdcde;
+  border-radius: 8px;
+  box-sizing: border-box;
+  margin-top: 16px;
+  padding: 20px;
+}
+
+.ceske-sluzby-compatibility__panel-header {
+  align-items: flex-end;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.ceske-sluzby-compatibility__search {
+  margin: 0;
+  max-width: 320px;
+  width: 100%;
+}
+
+.ceske-sluzby-compatibility__env {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.ceske-sluzby-compatibility__env-item {
+  background: #f6f7f7;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.ceske-sluzby-compatibility__env-item strong,
+.ceske-sluzby-compatibility__env-item span {
+  display: block;
+}
+
+.ceske-sluzby-compatibility__env-item span {
+  color: #1d2327;
+  margin-top: 6px;
+}
+
+.ceske-sluzby-compatibility__grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.ceske-sluzby-compatibility__card {
+  border: 1px solid #dcdcde;
+  border-radius: 8px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.ceske-sluzby-compatibility__card-header {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.ceske-sluzby-compatibility__card-header h3 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.ceske-sluzby-compatibility__summary {
+  color: #1d2327;
+  margin: 0;
+}
+
+.ceske-sluzby-compatibility__meta {
+  display: grid;
+  gap: 6px 12px;
+  grid-template-columns: max-content 1fr;
+  margin: 0;
+}
+
+.ceske-sluzby-compatibility__meta dt {
+  color: #50575e;
+  font-weight: 600;
+}
+
+.ceske-sluzby-compatibility__meta dd {
+  margin: 0;
+}
+
+.ceske-sluzby-compatibility__notes {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.ceske-sluzby-compatibility__notes li + li {
+  margin-top: 6px;
+}
+
+.ceske-sluzby-compatibility__links {
+  margin: 0;
+}
+
+.ceske-sluzby-compatibility__links a + a {
+  margin-left: 12px;
+}
+
+.ceske-sluzby-compatibility__badge {
+  border-radius: 999px;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 4px 8px;
+  text-transform: uppercase;
+}
+
+.ceske-sluzby-compatibility__badge--current {
+  background: #dff5e3;
+  color: #0a612f;
+}
+
+.ceske-sluzby-compatibility__badge--legacy {
+  background: #fef0c7;
+  color: #8a4b00;
+}
+
+.ceske-sluzby-compatibility__badge--mixed {
+  background: #dbeafe;
+  color: #0b57d0;
+}
+
+.ceske-sluzby-compatibility__loading {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+@media (max-width: 782px) {
+  .ceske-sluzby-compatibility__panel-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

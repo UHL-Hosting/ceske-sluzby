@@ -1,0 +1,86 @@
+{
+  "translation-revision-date": "2026-03-14 03:35+0100",
+  "generator": "Codex",
+  "domain": "messages",
+  "locale_data": {
+    "messages": {
+      "": {
+        "domain": "messages",
+        "lang": "en_US",
+        "plural-forms": "nplurals=2; plural=(n != 1);"
+      },
+      "Aktivní v pluginu": [
+        "Active in plugin"
+      ],
+      "Ano": [
+        "Yes"
+      ],
+      "Ne": [
+        "No"
+      ],
+      "API / klíč": [
+        "API / key"
+      ],
+      "Nastaveno": [
+        "Configured"
+      ],
+      "Nenastaveno": [
+        "Not configured"
+      ],
+      "Oficiální zdroj": [
+        "Official source"
+      ],
+      "Nastavení pluginu": [
+        "Plugin settings"
+      ],
+      "Nepodařilo se načíst data kompatibility.": [
+        "Could not load compatibility data."
+      ],
+      "Načítám kompatibilitní report…": [
+        "Loading compatibility report…"
+      ],
+      "Prostředí": [
+        "Environment"
+      ],
+      "WordPress": [
+        "WordPress"
+      ],
+      "WooCommerce": [
+        "WooCommerce"
+      ],
+      "PHP": [
+        "PHP"
+      ],
+      "React root API": [
+        "React root API"
+      ],
+      "createRoot k dispozici": [
+        "createRoot available"
+      ],
+      "Nedostupné": [
+        "Unavailable"
+      ],
+      "Checkout fields API": [
+        "Checkout fields API"
+      ],
+      "K dispozici": [
+        "Available"
+      ],
+      "Checkout Blocks podpora je nyní částečná: pickup-point pole jsou registrovaná, ale plná deklarace kompatibility zůstává záměrně vypnutá.": [
+        "Checkout Blocks support is currently partial: pickup-point fields are registered, but full compatibility remains intentionally disabled."
+      ],
+      "WooCommerce Additional Checkout Fields reference": [
+        "WooCommerce Additional Checkout Fields reference"
+      ],
+      "Externí integrace": [
+        "External integrations"
+      ],
+      "Filtrovat poskytovatele": [
+        "Filter providers"
+      ],
+      "např. Packeta, DPD…": [
+        "e.g. Packeta, DPD…"
+      ]
+    }
+  }
+}

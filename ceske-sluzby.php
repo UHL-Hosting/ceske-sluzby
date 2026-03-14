@@ -3,14 +3,35 @@
  * Plugin Name: České služby pro WordPress
  * Plugin URI: https://www.separatista.net
  * Description: Implementace různých českých služeb do WordPressu.
- * Version: 0.6-alpha
+ * Version: 1.0.0
  * Author: Pavel Hejn
  * Author URI: https://www.separatista.net
  * GitHub Plugin URI: pavelevap/ceske-sluzby 
  * License: GPL2
+ * Text Domain: ceske-sluzby
+ * Domain Path: /languages
+ * Requires at least: 6.6
+ * Requires PHP: 7.4
+ * WC requires at least: 8.6
+ * WC tested up to: 10.6
  */
 
-define( 'CS_VERSION', '0.6-alpha' );
+define( 'CS_VERSION', '1.0.0' );
+
+function ceske_sluzby_load_textdomain() {
+  load_plugin_textdomain( 'ceske-sluzby', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+}
+add_action( 'init', 'ceske_sluzby_load_textdomain' );
+
+add_action(
+  'before_woocommerce_init',
+  function() {
+    if ( class_exists( '\\Automattic\\WooCommerce\\Utilities\\FeaturesUtil' ) ) {
+      \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+      \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, false );
+    }
+  }
+);
 
 $language = get_locale();
 if ( $language == "sk_SK" ) {
@@ -259,6 +280,10 @@ function ceske_sluzby_sledovani_zasilek_email_akce( $email_actions ) {
 function ceske_sluzby_kontrola_aktivniho_pluginu() {
   if ( defined( 'WOOCOMMERCE_VERSION' ) && version_compare( WOOCOMMERCE_VERSION, '2.2', '>=' ) ) {
     require_once plugin_dir_path( __FILE__ ) . 'includes/ceske-sluzby-functions.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-ceske-sluzby-blocks.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-ceske-sluzby-compatibility.php';
+    Ceske_Sluzby_Blocks::init();
+    Ceske_Sluzby_Compatibility::init();
     if ( is_admin() ) {
       require_once plugin_dir_path( __FILE__ ) . 'includes/class-ceske-sluzby-admin.php';
       require_once plugin_dir_path( __FILE__ ) . 'includes/class-ceske-sluzby-sledovani-zasilek.php';
@@ -421,45 +446,97 @@ function ceske_sluzby_doprava_ulozenka( $methods ) {
   return $methods;
 }
 
+function ceske_sluzby_parse_checkout_post_data() {
+  $post_data = array();
+
+  if ( isset( $_POST['post_data'] ) ) {
+    parse_str( wp_unslash( $_POST['post_data'] ), $post_data );
+  }
+
+  return $post_data;
+}
+
+function ceske_sluzby_pickup_country_code( $country ) {
+  if ( 'CZ' === $country ) {
+    return 'CZE';
+  }
+
+  if ( 'SK' === $country ) {
+    return 'SVK';
+  }
+
+  return '';
+}
+
+function ceske_sluzby_render_pickup_unavailable_message( $provider_label ) {
+  echo '<p class="ceske-sluzby-pickup-unavailable">' . esc_html(
+    sprintf(
+      __( 'Seznam poboček pro dopravu %s je momentálně nedostupný. Zvolte prosím jiný způsob dopravy nebo opakujte pokus později.', 'ceske-sluzby' ),
+      $provider_label
+    )
+  ) . '</p>';
+}
+
+function ceske_sluzby_get_order_pickup_meta( $order, $shipping_item_id, $meta_key ) {
+  if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+    $pickup_point = $order->get_item_meta( $shipping_item_id, $meta_key, true );
+  } else {
+    $pickup_point = wc_get_order_item_meta( $shipping_item_id, $meta_key, true );
+  }
+
+  if ( empty( $pickup_point ) && is_callable( array( $order, 'get_meta' ) ) ) {
+    $pickup_point = $order->get_meta( $meta_key, true );
+  }
+
+  return $pickup_point;
+}
+
 function ceske_sluzby_ulozenka_zobrazit_pobocky() {
-  if ( is_ajax() ) {
-    // Do budoucna možná použít spíše woocommerce_checkout_update_order_review
+  if ( wp_doing_ajax() ) {
     $ulozenka_branches = '';
-    if ( isset( $_POST['post_data'] ) ) {
-      parse_str( $_POST['post_data'], $post_data );
-      if ( isset( $post_data['ulozenka_branches'] ) ) {
-        $ulozenka_branches = $post_data['ulozenka_branches'];
-      }
+    $post_data = ceske_sluzby_parse_checkout_post_data();
+    if ( isset( $post_data['ulozenka_branches'] ) ) {
+      $ulozenka_branches = $post_data['ulozenka_branches'];
     }
     $available_shipping = WC()->shipping->load_shipping_methods();
     $chosen_shipping_method = WC()->session->get( 'chosen_shipping_methods' );
     $settings = array();
-    if ( $chosen_shipping_method[0] == "ceske_sluzby_ulozenka" ) {
-      $settings = $available_shipping[ $chosen_shipping_method[0] ]->settings;
-      if ( $settings['enabled'] == "yes" && ! empty( $settings['ulozenka_id-obchodu'] ) ) {
+    if ( ! empty( $chosen_shipping_method ) && isset( $chosen_shipping_method[0] ) && 0 === strpos( $chosen_shipping_method[0], 'ceske_sluzby_ulozenka' ) ) {
+      if ( isset( $available_shipping[ $chosen_shipping_method[0] ] ) ) {
+        $settings = $available_shipping[ $chosen_shipping_method[0] ]->settings;
+      }
+      if ( ! empty( $settings ) && isset( $settings['enabled'] ) && 'yes' === $settings['enabled'] && ! empty( $settings['ulozenka_id-obchodu'] ) ) {
         $json_class = new Ceske_Sluzby_Json_Loader();
-        // http://docs.ulozenkav3.apiary.io/#pepravnsluby
-        $zeme = WC()->customer->get_shipping_country();
-        if ( $zeme == "CZ" ) { $zeme_code = "CZE"; }
-        if ( $zeme == "SK" ) { $zeme_code = "SVK"; }
-        $parametry = array( 'provider' => 1, 'country' => $zeme_code ); ?>
+        $zeme_code = ceske_sluzby_pickup_country_code( WC()->customer->get_shipping_country() );
+        $parametry = array( 'provider' => 1, 'country' => $zeme_code );
+        $pobocky = array();
+
+        if ( '' !== $zeme_code ) {
+          try {
+            $json = $json_class->load( $parametry );
+            if ( isset( $json->data->destination ) && ! empty( $json->data->destination ) ) {
+              $pobocky = $json_class->sortName( $json->data->destination );
+            }
+          } catch ( Exception $exception ) {
+            $pobocky = array();
+          }
+        }
+        ?>
         <tr class="ulozenka">
+          <td><strong><?php esc_html_e( 'Uloženka', 'ceske-sluzby' ); ?></strong></td>
           <td>
-            <img src="https://www.ulozenka.cz/logo/ulozenka.png" width="140" border="0">
-          </td>
-          <td>
-            <font size="2">Uloženka - výběr pobočky:</font><br>
+            <strong><?php esc_html_e( 'Uloženka: výběr pobočky', 'ceske-sluzby' ); ?></strong><br>
             <div id="ulozenka-branch-select-options">
-              <select name="ulozenka_branches">
-                <option>Vyberte pobočku</option>
-                <?php $json = $json_class->load( $parametry );
-                if ( isset( $json->data->destination ) && ! empty( $json->data->destination ) ) {
-                  $pobocky = $json_class->sortName( $json->data->destination );
-                  foreach ( $pobocky as $pobocka ) {
-                    echo '<option value="' . $pobocka . '"' . selected( $pobocka, $ulozenka_branches ) . '>' . $pobocka . '</option>';
-                  }
-                } ?>
-              </select>
+              <?php if ( ! empty( $pobocky ) ) { ?>
+                <select name="ulozenka_branches">
+                  <option><?php esc_html_e( 'Vyberte pobočku', 'ceske-sluzby' ); ?></option>
+                  <?php foreach ( $pobocky as $pobocka ) {
+                    echo '<option value="' . esc_attr( $pobocka ) . '"' . selected( $pobocka, $ulozenka_branches, false ) . '>' . esc_html( $pobocka ) . '</option>';
+                  } ?>
+                </select>
+              <?php } else { ?>
+                <?php ceske_sluzby_render_pickup_unavailable_message( 'Uloženka' ); ?>
+              <?php } ?>
             </div>
           </td>
         </tr>
@@ -469,24 +546,28 @@ function ceske_sluzby_ulozenka_zobrazit_pobocky() {
 }
 
 function ceske_sluzby_ulozenka_ulozeni_pobocky( $item_id, $item ) {
-  if ( isset( $_POST["ulozenka_branches"] ) ) {
-    if ( $_POST["ulozenka_branches"] && $_POST["shipping_method"][0] == "ceske_sluzby_ulozenka" ) {
+  if ( isset( $_POST['ulozenka_branches'], $_POST['shipping_method'][0] ) ) {
+    $ulozenka_branch = sanitize_text_field( wp_unslash( $_POST['ulozenka_branches'] ) );
+    $shipping_method = sanitize_text_field( wp_unslash( $_POST['shipping_method'][0] ) );
+    if ( '' !== $ulozenka_branch && 0 === strpos( $shipping_method, 'ceske_sluzby_ulozenka' ) ) {
       if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
         $item_type = $item['order_item_type'];
       } else {
         $item_type = $item->get_type();
       }
       if ( $item_type == 'shipping' ) {
-        wc_add_order_item_meta( $item_id, 'ceske_sluzby_ulozenka_pobocka_nazev', esc_attr( $_POST['ulozenka_branches'] ), true );
+        wc_add_order_item_meta( $item_id, 'ceske_sluzby_ulozenka_pobocka_nazev', $ulozenka_branch, true );
       }
     }
   }
 }
 
 function ceske_sluzby_ulozenka_overit_pobocku() {
-  if ( isset( $_POST["ulozenka_branches"] ) ) {
-    if ( $_POST["ulozenka_branches"] == "Vyberte pobočku" && $_POST["shipping_method"][0] == "ceske_sluzby_ulozenka" ) {
-      wc_add_notice( 'Pokud chcete doručit zboží prostřednictvím Uloženky, zvolte prosím pobočku.', 'error' );
+  if ( isset( $_POST['ulozenka_branches'], $_POST['shipping_method'][0] ) ) {
+    $ulozenka_branch = sanitize_text_field( wp_unslash( $_POST['ulozenka_branches'] ) );
+    $shipping_method = sanitize_text_field( wp_unslash( $_POST['shipping_method'][0] ) );
+    if ( __( 'Vyberte pobočku', 'ceske-sluzby' ) === $ulozenka_branch && 0 === strpos( $shipping_method, 'ceske_sluzby_ulozenka' ) ) {
+      wc_add_notice( __( 'Pokud chcete doručit zboží prostřednictvím Uloženky, zvolte prosím pobočku.', 'ceske-sluzby' ), 'error' );
     }
   }
 }
@@ -494,13 +575,9 @@ function ceske_sluzby_ulozenka_overit_pobocku() {
 function ceske_sluzby_ulozenka_objednavka_zobrazit_pobocku( $order ) {
   if ( $order->has_shipping_method( 'ceske_sluzby_ulozenka' ) ) {
     foreach ( $order->get_shipping_methods() as $shipping_item_id => $shipping_item ) {
-      if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-        $pobocka = $order->get_item_meta( $shipping_item_id, 'ceske_sluzby_ulozenka_pobocka_nazev', true );
-      } else {
-        $pobocka = wc_get_order_item_meta( $shipping_item_id, 'ceske_sluzby_ulozenka_pobocka_nazev', true );
-      }
+      $pobocka = ceske_sluzby_get_order_pickup_meta( $order, $shipping_item_id, 'ceske_sluzby_ulozenka_pobocka_nazev' );
       if ( ! empty( $pobocka ) ) {
-        echo "<p><strong>Uloženka:</strong> " . $pobocka . "</p>";
+        echo '<p><strong>Uloženka:</strong> ' . esc_html( $pobocka ) . '</p>';
       }
     }
   }
@@ -509,7 +586,12 @@ function ceske_sluzby_ulozenka_objednavka_zobrazit_pobocku( $order ) {
 function ceske_sluzby_ulozenka_dobirka_pay4pay( $amount ) {
   $available_shipping = WC()->shipping->load_shipping_methods();
   $chosen_shipping_method = WC()->session->get( 'chosen_shipping_methods' );
-  if ( $chosen_shipping_method[0] == "ceske_sluzby_ulozenka" ) {
+  if (
+    ! empty( $chosen_shipping_method )
+    && isset( $chosen_shipping_method[0] )
+    && 0 === strpos( $chosen_shipping_method[0], 'ceske_sluzby_ulozenka' )
+    && isset( $available_shipping[ $chosen_shipping_method[0] ] )
+  ) {
     $settings = $available_shipping[ $chosen_shipping_method[0] ]->settings;
     $zeme = WC()->customer->get_shipping_country();
     if ( $zeme == "CZ" ) {
@@ -542,42 +624,51 @@ function ceske_sluzby_doprava_dpd_parcelshop( $methods ) {
 }
 
 function ceske_sluzby_dpd_parcelshop_zobrazit_pobocky() {
-  if ( is_ajax() ) {
+  if ( wp_doing_ajax() ) {
     $dpd_parcelshop_branches = '';
-    if ( isset( $_POST['post_data'] ) ) {
-      parse_str( $_POST['post_data'], $post_data );
-      if ( isset( $post_data['dpd_parcelshop_branches'] ) ) {
-        $dpd_parcelshop_branches = $post_data['dpd_parcelshop_branches'];
-      }
+    $post_data = ceske_sluzby_parse_checkout_post_data();
+    if ( isset( $post_data['dpd_parcelshop_branches'] ) ) {
+      $dpd_parcelshop_branches = $post_data['dpd_parcelshop_branches'];
     }
     $available_shipping = WC()->shipping->load_shipping_methods();
     $chosen_shipping_method = WC()->session->get( 'chosen_shipping_methods' );
     $settings = array();
-    if ( $chosen_shipping_method[0] == "ceske_sluzby_dpd_parcelshop" ) {
-      $settings = $available_shipping[ $chosen_shipping_method[0] ]->settings;
-      if ( $settings['enabled'] == "yes" ) {
+    if ( ! empty( $chosen_shipping_method ) && isset( $chosen_shipping_method[0] ) && 0 === strpos( $chosen_shipping_method[0], 'ceske_sluzby_dpd_parcelshop' ) ) {
+      if ( isset( $available_shipping[ $chosen_shipping_method[0] ] ) ) {
+        $settings = $available_shipping[ $chosen_shipping_method[0] ]->settings;
+      }
+      if ( ! empty( $settings ) && isset( $settings['enabled'] ) && 'yes' === $settings['enabled'] ) {
         $json_class = new Ceske_Sluzby_Json_Loader();
-        $zeme = WC()->customer->get_shipping_country();
-        if ( $zeme == "CZ" ) { $zeme_code = "CZE"; }
-        if ( $zeme == "SK" ) { $zeme_code = "SVK"; }
-        $parametry = array( 'provider' => 5, 'country' => $zeme_code ); ?>
+        $zeme_code = ceske_sluzby_pickup_country_code( WC()->customer->get_shipping_country() );
+        $parametry = array( 'provider' => 5, 'country' => $zeme_code );
+        $pobocky = array();
+
+        if ( '' !== $zeme_code ) {
+          try {
+            $json = $json_class->load( $parametry );
+            if ( isset( $json->data->destination ) && ! empty( $json->data->destination ) ) {
+              $pobocky = $json_class->sortName( $json->data->destination );
+            }
+          } catch ( Exception $exception ) {
+            $pobocky = array();
+          }
+        }
+        ?>
         <tr class="dpd-parcelshop">
+          <td><strong><?php esc_html_e( 'DPD Pickup', 'ceske-sluzby' ); ?></strong></td>
           <td>
-            <img src="http://www.dpdparcelshop.cz/images/DPD-logo.png" width="140" border="0">
-          </td>
-          <td>
-            <font size="2">DPD ParcelShop - výběr pobočky:</font><br>
+            <strong><?php esc_html_e( 'DPD Pickup: výběr pobočky', 'ceske-sluzby' ); ?></strong><br>
             <div id="dpd-parcelshop-branch-select-options">
-              <select name="dpd_parcelshop_branches">
-                <option>Vyberte pobočku</option>
-                <?php $json = $json_class->load( $parametry );
-                if ( isset( $json->data->destination ) && ! empty( $json->data->destination ) ) {
-                  $pobocky = $json_class->sortName( $json->data->destination );
-                  foreach ( $pobocky as $pobocka ) {
-                    echo '<option value="' . $pobocka . '"' . selected( $pobocka, $dpd_parcelshop_branches ) . '>' . $pobocka . '</option>';
-                  }
-                } ?>
-              </select>
+              <?php if ( ! empty( $pobocky ) ) { ?>
+                <select name="dpd_parcelshop_branches">
+                  <option><?php esc_html_e( 'Vyberte pobočku', 'ceske-sluzby' ); ?></option>
+                  <?php foreach ( $pobocky as $pobocka ) {
+                    echo '<option value="' . esc_attr( $pobocka ) . '"' . selected( $pobocka, $dpd_parcelshop_branches, false ) . '>' . esc_html( $pobocka ) . '</option>';
+                  } ?>
+                </select>
+              <?php } else { ?>
+                <?php ceske_sluzby_render_pickup_unavailable_message( 'DPD Pickup' ); ?>
+              <?php } ?>
             </div>
           </td>
         </tr>
@@ -587,24 +678,28 @@ function ceske_sluzby_dpd_parcelshop_zobrazit_pobocky() {
 }
 
 function ceske_sluzby_dpd_parcelshop_ulozeni_pobocky( $item_id, $item ) {
-  if ( isset( $_POST["dpd_parcelshop_branches"] ) ) {
-    if ( $_POST["dpd_parcelshop_branches"] && $_POST["shipping_method"][0] == "ceske_sluzby_dpd_parcelshop" ) {
+  if ( isset( $_POST['dpd_parcelshop_branches'], $_POST['shipping_method'][0] ) ) {
+    $dpd_branch = sanitize_text_field( wp_unslash( $_POST['dpd_parcelshop_branches'] ) );
+    $shipping_method = sanitize_text_field( wp_unslash( $_POST['shipping_method'][0] ) );
+    if ( '' !== $dpd_branch && 0 === strpos( $shipping_method, 'ceske_sluzby_dpd_parcelshop' ) ) {
       if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
         $item_type = $item['order_item_type'];
       } else {
         $item_type = $item->get_type();
       }
       if ( $item_type == 'shipping' ) {
-        wc_add_order_item_meta( $item_id, 'ceske_sluzby_dpd_parcelshop_pobocka_nazev', esc_attr( $_POST['dpd_parcelshop_branches'] ), true );
+        wc_add_order_item_meta( $item_id, 'ceske_sluzby_dpd_parcelshop_pobocka_nazev', $dpd_branch, true );
       }
     }
   }
 }
 
 function ceske_sluzby_dpd_parcelshop_overit_pobocku() {
-  if ( isset( $_POST["dpd_parcelshop_branches"] ) ) {
-    if ( $_POST["dpd_parcelshop_branches"] == "Vyberte pobočku" && $_POST["shipping_method"][0] == "ceske_sluzby_dpd_parcelshop" ) {
-      wc_add_notice( 'Pokud chcete doručit zboží prostřednictvím DPD ParcelShop, zvolte prosím pobočku.', 'error' );
+  if ( isset( $_POST['dpd_parcelshop_branches'], $_POST['shipping_method'][0] ) ) {
+    $dpd_branch = sanitize_text_field( wp_unslash( $_POST['dpd_parcelshop_branches'] ) );
+    $shipping_method = sanitize_text_field( wp_unslash( $_POST['shipping_method'][0] ) );
+    if ( __( 'Vyberte pobočku', 'ceske-sluzby' ) === $dpd_branch && 0 === strpos( $shipping_method, 'ceske_sluzby_dpd_parcelshop' ) ) {
+      wc_add_notice( __( 'Pokud chcete doručit zboží prostřednictvím DPD Pickup, zvolte prosím pobočku.', 'ceske-sluzby' ), 'error' );
     }
   }
 }
@@ -612,13 +707,9 @@ function ceske_sluzby_dpd_parcelshop_overit_pobocku() {
 function ceske_sluzby_dpd_parcelshop_objednavka_zobrazit_pobocku( $order ) {
   if ( $order->has_shipping_method( 'ceske_sluzby_dpd_parcelshop' ) ) {
     foreach ( $order->get_shipping_methods() as $shipping_item_id => $shipping_item ) {
-      if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-        $pobocka = $order->get_item_meta( $shipping_item_id, 'ceske_sluzby_dpd_parcelshop_pobocka_nazev', true );
-      } else {
-        $pobocka = wc_get_order_item_meta( $shipping_item_id, 'ceske_sluzby_dpd_parcelshop_pobocka_nazev', true );
-      }
+      $pobocka = ceske_sluzby_get_order_pickup_meta( $order, $shipping_item_id, 'ceske_sluzby_dpd_parcelshop_pobocka_nazev' );
       if ( ! empty( $pobocka ) ) {
-        echo "<p><strong>DPD ParcelShop:</strong> " . $pobocka . "</p>";
+        echo '<p><strong>DPD Pickup:</strong> ' . esc_html( $pobocka ) . '</p>';
       }
     }
   }
@@ -627,7 +718,12 @@ function ceske_sluzby_dpd_parcelshop_objednavka_zobrazit_pobocku( $order ) {
 function ceske_sluzby_dpd_parcelshop_dobirka_pay4pay( $amount ) {
   $available_shipping = WC()->shipping->load_shipping_methods();
   $chosen_shipping_method = WC()->session->get( 'chosen_shipping_methods' );
-  if ( $chosen_shipping_method[0] == "ceske_sluzby_dpd_parcelshop" ) {
+  if (
+    ! empty( $chosen_shipping_method )
+    && isset( $chosen_shipping_method[0] )
+    && 0 === strpos( $chosen_shipping_method[0], 'ceske_sluzby_dpd_parcelshop' )
+    && isset( $available_shipping[ $chosen_shipping_method[0] ] )
+  ) {
     $settings = $available_shipping[ $chosen_shipping_method[0] ]->settings;
     $zeme = WC()->customer->get_shipping_country();
     if ( $zeme == "CZ" ) {
@@ -659,53 +755,53 @@ function ceske_sluzby_doprava_zasilkovna( $methods ) {
 }
 
 function ceske_sluzby_zasilkovna_zobrazit_pobocky() {
-  if ( is_ajax() ) {
+  if ( wp_doing_ajax() ) {
     $zasilkovna_branches = '';
-    if ( isset( $_POST['post_data'] ) ) {
-      parse_str( $_POST['post_data'], $post_data );
-      if ( isset( $post_data['packeta-point-id'] ) ) {
-        $zasilkovna_branches = $post_data['packeta-point-id'];
-      }
+    $post_data = ceske_sluzby_parse_checkout_post_data();
+    if ( isset( $post_data['packeta-point-id'] ) ) {
+      $zasilkovna_branches = $post_data['packeta-point-id'];
     }
     $chosen_shipping_method = WC()->session->get( 'chosen_shipping_methods' );
-    if ( strpos( $chosen_shipping_method[0], "ceske_sluzby_zasilkovna" ) !== false ) { ?>
+    if ( ! empty( $chosen_shipping_method ) && isset( $chosen_shipping_method[0] ) && false !== strpos( $chosen_shipping_method[0], 'ceske_sluzby_zasilkovna' ) ) { ?>
       <tr class="zasilkovna">
+        <td><strong><?php esc_html_e( 'Zásilkovna', 'ceske-sluzby' ); ?></strong></td>
         <td>
-          <img src="https://files.packeta.com/web/images/page/Zasilkovna_logo_WEB_tb_nove.png" width="200" border="0">
-        </td>
-        <td>
-          <input type="button" onclick="Packeta.Widget.pick(packetaApiKey, showSelectedPickupPoint)" value="Zvolit pobočku">
-          <div>Pobočka:
-            <input type="hidden" id="packeta-point-id" name="packeta-point-id" value="<?php echo $zasilkovna_branches; ?>">
-            <span id="packeta-point-info" style="font-weight:bold;"><?php if ( $zasilkovna_branches ) { echo $zasilkovna_branches; } else { echo "Zatím nevybráno"; } ?></span>
+          <input type="button" onclick="Packeta.Widget.pick(packetaApiKey, showSelectedPickupPoint)" value="<?php echo esc_attr__( 'Zvolit pobočku', 'ceske-sluzby' ); ?>">
+          <div><?php esc_html_e( 'Pobočka:', 'ceske-sluzby' ); ?>
+            <input type="hidden" id="packeta-point-id" name="packeta-point-id" value="<?php echo esc_attr( $zasilkovna_branches ); ?>">
+            <span id="packeta-point-info" style="font-weight:bold;"><?php if ( $zasilkovna_branches ) { echo esc_html( $zasilkovna_branches ); } else { esc_html_e( 'Zatím nevybráno', 'ceske-sluzby' ); } ?></span>
           </div>
         </td>
       </tr>
     <?php } else { ?>
-      <input type="hidden" id="packeta-point-id" name="packeta-point-id" value="<?php echo $zasilkovna_branches; ?>">
+      <input type="hidden" id="packeta-point-id" name="packeta-point-id" value="<?php echo esc_attr( $zasilkovna_branches ); ?>">
     <?php }
   }
 }
 
 function ceske_sluzby_zasilkovna_ulozeni_pobocky( $item_id, $item ) {
-  if ( isset( $_POST["packeta-point-id"] ) ) {
-    if ( ! empty( $_POST["packeta-point-id"] ) && strpos( $_POST["shipping_method"][0], "ceske_sluzby_zasilkovna" ) !== false ) {
+  if ( isset( $_POST['packeta-point-id'], $_POST['shipping_method'][0] ) ) {
+    $pickup_point = sanitize_text_field( wp_unslash( $_POST['packeta-point-id'] ) );
+    $shipping_method = sanitize_text_field( wp_unslash( $_POST['shipping_method'][0] ) );
+    if ( '' !== $pickup_point && false !== strpos( $shipping_method, 'ceske_sluzby_zasilkovna' ) ) {
       if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
         $item_type = $item['order_item_type'];
       } else {
         $item_type = $item->get_type();
       }
       if ( $item_type == 'shipping' ) {
-        wc_add_order_item_meta( $item_id, 'ceske_sluzby_zasilkovna_pobocka_nazev', esc_attr( $_POST['packeta-point-id'] ), true );
+        wc_add_order_item_meta( $item_id, 'ceske_sluzby_zasilkovna_pobocka_nazev', $pickup_point, true );
       }
     }
   }
 }
 
 function ceske_sluzby_zasilkovna_overit_pobocku() {
-  if ( isset( $_POST["packeta-point-id"] ) ) {
-    if ( empty( $_POST["packeta-point-id"] ) && strpos( $_POST["shipping_method"][0], "ceske_sluzby_zasilkovna" ) !== false ) {
-      wc_add_notice( 'Pokud chcete doručit zboží prostřednictvím Zásilkovny, zvolte prosím pobočku.', 'error' );
+  if ( isset( $_POST['packeta-point-id'], $_POST['shipping_method'][0] ) ) {
+    $pickup_point = sanitize_text_field( wp_unslash( $_POST['packeta-point-id'] ) );
+    $shipping_method = sanitize_text_field( wp_unslash( $_POST['shipping_method'][0] ) );
+    if ( '' === $pickup_point && false !== strpos( $shipping_method, 'ceske_sluzby_zasilkovna' ) ) {
+      wc_add_notice( __( 'Pokud chcete doručit zboží prostřednictvím Zásilkovny, zvolte prosím pobočku.', 'ceske-sluzby' ), 'error' );
     }
   }
 }
@@ -713,13 +809,9 @@ function ceske_sluzby_zasilkovna_overit_pobocku() {
 function ceske_sluzby_zasilkovna_objednavka_zobrazit_pobocku( $order ) {
   if ( $order->has_shipping_method( 'ceske_sluzby_zasilkovna' ) ) {
     foreach ( $order->get_shipping_methods() as $shipping_item_id => $shipping_item ) {
-      if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-        $pobocka = $order->get_item_meta( $shipping_item_id, 'ceske_sluzby_zasilkovna_pobocka_nazev', true );
-      } else {
-        $pobocka = wc_get_order_item_meta( $shipping_item_id, 'ceske_sluzby_zasilkovna_pobocka_nazev', true );
-      }
+      $pobocka = ceske_sluzby_get_order_pickup_meta( $order, $shipping_item_id, 'ceske_sluzby_zasilkovna_pobocka_nazev' );
       if ( ! empty( $pobocka ) ) {
-        echo "<p><strong>Zásilkovna:</strong> " . $pobocka . "</p>";
+        echo '<p><strong>Zásilkovna:</strong> ' . esc_html( $pobocka ) . '</p>';
       }
     }
   }
@@ -1111,16 +1203,16 @@ function ceske_sluzby_xml_kategorie_pridat_pole() {
 function ceske_sluzby_xml_kategorie_upravit_pole( $term ) {
   $checked = '';
   $global_data = ceske_sluzby_xml_ziskat_globalni_hodnoty();
-  $heureka_kategorie = get_woocommerce_term_meta( $term->term_id, 'ceske-sluzby-xml-heureka-kategorie', true );
-  $heureka_productname = get_woocommerce_term_meta( $term->term_id, 'ceske-sluzby-xml-heureka-productname', true );
-  $zbozi_kategorie = get_woocommerce_term_meta( $term->term_id, 'ceske-sluzby-xml-zbozi-kategorie', true );
-  $zbozi_productname = get_woocommerce_term_meta( $term->term_id, 'ceske-sluzby-xml-zbozi-productname', true );
-  $glami_kategorie = get_woocommerce_term_meta( $term->term_id, 'ceske-sluzby-xml-glami-kategorie', true );
-  $kategorie_extra_message_ulozeno = get_woocommerce_term_meta( $term->term_id, 'ceske-sluzby-xml-zbozi-extra-message', true );
-  $xml_vynechano_ulozeno = get_woocommerce_term_meta( $term->term_id, 'ceske-sluzby-xml-vynechano', true );
-  $xml_feed_vynechano_ulozeno = get_woocommerce_term_meta( $term->term_id, 'ceske-sluzby-xml-feed-vynechano', true );
-  $xml_erotika_ulozeno = get_woocommerce_term_meta( $term->term_id, 'ceske-sluzby-xml-erotika', true );
-  $xml_stav_produktu = get_woocommerce_term_meta( $term->term_id, 'ceske-sluzby-xml-stav-produktu', true );
+  $heureka_kategorie = ceske_sluzby_get_term_meta( $term->term_id, 'ceske-sluzby-xml-heureka-kategorie', true );
+  $heureka_productname = ceske_sluzby_get_term_meta( $term->term_id, 'ceske-sluzby-xml-heureka-productname', true );
+  $zbozi_kategorie = ceske_sluzby_get_term_meta( $term->term_id, 'ceske-sluzby-xml-zbozi-kategorie', true );
+  $zbozi_productname = ceske_sluzby_get_term_meta( $term->term_id, 'ceske-sluzby-xml-zbozi-productname', true );
+  $glami_kategorie = ceske_sluzby_get_term_meta( $term->term_id, 'ceske-sluzby-xml-glami-kategorie', true );
+  $kategorie_extra_message_ulozeno = ceske_sluzby_get_term_meta( $term->term_id, 'ceske-sluzby-xml-zbozi-extra-message', true );
+  $xml_vynechano_ulozeno = ceske_sluzby_get_term_meta( $term->term_id, 'ceske-sluzby-xml-vynechano', true );
+  $xml_feed_vynechano_ulozeno = ceske_sluzby_get_term_meta( $term->term_id, 'ceske-sluzby-xml-feed-vynechano', true );
+  $xml_erotika_ulozeno = ceske_sluzby_get_term_meta( $term->term_id, 'ceske-sluzby-xml-erotika', true );
+  $xml_stav_produktu = ceske_sluzby_get_term_meta( $term->term_id, 'ceske-sluzby-xml-stav-produktu', true );
   $xml_feed_heureka = get_option( 'wc_ceske_sluzby_xml_feed_heureka-aktivace' );
   $xml_feed_zbozi = get_option( 'wc_ceske_sluzby_xml_feed_zbozi-aktivace' );
   $xml_feed_glami = get_option( 'wc_ceske_sluzby_xml_feed_glami-aktivace' );
@@ -1303,11 +1395,11 @@ function ceske_sluzby_xml_kategorie_ulozit( $term_id, $tt_id = '', $taxonomy = '
           $value = str_replace( 'Glami.cz | ', '', $value );
           $value = str_replace( 'Glami.sk | ', '', $value );
         }
-        $ulozeno_text = get_woocommerce_term_meta( $term_id, $key, true );
+        $ulozeno_text = ceske_sluzby_get_term_meta( $term_id, $key, true );
         if ( ! empty( $value ) ) {
-          update_woocommerce_term_meta( $term_id, $key, esc_attr( $value ) );
+          ceske_sluzby_update_term_meta( $term_id, $key, esc_attr( $value ) );
         } elseif ( ! empty( $ulozeno_text ) ) {
-          delete_woocommerce_term_meta( $term_id, $key ); 
+          ceske_sluzby_delete_term_meta( $term_id, $key );
         }
       }
     }
@@ -1319,14 +1411,14 @@ function ceske_sluzby_xml_kategorie_ulozit( $term_id, $tt_id = '', $taxonomy = '
       'ceske-sluzby-xml-zbozi-extra-message'
     );
     foreach ( $ukladana_data_checkbox as $key ) {
-      $ulozeno_checkbox = get_woocommerce_term_meta( $term_id, $key, true );
+      $ulozeno_checkbox = ceske_sluzby_get_term_meta( $term_id, $key, true );
       if ( isset( $_POST[ $key ] ) ) {
         $value = $_POST[ $key ];
         if ( ! empty( $value ) ) {
-          update_woocommerce_term_meta( $term_id, $key, $value );
+          ceske_sluzby_update_term_meta( $term_id, $key, $value );
         }
       } elseif ( ! empty( $ulozeno_checkbox ) ) {
-        delete_woocommerce_term_meta( $term_id, $key ); 
+        ceske_sluzby_delete_term_meta( $term_id, $key );
       }
     }
   }
@@ -1340,13 +1432,13 @@ function ceske_sluzby_xml_kategorie_pridat_sloupec( $columns ) {
 
 function ceske_sluzby_xml_kategorie_sloupec( $columns, $column, $id ) {
   if ( 'xml-heureka' == $column ) {
-    $heureka_kategorie = get_woocommerce_term_meta( $id, 'ceske-sluzby-xml-heureka-kategorie', true );
+    $heureka_kategorie = ceske_sluzby_get_term_meta( $id, 'ceske-sluzby-xml-heureka-kategorie', true );
     $heureka_nazev = false;
     if ( $heureka_kategorie ) {
       $columns .= 'Heureka: <a href="#" title="' . $heureka_kategorie . '">KA</a>';
       $heureka_nazev = true;
     }
-    $heureka_productname = get_woocommerce_term_meta( $id, 'ceske-sluzby-xml-heureka-productname', true );
+    $heureka_productname = ceske_sluzby_get_term_meta( $id, 'ceske-sluzby-xml-heureka-productname', true );
     if ( $heureka_productname ) {
       if ( $heureka_nazev ) {
         $columns .= ' <a href="#" title="' . $heureka_productname . '">PR</a>';
@@ -1358,13 +1450,13 @@ function ceske_sluzby_xml_kategorie_sloupec( $columns, $column, $id ) {
     if ( $heureka_nazev ) {
       $columns .= '<br />';
     }
-    $zbozi_kategorie = get_woocommerce_term_meta( $id, 'ceske-sluzby-xml-zbozi-kategorie', true );
+    $zbozi_kategorie = ceske_sluzby_get_term_meta( $id, 'ceske-sluzby-xml-zbozi-kategorie', true );
     $zbozi_nazev = false;
     if ( $zbozi_kategorie ) {
       $columns .= 'Zboží: <a href="#" title="' . $zbozi_kategorie . '">KA</a>';
       $zbozi_nazev = true;
     }
-    $zbozi_productname = get_woocommerce_term_meta( $id, 'ceske-sluzby-xml-zbozi-productname', true );
+    $zbozi_productname = ceske_sluzby_get_term_meta( $id, 'ceske-sluzby-xml-zbozi-productname', true );
     if ( $zbozi_productname ) {
       if ( $zbozi_nazev ) {
         $columns .= ' <a href="#" title="' . $zbozi_productname . '">PR</a>';
@@ -1373,9 +1465,9 @@ function ceske_sluzby_xml_kategorie_sloupec( $columns, $column, $id ) {
         $zbozi_nazev = true;
       }
     }
-    $glami_kategorie = get_woocommerce_term_meta( $id, 'ceske-sluzby-xml-glami-kategorie', true );
+    $glami_kategorie = ceske_sluzby_get_term_meta( $id, 'ceske-sluzby-xml-glami-kategorie', true );
     $extra_message_aktivace = get_option( 'wc_ceske_sluzby_xml_feed_zbozi_extra_message-aktivace' );
-    $kategorie_extra_message_ulozeno = get_woocommerce_term_meta( $id, 'ceske-sluzby-xml-zbozi-extra-message', true );
+    $kategorie_extra_message_ulozeno = ceske_sluzby_get_term_meta( $id, 'ceske-sluzby-xml-zbozi-extra-message', true );
     if ( ! empty( $kategorie_extra_message_ulozeno ) ) {
       $extra_message_array = ceske_sluzby_ziskat_nastaveni_zbozi_extra_message();
       foreach ( $kategorie_extra_message_ulozeno as $key => $value ) {
@@ -1398,8 +1490,8 @@ function ceske_sluzby_xml_kategorie_sloupec( $columns, $column, $id ) {
       }
       $columns .= 'Glami: <a href="#" title="' . $glami_kategorie . '">KA</a>';
     }
-    $kategorie_vynechano = get_woocommerce_term_meta( $id, 'ceske-sluzby-xml-vynechano', true );
-    $kategorie_feed_vynechano = get_woocommerce_term_meta( $id, 'ceske-sluzby-xml-feed-vynechano', true );
+    $kategorie_vynechano = ceske_sluzby_get_term_meta( $id, 'ceske-sluzby-xml-vynechano', true );
+    $kategorie_feed_vynechano = ceske_sluzby_get_term_meta( $id, 'ceske-sluzby-xml-feed-vynechano', true );
     if ( $kategorie_vynechano ) {
       $columns .= '<span style="margin-left: 10px; color: red; font-weight: bold;">X</span>';
     } elseif ( $kategorie_feed_vynechano ) {
@@ -1417,7 +1509,7 @@ function ceske_sluzby_xml_kategorie_sloupec( $columns, $column, $id ) {
       $title .= '"';
       $columns .= '<span style="margin-left: 10px; color: red;"' . $title . '>x</span>';
     }
-    $stav_produktu = get_woocommerce_term_meta( $id, 'ceske-sluzby-xml-stav-produktu', true );
+    $stav_produktu = ceske_sluzby_get_term_meta( $id, 'ceske-sluzby-xml-stav-produktu', true );
     if ( ! empty( $stav_produktu ) ) {
       if ( $stav_produktu == 'used' ) {
         $stav_produktu_hodnota = 'Použité (bazar)';
@@ -1426,7 +1518,7 @@ function ceske_sluzby_xml_kategorie_sloupec( $columns, $column, $id ) {
       }
       $columns .= '<br />' . $stav_produktu_hodnota;
     }
-    $erotika = get_woocommerce_term_meta( $id, 'ceske-sluzby-xml-erotika', true );
+    $erotika = ceske_sluzby_get_term_meta( $id, 'ceske-sluzby-xml-erotika', true );
     if ( $erotika ) {
       if ( $erotika == 'yes' ) {
         $erotika_hodnota = 'Erotický obsah';
@@ -1588,15 +1680,16 @@ function ceske_sluzby_load_admin_scripts() {
   $screen_id = $screen ? $screen->id : '';
   $predobjednavka = get_option( 'wc_ceske_sluzby_preorder-aktivace' );
   $aktivace_eet = get_option( 'wc_ceske_sluzby_dalsi_nastaveni_eet-aktivace' );
-  if ( ( in_array( $screen_id, array( 'product', 'edit-product' ) ) && $predobjednavka == "yes" ) || $screen_id == 'shop_order' ) {
+  if ( ( in_array( $screen_id, array( 'product', 'edit-product' ), true ) && $predobjednavka == "yes" ) || ceske_sluzby_is_order_admin_screen( $screen ) ) {
     wp_register_script( 'wc-admin-ceske-sluzby', untrailingslashit( plugins_url( '/', __FILE__ ) ) . '/js/ceske-sluzby-admin.js', array( 'jquery-ui-datepicker' ), CS_VERSION );
     wp_enqueue_script( 'wc-admin-ceske-sluzby' );
   }
-  if ( in_array( $screen_id, array( 'woocommerce_page_wc-settings' ) ) && $aktivace_eet == "yes" ) {
+  if ( in_array( $screen_id, array( 'woocommerce_page_wc-settings' ), true ) && $aktivace_eet == "yes" ) {
     if ( ! did_action( 'wp_enqueue_media' ) ) {
       wp_enqueue_media();
     } 
-    wp_register_script( 'wc-admin-ceske-sluzby-upload-button', untrailingslashit( plugins_url( '/', __FILE__ ) ) . '/js/ceske-sluzby-upload-button-admin.js', array( 'jquery' ), CS_VERSION );
+    wp_register_script( 'wc-admin-ceske-sluzby-upload-button', untrailingslashit( plugins_url( '/', __FILE__ ) ) . '/js/ceske-sluzby-upload-button-admin.js', array( 'jquery', 'wp-i18n' ), CS_VERSION );
+    wp_set_script_translations( 'wc-admin-ceske-sluzby-upload-button', 'ceske-sluzby', plugin_dir_path( __FILE__ ) . 'languages' );
     wp_enqueue_script( 'wc-admin-ceske-sluzby-upload-button' );
   }
 }

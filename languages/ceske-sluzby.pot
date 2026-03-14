@@ -1,0 +1,336 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-14 03:35+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ceske-sluzby.php:474
+#, php-format
+msgid ""
+"Seznam poboček pro dopravu %s je momentálně nedostupný. Zvolte prosím jiný "
+"způsob dopravy nebo opakujte pokus později."
+msgstr ""
+
+#: ceske-sluzby.php:526
+msgid "Uloženka"
+msgstr ""
+
+#: ceske-sluzby.php:528
+msgid "Uloženka: výběr pobočky"
+msgstr ""
+
+#: ceske-sluzby.php:532 ceske-sluzby.php:569 ceske-sluzby.php:664
+#: ceske-sluzby.php:701
+msgid "Vyberte pobočku"
+msgstr ""
+
+#: ceske-sluzby.php:570
+msgid ""
+"Pokud chcete doručit zboží prostřednictvím Uloženky, zvolte prosím pobočku."
+msgstr ""
+
+#: ceske-sluzby.php:658
+msgid "DPD Pickup"
+msgstr ""
+
+#: ceske-sluzby.php:660
+msgid "DPD Pickup: výběr pobočky"
+msgstr ""
+
+#: ceske-sluzby.php:702
+msgid ""
+"Pokud chcete doručit zboží prostřednictvím DPD Pickup, zvolte prosím pobočku."
+msgstr ""
+
+#: ceske-sluzby.php:767
+msgid "Zásilkovna"
+msgstr ""
+
+#: ceske-sluzby.php:769
+msgid "Zvolit pobočku"
+msgstr ""
+
+#: ceske-sluzby.php:770
+msgid "Pobočka:"
+msgstr ""
+
+#: ceske-sluzby.php:772
+msgid "Zatím nevybráno"
+msgstr ""
+
+#: ceske-sluzby.php:804
+msgid ""
+"Pokud chcete doručit zboží prostřednictvím Zásilkovny, zvolte prosím pobočku."
+msgstr ""
+
+#: ceske-sluzby.php:2178
+msgid "On-hold"
+msgstr ""
+
+#: ceske-sluzby.php:2187 ceske-sluzby.php:2197
+msgid "Complete"
+msgstr ""
+
+#: includes/class-ceske-sluzby-blocks.php:75
+#, php-format
+msgid "Doplňte prosím výdejní místo pro dopravu %s."
+msgstr ""
+
+#: includes/class-ceske-sluzby-blocks.php:84
+#, php-format
+msgid "Hodnota pole \"%s\" je příliš krátká."
+msgstr ""
+
+#: includes/class-ceske-sluzby-blocks.php:174
+msgid "Uloženka: výdejní místo"
+msgstr ""
+
+#: includes/class-ceske-sluzby-blocks.php:178
+msgid "DPD Pickup: výdejní místo nebo box"
+msgstr ""
+
+#: includes/class-ceske-sluzby-blocks.php:181
+msgid "Zásilkovna: výdejní místo nebo Z-BOX"
+msgstr ""
+
+#: includes/class-ceske-sluzby-blocks.php:186
+msgid "Zadejte název vybrané pobočky Uloženky"
+msgstr ""
+
+#: includes/class-ceske-sluzby-blocks.php:190
+msgid "Zadejte název vybraného výdejního místa DPD"
+msgstr ""
+
+#: includes/class-ceske-sluzby-blocks.php:193
+msgid "Vyberte výdejní místo pomocí tlačítka nebo doplňte název ručně"
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:19
+#: includes/class-ceske-sluzby-compatibility.php:20
+#: includes/class-ceske-sluzby-compatibility.php:30
+msgid "České služby: kompatibilita"
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:32
+msgid ""
+"Přehled aktuálního stavu integrací, zdrojů a blokového checkoutu. Plná "
+"deklarace kompatibility Cart and Checkout Blocks zůstává vypnutá, dokud "
+"nebudou migrovány i zbývající klasické checkout hooky."
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:113
+msgid ""
+"Souhlas pro Heureku je stále vykreslován pouze přes klasické checkout hooky."
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:114
+msgid ""
+"Uloženka a DPD stále v klasickém checkoutu spoléhají na starší zdroje pickup "
+"pointů."
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:115
+msgid ""
+"Plugin zatím stále deklaruje Cart and Checkout Blocks kompatibilitu jako "
+"false, aby ji nepřehlašoval předčasně."
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:135
+msgid "Aktuální"
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:136
+msgid "Hostovaný Packeta widget plus dedikované Checkout Block pole."
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:141
+msgid ""
+"Packeta oznámila ukončení zastaralých verzí widgetu 10. února 2025; plugin "
+"proto používá aktuální hostovaný vstupní bod widgetu místo starších "
+"verzovaných embedů."
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:142
+msgid ""
+"Checkout Blocks nyní mají provider-specific pickup-point pole a při "
+"vyplněném API klíči i tlačítko pro otevření Packeta pickeru."
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:150
+msgid "Legacy"
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:151
+msgid "Legacy transportservices branch feed s bezpečným checkout fallbackem."
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:156
+msgid ""
+"Ulozenka.cz zveřejnila 7. dubna 2025 postupné ukončení portálu, takže "
+"stávající zdroj poboček je potřeba považovat za legacy integraci."
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:157
+msgid ""
+"Checkout flow nyní degraduje bezpečně i ve chvíli, kdy seznam poboček z "
+"externího zdroje není dostupný."
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:165
+msgid "Přechodné"
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:166
+msgid ""
+"Legacy branch feed v klasickém checkoutu plus dedikované Checkout Block pole."
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:171
+msgid ""
+"DPD aktuálně propaguje Pickup parcelshopy a boxy přes současné stránky "
+"Pickup sítě."
+msgstr ""
+
+#: includes/class-ceske-sluzby-compatibility.php:172
+msgid ""
+"Pro plnou paritu plugin ještě potřebuje navazující migraci z legacy feedu na "
+"oficiální DPD Pickup zdroj."
+msgstr ""
+
+#: js/ceske-sluzby-blocks.js:17
+msgid ""
+"Widget Zásilkovny není momentálně dostupný. Výdejní místo doplňte ručně."
+msgstr ""
+
+#: js/ceske-sluzby-blocks.js:63
+msgid "Zvolit pobočku Zásilkovny"
+msgstr ""
+
+#: js/ceske-sluzby-blocks.js:72
+msgid ""
+"Tlačítko otevře widget Zásilkovny a vybranou pobočku automaticky doplní do "
+"pole."
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:59
+msgid "Aktivní v pluginu"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:60
+msgid "Ano"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:60
+msgid "Ne"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:61
+msgid "API / klíč"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:62
+msgid "Nastaveno"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:62
+msgid "Nenastaveno"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:82
+msgid "Oficiální zdroj"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:90
+msgid "Nastavení pluginu"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:134
+msgid "Nepodařilo se načíst data kompatibility."
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:148
+msgid "Načítám kompatibilitní report…"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:176
+msgid "Prostředí"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:183
+msgid "WordPress"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:189
+msgid "WooCommerce"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:195
+msgid "PHP"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:201
+msgid "React root API"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:202
+msgid "createRoot k dispozici"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:202 js/ceske-sluzby-compatibility.js:208
+msgid "Nedostupné"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:207
+msgid "Checkout fields API"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:208
+msgid "K dispozici"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:215
+msgid ""
+"Checkout Blocks podpora je nyní částečná: pickup-point pole jsou "
+"registrovaná, ale plná deklarace kompatibility zůstává záměrně vypnutá."
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:233
+msgid "WooCommerce Additional Checkout Fields reference"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:243
+msgid "Externí integrace"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:245
+msgid "Filtrovat poskytovatele"
+msgstr ""
+
+#: js/ceske-sluzby-compatibility.js:248
+msgid "např. Packeta, DPD…"
+msgstr ""
+
+#: js/ceske-sluzby-upload-button-admin.js:9
+msgid "Zvolit certifikát"
+msgstr ""
+
+#: js/ceske-sluzby-upload-button-admin.js:14
+msgid "Použít certifikát"
+msgstr ""
+
+#: js/ceske-sluzby-upload-button-admin.js:27
+msgid "Nahrát certifikát"
+msgstr ""

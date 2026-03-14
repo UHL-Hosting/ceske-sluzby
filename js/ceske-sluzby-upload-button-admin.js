@@ -1,14 +1,17 @@
-jQuery(function($){
+( function( $, wp ) {
+  var __ = wp.i18n.__;
+
+  jQuery(function($){
   $('body').on('click', '.ceske_sluzby_upload_button', function(e){
     e.preventDefault();
     var button = $(this),
     custom_uploader = wp.media({
-      title: 'Zvolit certifikát',
+      title: __( 'Zvolit certifikát', 'ceske-sluzby' ),
       library: {
         type: 'application/x-pkcs12'
       },
       button: {
-        text: 'Použít certifikát'
+        text: __( 'Použít certifikát', 'ceske-sluzby' )
       },
       multiple: false
     }).on('select', function() { 
@@ -21,9 +24,10 @@ jQuery(function($){
   });
   $('body').on('click', '.ceske_sluzby_remove_button', function(){
     $('.nazev-souboru').hide();
-    $(this).hide().prev().val('').prev().addClass('button').html('Nahrát certifikát');
+    $(this).hide().prev().val('').prev().addClass('button').html( __( 'Nahrát certifikát', 'ceske-sluzby' ) );
     $(this).hide().prev().val('');
     $('.ceske_sluzby_upload_button').show();
     return false;
   });
 });
+}( jQuery, window.wp ) );
