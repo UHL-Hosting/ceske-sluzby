@@ -1,9 +1,9 @@
 === České služby pro WordPress ===
 Donate link: http://www.separatista.net
 Tags: Heureka.cz, Sklik.cz, WooCommerce, Ulozenka.cz, Srovname.cz, DPD, Zbozi.cz, Pricemania.cz, Google
-Requires at least: 4.0
-Tested up to: 4.7.1
-Stable tag: 0.5
+Requires at least: 6.6
+Tested up to: 6.8
+Stable tag: 0.7.0
 
 Implementace různých českých služeb do WordPressu (zejména pro WooCommerce)
 
@@ -22,7 +22,7 @@ Můžete ji sponzorovat a urychlit její implementaci.
 
 Plugin už sice bez problémů používá více než 1500 různých webů, ale berte ho prosím stále jako testovací verzi.
 
-Pro správnou funkčnost vyžaduje WooCommerce verzi 2.2.x.
+Pro správnou funkčnost vyžaduje WooCommerce verzi 8.6+ (testováno do 10.0).
 
 Plugin zatím podporuje následující služby a pluginy:
 
@@ -57,6 +57,13 @@ Fórum podpory: http://www.separatista.net/forum
 Aktivovat plugin a přejít do menu WooCommerce - Nastavení - záložka České služby.
 
 == Changelog ==
+
+= 0.7.0 =
+* Kompatibilita s moderním prostředím WordPress/WooCommerce.
+* Přidána deklarace kompatibility s WooCommerce HPOS (custom order tables).
+* Výslovně deklarována nekompatibilita s Cart/Checkout Blocks (plugin aktuálně používá klasický checkout flow).
+* Nahrazení zastaralého `is_ajax()` za `wp_doing_ajax()` pro stabilnější kompatibilitu.
+* Oprava podpisu metody `SoapClient::__doRequest()` pro PHP 8+ (EET integrace).
 
 = 0.6 =
 * WooCommerce: Elektronická evidence tržeb (EET)

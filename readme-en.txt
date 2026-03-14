@@ -1,9 +1,9 @@
 === Czech services for WordPress ===
 Donate link: http://www.separatista.net
 Tags: Heureka.cz, Sklik.cz, WooCommerce, Ulozenka.cz, Srovname.cz, DPD, Zbozi.cz, Pricemania.cz, Google
-Requires at least: 4.0
-Tested up to: 4.7.1
-Stable tag: 0.5
+Requires at least: 6.6
+Tested up to: 6.8
+Stable tag: 0.7.0
 
 Implementation of various Czech services in WordPress (especially for WooCommerce)
 
@@ -22,7 +22,7 @@ You can sponsor it and speed up its implementation.
 
 The plugin already uses more than 1500 different websites without any problems, but please always take it as a trial version.
 
-WooCommerce requires version 2.2.x for proper functionality.
+WooCommerce requires version 8.6+ for proper functionality (tested up to 10.0).
 
 The plugin currently supports the following services and plugins:
 

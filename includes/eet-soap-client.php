@@ -1,6 +1,6 @@
 <?php
 class Ceske_Sluzby_EET_SoapClient extends SoapClient { 
-  public function __doRequest( $request, $location, $action, $version, $one_way = 0 ) {
+  public function __doRequest( string $request, string $location, string $action, int $version, bool $oneWay = false, ?string $uriParserClass = null ): ?string {
     $heslo = "eet";
     // http://www.etrzby.cz/assets/cs/prilohy/EET_CA1_Playground_v1.zip
     $local_cert = dirname( dirname( __FILE__ ) ) . "/src/eet/EET_CA1_Playground-CZ1212121218.p12";
@@ -34,7 +34,7 @@ class Ceske_Sluzby_EET_SoapClient extends SoapClient {
       $wsSoap->attachTokentoSig( $token );
       $request = $wsSoap->saveXML();
     }
-    $result = parent::__doRequest( $request, $location, $action, $version, $one_way ); 
+    $result = parent::__doRequest( $request, $location, $action, $version, $oneWay, $uriParserClass ); 
     return $result; 
   } 
 }

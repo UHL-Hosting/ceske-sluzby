@@ -3,14 +3,28 @@
  * Plugin Name: České služby pro WordPress
  * Plugin URI: https://www.separatista.net
  * Description: Implementace různých českých služeb do WordPressu.
- * Version: 0.6-alpha
+ * Version: 0.7.0
  * Author: Pavel Hejn
  * Author URI: https://www.separatista.net
  * GitHub Plugin URI: pavelevap/ceske-sluzby 
  * License: GPL2
+ * Requires at least: 6.6
+ * Requires PHP: 7.4
+ * WC requires at least: 8.6
+ * WC tested up to: 10.0
  */
 
-define( 'CS_VERSION', '0.6-alpha' );
+define( 'CS_VERSION', '0.7.0' );
+
+add_action(
+  'before_woocommerce_init',
+  function() {
+    if ( class_exists( '\\Automattic\\WooCommerce\\Utilities\\FeaturesUtil' ) ) {
+      \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+      \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, false );
+    }
+  }
+);
 
 $language = get_locale();
 if ( $language == "sk_SK" ) {
@@ -422,7 +436,7 @@ function ceske_sluzby_doprava_ulozenka( $methods ) {
 }
 
 function ceske_sluzby_ulozenka_zobrazit_pobocky() {
-  if ( is_ajax() ) {
+  if ( wp_doing_ajax() ) {
     // Do budoucna možná použít spíše woocommerce_checkout_update_order_review
     $ulozenka_branches = '';
     if ( isset( $_POST['post_data'] ) ) {
@@ -542,7 +556,7 @@ function ceske_sluzby_doprava_dpd_parcelshop( $methods ) {
 }
 
 function ceske_sluzby_dpd_parcelshop_zobrazit_pobocky() {
-  if ( is_ajax() ) {
+  if ( wp_doing_ajax() ) {
     $dpd_parcelshop_branches = '';
     if ( isset( $_POST['post_data'] ) ) {
       parse_str( $_POST['post_data'], $post_data );
@@ -659,7 +673,7 @@ function ceske_sluzby_doprava_zasilkovna( $methods ) {
 }
 
 function ceske_sluzby_zasilkovna_zobrazit_pobocky() {
-  if ( is_ajax() ) {
+  if ( wp_doing_ajax() ) {
     $zasilkovna_branches = '';
     if ( isset( $_POST['post_data'] ) ) {
       parse_str( $_POST['post_data'], $post_data );
