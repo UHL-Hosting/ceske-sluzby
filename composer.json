@@ -1,0 +1,14 @@
+{
+    "name": "pavelevap/ceske-sluzby",
+    "description": "Implementace různých českých služeb do WordPressu.",
+    "require": {
+        "heureka/overeno-zakazniky": "^4.0"
+    },
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Pavel Hejn",
+            "email": "pavel@separatista.net"
+        }
+    ]
+}

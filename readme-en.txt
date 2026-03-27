@@ -2,9 +2,9 @@
 Donate link: http://www.separatista.net
 Tags: Heureka.cz, Sklik.cz, WooCommerce, Ulozenka.cz, Srovname.cz, DPD, Zbozi.cz, Pricemania.cz, Google
 Requires at least: 6.6
-Requires PHP: 7.4
+Requires PHP: 8.1
 Tested up to: 6.9
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 
 Implementation of various Czech services in WordPress (especially for WooCommerce)
 
@@ -37,7 +37,6 @@ The plugin currently supports the following services and plugins:
 * WooCommerce: Pre-orders
 * WooCommerce: Delivery time
 * WooCommerce: Shipment tracking
-* WooCommerce: Electronic Sales Records (EET)
 * WooCommerce: XML feeds (Heureka.cz and Heureka.sk, Zbozi.cz, Google, Pricemania.cz and Pricemania.sk)
 * WooCommerce: Basic variant and property support for XML feeds (automatic parameter generation)
 * WooCommerce: Continuously generate a large number of products into an .xml file
@@ -59,6 +58,15 @@ Activate the plugin and go to the menu WooCommerce - Settings - Czech Services t
 
 == Changelog ==
 
+= 1.1.0 =
+* Full compatibility with WooCommerce Cart and Checkout Blocks.
+* Integration with WordPress 7.0 "Abilities API" for AI agent support.
+* Update Heureka PHP API to version 4.x.
+* Support for advanced Zboží.cz conversion tracking via secret key.
+* Improved XML feed for Google Merchant Center with category support.
+* Refactoring for PHP 8.x and WooCommerce 10.x.
+* Removal of inactive EET (Electronic Sales Records) service.
+
 = 1.0.0 =
 * First stable major release of the plugin.
 * Bumped the plugin version to `1.0.0` and refreshed release metadata for the current WordPress and WooCommerce baseline.
@@ -71,7 +79,7 @@ Activate the plugin and go to the menu WooCommerce - Settings - Czech Services t
 = 0.8.0 =
 * Replaced deprecated WooCommerce term meta helpers with the core WordPress term meta API.
 * Updated order admin integrations to load correctly on both classic WooCommerce order screens and HPOS screens.
-* EET and shipment tracking meta boxes now register on the current WooCommerce order editor as well.
+* Shipment tracking meta boxes now register on the current WooCommerce order editor as well.
 * Plugin admin scripts now load on the modern WooCommerce order admin screen.
 * Added a staged modernization roadmap in `docs/compatibility-bump-plan.md`.
 
@@ -83,11 +91,6 @@ Activate the plugin and go to the menu WooCommerce - Settings - Czech Services t
 * Fixed the `SoapClient::__doRequest()` method signature for PHP 8+.
 
 = 0.6 =
-* WooCommerce: Electronic Sales Records (EET)
- * Sending electronic receipts to the financial administration (possibility to cancel the entire receipt or only partially).
- * Possibility to set the receipt format (eg part of the email) and conditions for sending (completed order) at the e-shop level and according to payment methods.
- * Automatic sending of receipts for paid or completed orders (according to settings).
- * Easy display of receipts in the order overview, easy uploading of your own certificate.
 * WooCommerce: Verified by customers
  * If the API key is not set correctly, the ordering process will not be interrupted.
  * Any error will be saved in the form of a note on the relevant order.

@@ -62,9 +62,20 @@
       button.className = 'button button-secondary ceske-sluzby-blocks__packeta-button';
       button.textContent = __( 'Zvolit pobočku Zásilkovny', 'ceske-sluzby' );
       button.addEventListener( 'click', function() {
-        showPacketaWidget(
-          document.querySelector( 'input[data-ceske-sluzby-pickup-provider="zasilkovna"]' ) || input
-        );
+        if ( typeof Packeta !== 'undefined' && Packeta.Widget && Packeta.Widget.pick ) {
+           showPacketaWidget(
+             document.querySelector( 'input[data-ceske-sluzby-pickup-provider="zasilkovna"]' ) || input
+           );
+        } else {
+           var script = document.createElement('script');
+           script.src = 'https://widget.packeta.com/www/js/library.js';
+           script.onload = function() {
+             showPacketaWidget(
+               document.querySelector( 'input[data-ceske-sluzby-pickup-provider="zasilkovna"]' ) || input
+             );
+           };
+           document.head.appendChild(script);
+        }
       } );
 
       hint = document.createElement( 'p' );
@@ -94,7 +105,36 @@
   document.addEventListener( 'DOMContentLoaded', enhancePacketaField );
   window.addEventListener( 'load', enhancePacketaField );
 
-  new MutationObserver( enhancePacketaField ).observe( document.body, {
+  function handleHeurekaSouhlas() {
+    var config = window.ceskeSluzbyBlocks || {};
+    if ( ! config.heurekaSouhlas || ! config.heurekaSouhlasFieldId ) {
+      return;
+    }
+
+    var selector = 'input[id$="' + config.heurekaSouhlasFieldId + '"]';
+    var input = document.querySelector( selector );
+    if ( ! input ) {
+      return;
+    }
+
+    // Default to checked if opt-out behavior is expected for 'souhlas_optout'
+    if ( config.heurekaSouhlas === 'souhlas_optout' && ! input.dataset.ceskeSluzbyInitialized ) {
+      if ( ! input.checked ) {
+        input.click();
+      }
+      input.dataset.ceskeSluzbyInitialized = 'true';
+    }
+  }
+
+  function runEnhancements() {
+    enhancePacketaField();
+    handleHeurekaSouhlas();
+  }
+
+  document.addEventListener( 'DOMContentLoaded', runEnhancements );
+  window.addEventListener( 'load', runEnhancements );
+
+  new MutationObserver( runEnhancements ).observe( document.body, {
     childList: true,
     subtree: true,
   } );

@@ -2,35 +2,50 @@
 // http://calebserna.com/how-to-add-multiple-local-pickup-locations-to-woocommerce/
 class WC_Shipping_Ceske_Sluzby_DPD_ParcelShop extends WC_Shipping_Method {
 
-  public function __construct() {
+  public function __construct( $instance_id = 0 ) {
      $this->id = 'ceske_sluzby_dpd_parcelshop';
+     $this->instance_id = absint( $instance_id );
      $this->method_title = 'DPD ParcelShop';
      $this->method_description = 'Základní možnosti nastavení. Funguje samostatně nebo jako doplňkové pobočky pro Uloženku (v tomto případě je vhodné <a href="' . site_url() . '/wp-admin/admin.php?page=wc-settings&tab=shipping&section=wc_shipping_ceske_sluzby_ulozenka">zadat</a> ID obchodu).';
-     $this->title = $this->get_option( 'dpd_parcelshop_nazev' );
-     $this->enabled = $this->get_option( 'enabled' );
+     $this->supports = array(
+       'shipping-zones',
+       'settings',
+       'instance-settings',
+       'instance-settings-modal',
+     );
      $this->init();
    }
  
   function init() {
     $this->init_form_fields();
     $this->init_settings();
+    $this->init_instance_form_fields();
+    $this->init_instance_settings();
+    $this->title = $this->get_option( 'dpd_parcelshop_nazev' );
+    $this->enabled = $this->get_option( 'enabled' );
     add_action( 'woocommerce_update_options_shipping_' . $this->id, array( $this, 'process_admin_options' ) );
   }
  
   public function calculate_shipping( $package = array() ) {
-    $zeme = WC()->customer->get_shipping_country();
+    $zeme = isset( $package['destination']['country'] ) ? $package['destination']['country'] : WC()->customer->get_shipping_country();
+    $cena = 0;
     if ( $zeme == "CZ" ) { $cena = $this->get_option( 'dpd_parcelshop_zakladni-cena' ); }
     if ( $zeme == "SK" ) { $cena = $this->get_option( 'dpd_parcelshop_zakladni-cena-slovensko' ); }
     
     $rate = array(
-      'id' => $this->id,
+      'id' => $this->get_rate_id(),
       'label' => $this->title,
-      'cost' => $cena
+      'cost' => $cena,
+      'package' => $package,
     );
     $this->add_rate( $rate );
   }
       
   public function init_form_fields() {
+    $this->form_fields = array();
+  }
+
+  public function init_instance_form_fields() {
     $zakladni = array(
       'enabled' => array(
 				'title'   => 'Povolit',
@@ -84,9 +99,9 @@ class WC_Shipping_Ceske_Sluzby_DPD_ParcelShop extends WC_Shipping_Method {
 
     $zvolene_zeme = WC()->countries->get_shipping_countries();
     if ( array_key_exists( 'SK', $zvolene_zeme ) ) {
-      $this->form_fields = array_merge( $zakladni, $slovensko );
+      $this->instance_form_fields = array_merge( $zakladni, $slovensko );
     } else {
-      $this->form_fields = $zakladni;
+      $this->instance_form_fields = $zakladni;
     }
   }      
 }

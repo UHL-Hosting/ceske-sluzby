@@ -2,9 +2,9 @@
 Donate link: http://www.separatista.net
 Tags: Heureka.cz, Sklik.cz, WooCommerce, Ulozenka.cz, Srovname.cz, DPD, Zbozi.cz, Pricemania.cz, Google
 Requires at least: 6.6
-Requires PHP: 7.4
+Requires PHP: 8.1
 Tested up to: 6.9
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 
 Implementace různých českých služeb do WordPressu (zejména pro WooCommerce)
 
@@ -37,7 +37,6 @@ Plugin zatím podporuje následující služby a pluginy:
 * WooCommerce: Předobjednávky
 * WooCommerce: Dodací doba
 * WooCommerce: Sledování zásilek
-* WooCommerce: Elektronická evidence tržeb (EET)
 * WooCommerce: XML feedy (Heureka.cz a Heureka.sk, Zbozi.cz, Google, Pricemania.cz a Pricemania.sk)
 * WooCommerce: Základní podpora variant a vlastností pro XML feedy (automatické generování parametrů)
 * WooCommerce: Průběžné generování velkého množství produktů do .xml souboru
@@ -59,6 +58,15 @@ Aktivovat plugin a přejít do menu WooCommerce - Nastavení - záložka České
 
 == Changelog ==
 
+= 1.1.0 =
+* Plná kompatibilita s WooCommerce Cart and Checkout Blocks.
+* Integrace s WordPress 7.0 "Abilities API" pro podporu AI agentů.
+* Aktualizace Heureka PHP API na verzi 4.x.
+* Podpora pro pokročilé měření konverzí Zboží.cz pomocí tajného klíče.
+* Vylepšený XML feed pro Google Merchant Center s podporou kategorií.
+* Refaktorování pro PHP 8.x a WooCommerce 10.x.
+* Odstranění neaktivní služby EET (Elektronická evidence tržeb).
+
 = 1.0.0 =
 * První stabilní major release pluginu.
 * Bump verze pluginu na `1.0.0` a aktualizace release metadat pro současný WordPress a WooCommerce baseline.
@@ -71,7 +79,7 @@ Aktivovat plugin a přejít do menu WooCommerce - Nastavení - záložka České
 = 0.8.0 =
 * Nahrazení zastaralých WooCommerce term meta funkcí (`get_woocommerce_term_meta` a souvisejících) za core WordPress term meta API.
 * Úprava administrace objednávek pro kompatibilitu s WooCommerce HPOS i klasickými order screeny.
-* Meta boxy a indikátory EET i sledování zásilek se nyní načítají na správných order screens včetně HPOS.
+* Meta boxy a indikátory sledování zásilek se nyní načítají na správných order screens včetně HPOS.
 * Admin skripty pluginu se načítají i na moderní WooCommerce order administraci.
 * Přidán interní plán další kompatibility a modernizace v `docs/compatibility-bump-plan.md`.
 
@@ -80,14 +88,8 @@ Aktivovat plugin a přejít do menu WooCommerce - Nastavení - záložka České
 * Přidána deklarace kompatibility s WooCommerce HPOS (custom order tables).
 * Výslovně deklarována nekompatibilita s Cart/Checkout Blocks (plugin aktuálně používá klasický checkout flow).
 * Nahrazení zastaralého `is_ajax()` za `wp_doing_ajax()` pro stabilnější kompatibilitu.
-* Oprava podpisu metody `SoapClient::__doRequest()` pro PHP 8+ (EET integrace).
 
 = 0.6 =
-* WooCommerce: Elektronická evidence tržeb (EET)
- * Odesílání elektronických účtenek finanční správě (možnost stornovat celou účtenku nebo jen částečně).
- * Možnost nastavení formátu účtenky (např. součást emailu) a podmínek pro odeslání (dokončená objednávka) na úrovni eshopu i podle platebních metod.
- * Automatické odesílání účtenek pro zaplacené či dokončené objednávky (podle nastavení).
- * Jednoduché zobrazení účtenek v přehledu objednávek, snadné nahrání vlastního certifikátu.   
 * WooCommerce: Ověřeno zákazníky
  * Pokud není správně nastaven API klíč, tak nebude přerušen objednávací proces.
  * Případná chyba bude uložena v podobě poznámky k příslušné objednávce.

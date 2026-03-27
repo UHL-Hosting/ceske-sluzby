@@ -122,26 +122,6 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
                 'default' => ''
               );
             }
-            if ( $moznost_nastaveni == 'eet_format' && array_key_exists( 'eet_format', $options ) ) {
-              $form_fields['ceske_sluzby_eet_format_' . $gateway_id ] = array(
-                'title' => 'EET: Formát účtenky (' . $gateway->title . ')',
-                'type' => 'select',
-                'options' => self::moznosti_nastaveni( 'wc_ceske_sluzby_eet_format' ),
-                'css' => 'width: 300px',
-                'default' => '',
-                'description' => 'Formát elektronické účtenky. ' . self::zobrazit_zvolene_nastaveni( 'wc_ceske_sluzby_eet_format' ),
-              );
-            }
-            if ( in_array( 'eet_podminka', $moznosti_nastaveni ) && array_key_exists( 'eet_podminka', $options ) ) {
-              $form_fields['ceske_sluzby_eet_podminka_' . $gateway_id ] = array(
-                'title' => 'EET: Podmínka odeslání (' . $gateway->title . ')',
-                'type' => 'select',
-                'options' => self::moznosti_nastaveni( 'wc_ceske_sluzby_eet_podminka' ),
-                'css' => 'width: 300px',
-                'default' => '',
-                'description' => 'Podmínka pro automatické odeslání elektronické účtenky. ' . self::zobrazit_zvolene_nastaveni( 'wc_ceske_sluzby_eet_podminka' ),
-              );
-            }
           }
         }
       }
@@ -155,7 +135,6 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
     $aktivace_xml = get_option( 'wc_ceske_sluzby_heureka_xml_feed-aktivace' );
     $aktivace_certifikatu = get_option( 'wc_ceske_sluzby_heureka_certifikat_spokojenosti-aktivace' );
     $aktivace_dodaci_doby = get_option( 'wc_ceske_sluzby_dalsi_nastaveni_dodaci_doba-aktivace' );
-    $aktivace_eet = get_option( 'wc_ceske_sluzby_dalsi_nastaveni_eet-aktivace' );
     $sections = array(
       '' => 'Základní nastavení'
     );
@@ -168,9 +147,6 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
     }
     if ( $aktivace_dodaci_doby == "yes" ) {
       $sections['dodaci-doba'] = 'Dodací doba';
-    }
-    if ( $aktivace_eet == "yes" ) {
-      $sections['eet'] = 'EET';
     }
     if ( empty( $sections ) ) {
       return;
@@ -267,26 +243,6 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
 
   public static function moznosti_nastaveni( $settings ) {
     $options = array();
-    if ( $settings == 'wc_ceske_sluzby_eet_format' ) {
-      $options = array(
-        '' => '- Vyberte -',
-        'email-completed' => 'Doplnit do emailu (dokončená objednávka)',
-        'email-processing' => 'Doplnit do emailu (zaplacená objednávka)',
-        'email-faktura' => 'Doplnit do emailu (faktura)',
-      );
-      // WooCommerce PDF Invoices & Packing Slips
-      if ( class_exists( 'WooCommerce_PDF_Invoices' ) ) {
-        $options['faktura-plugin'] = 'Doplnit v rámci faktury (externí plugin)';
-      }
-    }
-    if ( $settings == 'wc_ceske_sluzby_eet_podminka' ) {
-      $options = array(
-        '' => '- Vyberte -',
-        'manual' => 'Odesílat pouze ručně',
-        'dokonceno' => 'Dokončená objednávka',
-        'platba' => 'Provedená platba'
-      );
-    }
     if ( $settings == 'wc_ceske_sluzby_dalsi_nastaveni_zaokrouhleni' ) {
       $options = array(
         '' => '- Vyberte -',
@@ -299,14 +255,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
   public static function dostupne_nastaveni( $type ) {
     $options = array();
     $reverse_type = '';
-    $aktivace_eet = get_option( 'wc_ceske_sluzby_dalsi_nastaveni_eet-aktivace' );
     if ( $type == 'pokladna' || $type == 'pokladna_doprava' ) {
-      if ( $aktivace_eet == "yes" ) {
-        $options = array(
-          'eet_format' => 'EET: Formát účtenky',
-          'eet_podminka' => 'EET: Podmínka odeslání'
-        );
-      }
       $options = array(
         'poplatek_platba' => 'Poplatek za platbu',
       );
@@ -425,26 +374,6 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
             'options' => self::moznosti_nastaveni( 'wc_ceske_sluzby_dalsi_nastaveni_zaokrouhleni' ),
             'default' => '',
             'description' => 'Automatické zaokrouhlení celkové částky objednávky. ' . self::zobrazit_zvolene_nastaveni( 'wc_ceske_sluzby_dalsi_nastaveni_zaokrouhleni' ),
-          );
-        }
-        if ( in_array( 'eet_format', $moznosti_nastaveni ) && array_key_exists( 'eet_format', $options ) ) {
-          $form_fields['ceske_sluzby_eet_format'] = array(
-            'title' => 'EET: Formát účtenky',
-            'type' => 'select',
-            'options' => self::moznosti_nastaveni( 'wc_ceske_sluzby_eet_format' ),
-            'css' => 'width: 300px',
-            'default' => '',
-            'description' => 'Formát elektronické účtenky. ' . self::zobrazit_zvolene_nastaveni( 'wc_ceske_sluzby_eet_format' ),
-          );
-        }
-        if ( in_array( 'eet_podminka', $moznosti_nastaveni ) && array_key_exists( 'eet_podminka', $options ) ) {
-          $form_fields['ceske_sluzby_eet_podminka'] = array(
-            'title' => 'EET: Podmínka odeslání',
-            'type' => 'select',
-            'options' => self::moznosti_nastaveni( 'wc_ceske_sluzby_eet_podminka' ),
-            'css' => 'width: 300px',
-            'default' => '',
-            'description' => 'Podmínka pro automatické odeslání elektronické účtenky. ' . self::zobrazit_zvolene_nastaveni( 'wc_ceske_sluzby_eet_podminka' ),
           );
         }
         $gateway->form_fields += $form_fields;
@@ -591,6 +520,13 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'css'   => 'width: 300px'
         ),
         array(
+          'title' => 'Tajný klíč',
+          'type' => 'password',
+          'desc' => 'Tajný klíč pro pokročilé měření konverzí naleznete v administraci Zboží.cz.',
+          'id'   => 'wc_ceske_sluzby_zbozi_konverze_tajny-klic',
+          'css'   => 'width: 300px'
+        ),
+        array(
           'type' => 'sectionend',
           'id' => 'wc_ceske_sluzby_zbozi_title'
         ),
@@ -668,12 +604,6 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'type' => 'checkbox',
           'desc' => 'Aktivovat možnost podrobného nastavení dodací doby, které bude dostupné <a href="' . admin_url(). 'admin.php?page=wc-settings&tab=ceske-sluzby&section=dodaci-doba">zde</a>.',
           'id' => 'wc_ceske_sluzby_dalsi_nastaveni_dodaci_doba-aktivace'
-        ),
-        array(
-          'title' => 'EET',
-          'type' => 'checkbox',
-          'desc' => 'Aktivovat možnost použití elektronické evidence tržeb, podrobné nastavení bude dostupné <a href="' . admin_url(). 'admin.php?page=wc-settings&tab=ceske-sluzby&section=eet">zde</a>.',
-          'id' => 'wc_ceske_sluzby_dalsi_nastaveni_eet-aktivace'
         ),
         array(
           'title' => 'Možnost změny objednávek pro dobírku',
@@ -1136,90 +1066,6 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
       );
     }
 
-    if ( 'eet' == $current_section ) {
-      $settings = array(
-        array(
-          'title' => 'Elektronická evidence tržeb (EET)',
-          'type' => 'title',
-          'desc' => 'Nastavení potřebných informací pro odesílání elektronických účtenek.
-                     Součástí pluginu je i <strong>testovací certifikát</strong>, který bude automaticky použit pokud bude zvoleno <strong>testovací prostředí</strong>.
-                     Pokud chcete pouze testovat, tak nemusíte vyplňovat žádné údaje, protože budou použity automaticky (např. DIČ <code>CZ1212121218</code>).
-                     V rámci testovacího režimu je možné účtenky následně mazat (nejsou oficiálně evidovány) a všechny mají stejné pořadové číslo (1).',
-          'id' => 'wc_ceske_sluzby_eet_title'
-        ),
-        array(
-          'title' => 'DIČ',
-          'type' => 'text',
-          'desc' => 'DIČ provozovatele obchodu.',
-          'id' => 'wc_ceske_sluzby_eet_dic',
-          'css' => 'width: 150px',
-        ),
-        array(
-          'title' => 'ID provozovny',
-          'type' => 'text',
-          'desc' => 'Identifikace provozovny (získáte v rámci registrace provozovny pro EET).',
-          'id' => 'wc_ceske_sluzby_eet_id_provozovna',
-          'css' => 'width: 100px',
-        ),
-        array(
-          'title' => 'ID pokladny',
-          'type' => 'text',
-          'desc' => 'Identifikace pokladního zařízení (můžete nastavit libovolně).',
-          'id' => 'wc_ceske_sluzby_eet_id_pokladna',
-          'css' => 'width: 100px',
-        ),
-        array(
-          'title' => 'Certifikát',
-          'type' => 'upload',
-          'upload_button' => 'Nahrát certifikát',
-          'remove_button' => 'Odstranit certifikát',
-          'desc' => 'Nastavení získaného certifikátu (soubor ve formátu .p12).',
-          'id' => 'wc_ceske_sluzby_eet_certifikat',
-        ),
-        array(
-          'title' => 'Heslo',
-          'type' => 'password',
-          'desc' => 'Heslo k certifikátu.',
-          'id' => 'wc_ceske_sluzby_eet_heslo',
-          'css' => 'width: 150px',
-        ),
-        array(
-          'title' => 'Prostředí',
-          'type' => 'select',
-          'desc_tip' => 'Nejdříve je vhodné celou funkci vyzkoušet na nějaké testovací objednávce.',
-          'id' => 'wc_ceske_sluzby_eet_prostredi',
-          'class' => 'wc-enhanced-select',
-          'options' => array(
-            'test' => 'Testovací',
-            'produkce' => 'Produkční',
-          ),
-          'default' => 'test',
-          'css' => 'width: 150px',
-        ),
-        array(
-          'title' => 'Formát účtenky',
-          'type' => 'select',
-          'id' => 'wc_ceske_sluzby_eet_format',
-          'options' => self::moznosti_nastaveni( 'wc_ceske_sluzby_eet_format' ),
-          'css' => 'width: 300px',
-          'default' => '',
-          'description' => 'Formát elektronické účtenky.',
-        ),
-        array(
-          'title' => 'Podmínka odeslání',
-          'type' => 'select',
-          'id' => 'wc_ceske_sluzby_eet_podminka',
-          'options' => self::moznosti_nastaveni( 'wc_ceske_sluzby_eet_podminka' ),
-          'css' => 'width: 300px',
-          'default' => '',
-          'description' => 'Podmínka pro automatické odeslání elektronické účtenky.',
-        ),
-        array(
-          'type' => 'sectionend',
-          'id' => 'wc_ceske_sluzby_eet_title'
-        )
-      );
-    }
     return $settings;
   }
 }
