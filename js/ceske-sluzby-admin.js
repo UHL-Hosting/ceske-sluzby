@@ -1,11 +1,23 @@
 jQuery( function( $ ) {
   // Datepicker pro předobjednávku.
   $( '.ceske_sluzby_xml_preorder_datum_field' ).each( function() {
-    var dates = $( this ).find( 'input' ).datepicker({
+    var $input = $( this ).find( 'input' );
+    $input.datepicker({
       defaultDate: '',
       dateFormat: 'yy-mm-dd',
       numberOfMonths: 1,
-      showButtonPanel: true
+      showButtonPanel: true,
+      onSelect: function() {
+        $( this ).nextAll( '.cancel_preorder' ).show();
+      }
+    });
+
+    $input.on( 'change', function() {
+      if ( $( this ).val() ) {
+        $( this ).nextAll( '.cancel_preorder' ).show();
+      } else {
+        $( this ).nextAll( '.cancel_preorder' ).hide();
+      }
     });
   });
 
@@ -13,7 +25,7 @@ jQuery( function( $ ) {
   $( '#woocommerce-product-data' ).on( 'click', '.cancel_preorder', function() {
     var $wrap = $( this ).closest( 'div, table' );
     $( this ).hide();
-    $wrap.find( '.ceske_sluzby_xml_preorder_datum_field' ).find( 'input' ).val('');
+    $wrap.find( '.ceske_sluzby_xml_preorder_datum_field' ).find( 'input' ).val('').trigger( 'change' );
     return false;
   });
 

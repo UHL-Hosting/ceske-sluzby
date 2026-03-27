@@ -489,7 +489,6 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
       $display_remove = 'inline-block';
       $display = 'none';
     }
-    $button = ' button">' . $upload_button;
     $nazev_souboru = basename( get_attached_file( $selected_value ) ); ?>
     <tr valign="top">
       <th scope="row" class="titledesc">
@@ -500,9 +499,9 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           <?php if ( ! empty( $nazev_souboru ) ) { ?>
             <span class="nazev-souboru" style="padding-right:10px;"><strong><?php echo $nazev_souboru; ?></strong></span>
           <?php } ?>
-          <a href="#" style="display:<?php echo $display; ?>" class="ceske_sluzby_upload_button<?php echo $button; ?></a>
+          <button type="button" style="display:<?php echo $display; ?>" class="ceske_sluzby_upload_button button"><?php echo $upload_button; ?></button>
           <input type="hidden" name="<?php echo $value['id']; ?>" id="<?php echo $value['id']; ?>" value="<?php echo $selected_value; ?>" />
-          <a href="#" class="ceske_sluzby_remove_button" style="font-size:13px;display:<?php echo $display_remove; ?>"><?php echo $remove_button; ?></a>
+          <button type="button" class="ceske_sluzby_remove_button button-link" style="font-size:13px;display:<?php echo $display_remove; ?>"><?php echo $remove_button; ?></button>
         </div>
         <?php echo $description; ?>
       </td>

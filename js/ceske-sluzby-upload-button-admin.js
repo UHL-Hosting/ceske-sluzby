@@ -22,11 +22,12 @@
       $( '.ceske_sluzby_upload_button').hide();
     }).open();
   });
-  $('body').on('click', '.ceske_sluzby_remove_button', function(){
+  $('body').on('click', '.ceske_sluzby_remove_button', function(e){
+    e.preventDefault();
     $('.nazev-souboru').hide();
-    $(this).hide().prev().val('').prev().addClass('button').html( __( 'Nahrát certifikát', 'ceske-sluzby' ) );
+    var $upload_button = $(this).parent().find('.ceske_sluzby_upload_button');
     $(this).hide().prev().val('');
-    $('.ceske_sluzby_upload_button').show();
+    $upload_button.show();
     return false;
   });
 });
