@@ -21,12 +21,18 @@ class Ceske_Sluzby_Blocks {
       'shipping_pattern' => '^ceske_sluzby_zasilkovna(?::[0-9]+)?$',
       'max_length' => 180,
     ),
+    'heureka_souhlas' => array(
+      'id' => 'ceske-sluzby/heureka-souhlas',
+      'meta_key' => 'ceske_sluzby_heureka_overeno_zakazniky_souhlas_blocks',
+      'max_length' => 10,
+    ),
   );
 
   public static function init() {
     add_action( 'woocommerce_init', array( __CLASS__, 'register_checkout_fields' ) );
     add_action( 'woocommerce_set_additional_field_value', array( __CLASS__, 'persist_checkout_field' ), 10, 4 );
     add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_checkout_assets' ) );
+    add_action( 'woocommerce_store_api_register_endpoint_data', array( __CLASS__, 'register_store_api_extensions' ) );
 
     foreach ( self::FIELD_DEFINITIONS as $provider => $definition ) {
       add_filter(
@@ -54,6 +60,9 @@ class Ceske_Sluzby_Blocks {
     }
 
     foreach ( self::FIELD_DEFINITIONS as $provider => $definition ) {
+      if ( $provider === 'heureka_souhlas' ) {
+        continue;
+      }
       $label = self::get_field_label( $provider );
 
       woocommerce_register_additional_checkout_field(
@@ -94,6 +103,28 @@ class Ceske_Sluzby_Blocks {
         )
       );
     }
+
+    $api = get_option( 'wc_ceske_sluzby_heureka_overeno-api' );
+    if ( ! empty( $api ) ) {
+      $souhlas = get_option( 'wc_ceske_sluzby_heureka_overeno-souhlas' );
+      if ( ! empty( $souhlas ) ) {
+        $label = ( $souhlas === 'souhlas_optout' )
+          ? __( 'Souhlasím se zasláním dotazníku spokojenosti v rámci programu Ověřeno zákazníky (Heureka), který pomáhá zlepšovat naše služby.', 'ceske-sluzby' )
+          : __( 'Nesouhlasím se zasláním dotazníku spokojenosti v rámci programu Ověřeno zákazníky (Heureka), který pomáhá zlepšovat naše služby.', 'ceske-sluzby' );
+
+        woocommerce_register_additional_checkout_field(
+          array(
+            'id' => self::FIELD_DEFINITIONS['heureka_souhlas']['id'],
+            'label' => $label,
+            'location' => 'address',
+            'type' => 'checkbox',
+            'attributes' => array(
+              'data-ceske-sluzby-heureka-souhlas' => $souhlas,
+            ),
+          )
+        );
+      }
+    }
   }
 
   public static function enqueue_checkout_assets() {
@@ -121,12 +152,15 @@ class Ceske_Sluzby_Blocks {
     );
     wp_set_script_translations( 'ceske-sluzby-blocks', 'ceske-sluzby', dirname( __DIR__ ) . '/languages' );
 
+    $souhlas = get_option( 'wc_ceske_sluzby_heureka_overeno-souhlas' );
     wp_add_inline_script(
       'ceske-sluzby-blocks',
       'window.ceskeSluzbyBlocks = ' . wp_json_encode(
         array(
           'packetaApiKey' => $api_key,
           'storageKey' => 'ceske_sluzby_zasilkovna',
+          'heurekaSouhlas' => $souhlas,
+          'heurekaSouhlasFieldId' => self::FIELD_DEFINITIONS['heureka_souhlas']['id'],
         )
       ) . ';',
       'before'
@@ -220,6 +254,38 @@ class Ceske_Sluzby_Blocks {
           ),
         ),
       ),
+    );
+  }
+
+  public static function register_store_api_extensions() {
+    woocommerce_store_api_register_endpoint_data(
+      array(
+        'endpoint'        => 'products',
+        'namespace'       => 'ceske-sluzby',
+        'data_callback'   => function( \WC_Product $product ) {
+          $availability = ceske_sluzby_ziskat_nastavenou_dostupnost_produktu( $product, false );
+          return array(
+            'delivery_time' => $availability ? $availability['text'] : '',
+            'ean'           => get_post_meta( $product->get_id(), 'ceske_sluzby_hodnota_ean', true ),
+          );
+        },
+        'schema_callback' => function() {
+          return array(
+            'delivery_time' => array(
+              'description' => __( 'Delivery time text.', 'ceske-sluzby' ),
+              'type'        => array( 'string', 'null' ),
+              'context'     => array( 'view', 'edit' ),
+              'readonly'    => true,
+            ),
+            'ean'           => array(
+              'description' => __( 'EAN code.', 'ceske-sluzby' ),
+              'type'        => array( 'string', 'null' ),
+              'context'     => array( 'view', 'edit' ),
+              'readonly'    => true,
+            ),
+          );
+        },
+      )
     );
   }
 

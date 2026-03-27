@@ -3,7 +3,7 @@
  * Plugin Name: České služby pro WordPress
  * Plugin URI: https://www.separatista.net
  * Description: Implementace různých českých služeb do WordPressu.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Pavel Hejn
  * Author URI: https://www.separatista.net
  * GitHub Plugin URI: pavelevap/ceske-sluzby 
@@ -11,24 +11,113 @@
  * Text Domain: ceske-sluzby
  * Domain Path: /languages
  * Requires at least: 6.6
- * Requires PHP: 7.4
+ * Requires PHP: 8.1
  * WC requires at least: 8.6
  * WC tested up to: 10.6
  */
 
-define( 'CS_VERSION', '1.0.0' );
+define( 'CS_VERSION', '1.1.0' );
+
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+  require_once __DIR__ . '/vendor/autoload.php';
+}
 
 function ceske_sluzby_load_textdomain() {
   load_plugin_textdomain( 'ceske-sluzby', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 }
 add_action( 'init', 'ceske_sluzby_load_textdomain' );
 
+/**
+ * Register abilities for WP 7.0 AI Integration
+ */
+function ceske_sluzby_register_abilities() {
+  if ( ! function_exists( 'wp_register_ability' ) ) {
+    return;
+  }
+
+  // Ability to get shipping tracking info
+  wp_register_ability(
+    'ceske-sluzby/get-tracking-info',
+    array(
+      'category' => 'ecommerce',
+      'description' => __( 'Získat informace o sledování zásilky pro konkrétní objednávku.', 'ceske-sluzby' ),
+      'parameters' => array(
+        'order_id' => array(
+          'type' => 'integer',
+          'description' => __( 'ID objednávky', 'ceske-sluzby' ),
+          'required' => true,
+        ),
+      ),
+      'callback' => function( $params ) {
+        $order = wc_get_order( $params['order_id'] );
+        if ( ! $order ) {
+          return new WP_Error( 'invalid_order', __( 'Neplatné ID objednávky.', 'ceske-sluzby' ) );
+        }
+        $shipping = $order->get_shipping_methods();
+        if ( empty( $shipping ) ) {
+           return array( 'tracking_id' => '', 'carrier' => '' );
+        }
+        $shipping_item_id = key( $shipping );
+        return array(
+          'tracking_id' => wc_get_order_item_meta( $shipping_item_id, 'ceske_sluzby_sledovani_zasilek_id_zasilky', true ),
+          'carrier' => wc_get_order_item_meta( $shipping_item_id, 'ceske_sluzby_sledovani_zasilek_dopravce', true ),
+        );
+      },
+      'permissions' => array( 'manage_woocommerce' ),
+    )
+  );
+
+  // Ability to set shipping tracking info
+  wp_register_ability(
+    'ceske-sluzby/set-tracking-info',
+    array(
+      'category' => 'ecommerce',
+      'description' => __( 'Nastavit informace o sledování zásilky pro konkrétní objednávku.', 'ceske-sluzby' ),
+      'parameters' => array(
+        'order_id' => array(
+          'type' => 'integer',
+          'description' => __( 'ID objednávky', 'ceske-sluzby' ),
+          'required' => true,
+        ),
+        'tracking_id' => array(
+          'type' => 'string',
+          'description' => __( 'ID zásilky', 'ceske-sluzby' ),
+          'required' => true,
+        ),
+        'carrier' => array(
+          'type' => 'string',
+          'description' => __( 'Kód dopravce (např. PPL, GLS, Zasilkovna)', 'ceske-sluzby' ),
+          'required' => true,
+        ),
+      ),
+      'callback' => function( $params ) {
+        $order = wc_get_order( $params['order_id'] );
+        if ( ! $order ) {
+          return new WP_Error( 'invalid_order', __( 'Neplatné ID objednávky.', 'ceske-sluzby' ) );
+        }
+        $shipping = $order->get_shipping_methods();
+        if ( empty( $shipping ) ) {
+           return new WP_Error( 'no_shipping', __( 'Objednávka nemá žádnou metodu dopravy.', 'ceske-sluzby' ) );
+        }
+        $shipping_item_id = key( $shipping );
+        wc_update_order_item_meta( $shipping_item_id, 'ceske_sluzby_sledovani_zasilek_id_zasilky', sanitize_text_field( $params['tracking_id'] ) );
+        wc_update_order_item_meta( $shipping_item_id, 'ceske_sluzby_sledovani_zasilek_dopravce', sanitize_text_field( $params['carrier'] ) );
+
+        $order->add_order_note( sprintf( __( 'Informace o sledování zásilky byly aktualizovány pomocí AI: %s (%s)', 'ceske-sluzby' ), $params['tracking_id'], $params['carrier'] ) );
+        return true;
+      },
+      'permissions' => array( 'manage_woocommerce' ),
+    )
+  );
+}
+add_action( 'init', 'ceske_sluzby_register_abilities' );
+
 add_action(
   'before_woocommerce_init',
   function() {
     if ( class_exists( '\\Automattic\\WooCommerce\\Utilities\\FeaturesUtil' ) ) {
       \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
-      \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, false );
+      \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, true );
     }
   }
 );
@@ -52,14 +141,29 @@ function ceske_sluzby_heureka_overeno_zakazniky( $order_id, $posted ) {
   $souhlas = get_option( 'wc_ceske_sluzby_heureka_overeno-souhlas' );
   $souhlas_check = array();
   $souhlas_text = "";
+
+  $order = wc_get_order( $order_id );
+  $blocks_souhlas = $order->get_meta( 'ceske_sluzby_heureka_overeno_zakazniky_souhlas_blocks', true );
+
   if ( ! empty( $souhlas ) ) {
-    if ( $souhlas == 'souhlas_optout' && isset( $_POST['heureka_overeno_zakazniky_souhlas_optout'] ) && (int)$_POST['heureka_overeno_zakazniky_souhlas_optout'] == 1 ) {
-      $souhlas_check = array( $souhlas => current_time( 'mysql' ) );
-      $souhlas_text = 'Objednávka byla úspěšně odeslána do služby Ověřeno zákazníky (Heureka) a zákazník neodmítl navržený souhlas se zpracováním dat.';
+    $opted_in = false;
+    if ( ! empty( $blocks_souhlas ) ) {
+       if ( $souhlas == 'souhlas_optout' && $blocks_souhlas === 'yes' ) { $opted_in = true; }
+       if ( $souhlas == 'nesouhlas_optout' && $blocks_souhlas === 'no' ) { $opted_in = true; }
+    } else {
+       if ( $souhlas == 'souhlas_optout' && isset( $_POST['heureka_overeno_zakazniky_souhlas_optout'] ) && (int)$_POST['heureka_overeno_zakazniky_souhlas_optout'] == 1 ) {
+         $opted_in = true;
+       }
+       if ( $souhlas == 'nesouhlas_optout' && ! isset( $_POST['heureka_overeno_zakazniky_nesouhlas_optout'] ) ) {
+         $opted_in = true;
+       }
     }
-    if ( $souhlas == 'nesouhlas_optout' && ! isset( $_POST['heureka_overeno_zakazniky_nesouhlas_optout'] ) ) {
+
+    if ( $opted_in ) {
       $souhlas_check = array( $souhlas => current_time( 'mysql' ) );
-      $souhlas_text = 'Objednávka byla úspěšně odeslána do služby Ověřeno zákazníky (Heureka) a zákazník nepotvrdil nesouhlas se zpracováním dat.';
+      $souhlas_text = ( $souhlas == 'souhlas_optout' )
+        ? 'Objednávka byla úspěšně odeslána do služby Ověřeno zákazníky (Heureka) a zákazník neodmítl navržený souhlas se zpracováním dat.'
+        : 'Objednávka byla úspěšně odeslána do služby Ověřeno zákazníky (Heureka) a zákazník nepotvrdil nesouhlas se zpracováním dat.';
     }
   } else {
     $souhlas_check = array( 'neaktivni' => current_time( 'mysql' ) );
@@ -67,46 +171,35 @@ function ceske_sluzby_heureka_overeno_zakazniky( $order_id, $posted ) {
   }
   if ( ! empty( $api ) && ! empty( $souhlas_check ) ) {
     $order = wc_get_order( $order_id );
-    
-    // https://github.com/heureka/heureka-overeno-php-api
-    require_once( dirname( __FILE__ ) . '/src/heureka/HeurekaOvereno.php' );
-    
     $language = get_locale();
     try {
+      $options = array();
       if ( $language == "sk_SK" ) {
-        $overeno = new HeurekaOvereno( $api, HeurekaOvereno::LANGUAGE_SK );
+        $options['service'] = \Heureka\ShopCertification::HEUREKA_SK;
       }
-      else {
-        $overeno = new HeurekaOvereno( $api );
-      }
-      $overeno->setEmail( $posted['billing_email'] );
 
-      $items = $order->get_items();
-      if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-        foreach ( $items as $item_data ) {
-          $overeno->addProduct( $item_data['name'] );
+      $overeno = new \Heureka\ShopCertification( $api, $options );
+      $overeno->setEmail( $order->get_billing_email() );
+
+      foreach ( $order->get_items() as $item ) {
+        $aktivace_xml = get_option( 'wc_ceske_sluzby_heureka_xml_feed-aktivace' );
+        $product = $item->get_product();
+        if ( ! $product ) {
+          continue;
         }
-      } else {
-        foreach ( $items as $item_id => $item_data ) {
-          $aktivace_xml = get_option( 'wc_ceske_sluzby_heureka_xml_feed-aktivace' );
-          $product = $item_data->get_product();
-          if ( $aktivace_xml == "yes" ) {
-            $overeno->addProductItemId( $product->get_id() );
-          } else {
-            $overeno->addProduct( $product->get_name() );
-          }
+        if ( $aktivace_xml == "yes" ) {
+          $overeno->addProductItemId( $product->get_id() );
         }
       }
 
-      $overeno->addOrderId( $order_id );
-      $overeno->send();
-      update_post_meta( $order_id, 'ceske_sluzby_heureka_overeno_zakazniky_souhlas', $souhlas_check );
+      $overeno->setOrderId( $order_id );
+      $overeno->logOrder();
+
+      $order->update_meta_data( 'ceske_sluzby_heureka_overeno_zakazniky_souhlas', $souhlas_check );
       $order->add_order_note( $souhlas_text );
+      $order->save();
     }
-    catch ( OverflowException $o ) {
-      $order->add_order_note( 'API klíč pro službu Ověřeno zákazníky nebyl správně nastaven: ' . $o->getMessage() );
-    }
-    catch ( HeurekaOverenoException $e ) {
+    catch ( \Heureka\ShopCertification\Exception $e ) {
       $order->add_order_note( 'Odeslání dat pro službu Ověřeno zákazníky se nezdařilo: ' . $e->getMessage() );
     }
   }
@@ -187,8 +280,19 @@ function ceske_sluzby_sklik_mereni_konverzi( $order_id ) {
   if ( ! empty( $konverze ) ) {
     $order = wc_get_order( $order_id );
     $hodnota_objednavky = round( $order->get_subtotal() ); ?>
-<!-- Měřicí kód Sklik.cz -->
-<iframe width="119" height="22" frameborder="0" scrolling="no" src="//c.imedia.cz/checkConversion?c=<?php echo $konverze; ?>&color=ffffff&v=<?php echo $hodnota_objednavky; ?>"></iframe>
+<script type="text/javascript" src="https://c.imedia.cz/js/rc.js"></script>
+<script type="text/javascript">
+  /* <![CDATA[ */
+  var conversionConf = {
+    id: <?php echo $konverze; ?>,
+    value: <?php echo $hodnota_objednavky; ?>,
+    consent: 1
+  };
+  if (window.rc && window.rc.conversion) {
+    window.rc.conversion(conversionConf);
+  }
+  /* ]]> */
+</script>
   <?php
   }
 }
@@ -196,12 +300,18 @@ function ceske_sluzby_sklik_mereni_konverzi( $order_id ) {
 function ceske_sluzby_sklik_retargeting() {
   $konverze = get_option( 'wc_ceske_sluzby_sklik_retargeting' );
   if ( ! empty( $konverze ) ) { ?>
+<script type="text/javascript" src="https://c.imedia.cz/js/rc.js"></script>
 <script type="text/javascript">
-/* <![CDATA[ */
-var seznam_retargeting_id = <?php echo $konverze; ?>;
-/* ]]> */
+  /* <![CDATA[ */
+  var retargetingConf = {
+    id: <?php echo $konverze; ?>,
+    consent: 1
+  };
+  if (window.rc && window.rc.retargeting) {
+    window.rc.retargeting(retargetingConf);
+  }
+  /* ]]> */
 </script>
-<script type="text/javascript" src="//c.imedia.cz/js/retargeting.js"></script>
   <?php
   }
 }
@@ -215,26 +325,24 @@ function ceske_sluzby_srovname_mereni_konverzi( $order_id ) {
 <script type="text/javascript">
 var _srt = _srt || [];
     _srt.push(['_setShop', '<?php echo $klic; ?>']);
-    _srt.push(['_setTransId', '<?php echo $order_id; ?>']);
-    <?php if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-      foreach ( $items as $item ) {
-        $cena = wc_format_decimal( $order->get_item_subtotal( $item ) );
-        echo "_srt.push(['_addProduct', '" . $item['name'] . "', '" . $cena . "', '" . $item['qty'] . "']);";
-      }
-    } else {
+    _srt.push(['_setTransId', '<?php echo esc_js( $order_id ); ?>']);
+    <?php
       foreach ( $items as $item_id => $item_data ) {
         $product = $item_data->get_product();
+        if ( ! $product ) {
+          continue;
+        }
         $cena = wc_format_decimal( $item_data->get_total() / $item_data->get_quantity() );
-        echo "_srt.push(['_addProduct', '" . $product->get_name() . "', '" . $cena . "', '" . $item_data->get_quantity() . "']);";
+        echo "_srt.push(['_addProduct', '" . esc_js( $product->get_name() ) . "', '" . esc_js( $cena ) . "', '" . esc_js( $item_data->get_quantity() ) . "']);";
       }
-    } ?>
+    ?>
     _srt.push(['_trackTrans']);
 
 (function() {
     var s = document.createElement("script");
     s.type = "text/javascript";
     s.async = true;
-    s.src = ("https:" == document.location.protocol ? "https" : "http") + "://www.srovname.cz/js/track-trans.js";
+    s.src = "https://www.srovname.cz/js/track-trans.js";
     var x = document.getElementsByTagName("script")[0];
     x.parentNode.insertBefore(s, x);
 })();
@@ -246,9 +354,12 @@ var _srt = _srt || [];
 
 function ceske_sluzby_zbozi_mereni_konverzi( $order_id ) {
   $id_obchodu = get_option( 'wc_ceske_sluzby_zbozi_konverze_id-obchodu' );
+  $tajny_klic = get_option( 'wc_ceske_sluzby_zbozi_konverze_tajny-klic' );
   if ( ! empty( $id_obchodu ) ) {
     $order = wc_get_order( $order_id );
-    $hodnota_objednavky = number_format( (float)( $order->get_total() ), 2, '.', '' ); ?>
+    $hodnota_objednavky = number_format( (float)( $order->get_total() ), 2, '.', '' );
+    $email = $order->get_billing_email();
+    ?>
 
 <script>
 (function(w,d,s,u,n,k,c,t){w.ZboziConversionObject=n;w[n]=w[n]||function(){
@@ -257,12 +368,44 @@ t=d.getElementsByTagName(s)[0];c.async=1;c.src=u;t.parentNode.insertBefore(c,t)
 })(window,document,"script","https://www.zbozi.cz/conversion/js/conv.js","zbozi","<?php echo $id_obchodu; ?>");
 zbozi("setOrder",{
 "orderId": "<?php echo $order_id; ?>",
-"totalPrice": "<?php echo $hodnota_objednavky; ?>"
+"totalPrice": "<?php echo $hodnota_objednavky; ?>",
+"eid": "<?php echo $email; ?>",
+"consent": 1
 });
 zbozi("send");
 </script>
 
 <?php
+    if ( ! empty( $tajny_klic ) ) {
+      $data = array(
+        'orderId' => $order_id,
+        'email' => $email,
+        'totalPrice' => $order->get_total(),
+      );
+
+      $items = $order->get_items();
+      foreach ( $items as $item ) {
+        $product = $item->get_product();
+        if ( $product ) {
+          $data['cart'][] = array(
+            'itemId' => $product->get_id(),
+            'productName' => $product->get_name(),
+            'unitPrice' => $order->get_item_subtotal( $item ),
+            'quantity' => $item->get_quantity(),
+          );
+        }
+      }
+
+      $json_data = wp_json_encode( $data );
+      wp_remote_post( 'https://www.zbozi.cz/action/' . $id_obchodu . '/conversion/backend', array(
+        'headers' => array(
+          'Content-Type' => 'application/json',
+          'Authorization' => 'Bearer ' . $tajny_klic,
+        ),
+        'body' => $json_data,
+        'blocking' => false,
+      ) );
+    }
   }
 }
 
@@ -282,9 +425,19 @@ function ceske_sluzby_kontrola_aktivniho_pluginu() {
     require_once plugin_dir_path( __FILE__ ) . 'includes/ceske-sluzby-functions.php';
     require_once plugin_dir_path( __FILE__ ) . 'includes/class-ceske-sluzby-blocks.php';
     require_once plugin_dir_path( __FILE__ ) . 'includes/class-ceske-sluzby-compatibility.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-ceske-sluzby-json-loader.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-ceske-sluzby-product-editor.php';
     Ceske_Sluzby_Blocks::init();
+require_once dirname( __FILE__ ) . '/includes/class-ceske-sluzby-shipping.php';
+require_once dirname( __FILE__ ) . '/includes/class-ceske-sluzby-cli.php';
     Ceske_Sluzby_Compatibility::init();
+    Ceske_Sluzby_Product_Editor::init();
+    if ( defined( 'WP_CLI' ) && WP_CLI ) {
+      WP_CLI::add_command( 'ceske-sluzby', 'Ceske_Sluzby_CLI' );
+    }
     if ( is_admin() ) {
+      require_once plugin_dir_path( __FILE__ ) . 'includes/class-ceske-sluzby-migration.php';
+      Ceske_Sluzby_Migration::init();
       require_once plugin_dir_path( __FILE__ ) . 'includes/class-ceske-sluzby-admin.php';
       require_once plugin_dir_path( __FILE__ ) . 'includes/class-ceske-sluzby-sledovani-zasilek.php';
       WC_Settings_Tab_Ceske_Sluzby_Admin::init();
@@ -363,20 +516,6 @@ function ceske_sluzby_kontrola_aktivniho_pluginu() {
       }
     }
 
-    $aktivace_eet = get_option( 'wc_ceske_sluzby_dalsi_nastaveni_eet-aktivace' );
-    if ( $aktivace_eet == "yes" ) {
-      add_filter( 'upload_mimes', 'ceske_sluzby_povolit_nahravani_certifikatu' );
-      require_once plugin_dir_path( __FILE__ ) . 'includes/class-ceske-sluzby-eet.php';
-      add_action( 'wpo_wcpdf_after_order_details', 'ceske_sluzby_zobrazit_eet_faktura_externi', 10, 2 );
-      add_action( 'woocommerce_order_status_completed', 'ceske_sluzby_automaticky_ziskat_uctenku' );
-      add_action( 'woocommerce_payment_complete', 'ceske_sluzby_automaticky_ziskat_uctenku' );
-      add_action( 'woocommerce_email_order_meta', 'ceske_sluzby_zobrazit_eet_email', 10, 4 );
-      if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-        add_filter( 'woocommerce_order_tax_totals', 'ceske_sluzby_doplnit_danovou_sazbu' );
-      } else {
-        add_filter( 'woocommerce_order_get_tax_totals', 'ceske_sluzby_doplnit_danovou_sazbu' );
-      }
-    }
 
     $aktivace_dodaci_doby = get_option( 'wc_ceske_sluzby_dalsi_nastaveni_dodaci_doba-aktivace' );
     if ( $aktivace_dodaci_doby == "yes" ) {
@@ -833,6 +972,7 @@ function ceske_sluzby_aktivace_xml_feed() {
   if ( $aktivace_xml == "yes" ) {
     require_once plugin_dir_path( __FILE__ ) . 'includes/class-ceske-sluzby-xml.php';
     add_feed( 'heureka', 'xml_feed_zobrazeni' );
+    add_feed( 'heureka-availability', 'heureka_availability_xml_feed_zobrazeni' );
     add_feed( 'glami', 'xml_feed_zobrazeni' );
     add_feed( 'zbozi', 'zbozi_xml_feed_zobrazeni' );
     add_feed( 'google', 'google_xml_feed_zobrazeni' );
@@ -1679,59 +1819,9 @@ function ceske_sluzby_load_admin_scripts() {
   $screen = get_current_screen();
   $screen_id = $screen ? $screen->id : '';
   $predobjednavka = get_option( 'wc_ceske_sluzby_preorder-aktivace' );
-  $aktivace_eet = get_option( 'wc_ceske_sluzby_dalsi_nastaveni_eet-aktivace' );
   if ( ( in_array( $screen_id, array( 'product', 'edit-product' ), true ) && $predobjednavka == "yes" ) || ceske_sluzby_is_order_admin_screen( $screen ) ) {
     wp_register_script( 'wc-admin-ceske-sluzby', untrailingslashit( plugins_url( '/', __FILE__ ) ) . '/js/ceske-sluzby-admin.js', array( 'jquery-ui-datepicker' ), CS_VERSION );
     wp_enqueue_script( 'wc-admin-ceske-sluzby' );
-  }
-  if ( in_array( $screen_id, array( 'woocommerce_page_wc-settings' ), true ) && $aktivace_eet == "yes" ) {
-    if ( ! did_action( 'wp_enqueue_media' ) ) {
-      wp_enqueue_media();
-    } 
-    wp_register_script( 'wc-admin-ceske-sluzby-upload-button', untrailingslashit( plugins_url( '/', __FILE__ ) ) . '/js/ceske-sluzby-upload-button-admin.js', array( 'jquery', 'wp-i18n' ), CS_VERSION );
-    wp_set_script_translations( 'wc-admin-ceske-sluzby-upload-button', 'ceske-sluzby', plugin_dir_path( __FILE__ ) . 'languages' );
-    wp_enqueue_script( 'wc-admin-ceske-sluzby-upload-button' );
-  }
-}
-
-function ceske_sluzby_povolit_nahravani_certifikatu( $mime_types ) {
-  $mime_types['p12'] = 'application/x-pkcs12';
-  return $mime_types;
-}
-
-function ceske_sluzby_zobrazit_eet_email( $order, $sent_to_admin, $plain_text, $email ) {
-  if ( $email->id == 'customer_completed_order' || $email->id == 'customer_processing_order' || $email->id == 'customer_invoice' ) {
-    $eet_format = zkontrolovat_nastavenou_hodnotu( $order, array( 'wc_ceske_sluzby_nastaveni_pokladna', 'wc_ceske_sluzby_nastaveni_pokladna_doprava' ), 'wc_ceske_sluzby_eet_format', 'eet_format', 'ceske_sluzby_eet_format' );
-    if ( ! empty( $eet_format ) && ( $eet_format == 'email-completed' || $eet_format == 'email-processing' || $eet_format == 'email-faktura' ) ) {
-      $eet = new Ceske_Sluzby_EET();
-      $order_id = is_callable( array( $order, 'get_id' ) ) ? $order->get_id() : $order->id;
-      if ( $plain_text ) {
-        $eet->ceske_sluzby_zobrazit_eet_uctenku( $order_id, false, '', '', true );
-      } else {
-        $eet->ceske_sluzby_zobrazit_eet_uctenku( $order_id, false, '<br>' );
-      }
-    }
-  }
-}
-
-function ceske_sluzby_zobrazit_eet_faktura_externi( $template_type, $order ) {
-  $eet_format = zkontrolovat_nastavenou_hodnotu( $order, array( 'wc_ceske_sluzby_nastaveni_pokladna', 'wc_ceske_sluzby_nastaveni_pokladna_doprava' ), 'wc_ceske_sluzby_eet_format', 'eet_format', 'ceske_sluzby_eet_format' );
-  if ( ! empty( $eet_format ) && $eet_format == 'faktura-plugin' ) {
-    $eet = new Ceske_Sluzby_EET();
-    $order_id = is_callable( array( $order, 'get_id' ) ) ? $order->get_id() : $order->id;
-    $eet->ceske_sluzby_zobrazit_eet_uctenku( $order_id, false );
-  }
-}
-
-function ceske_sluzby_automaticky_ziskat_uctenku( $order_id ) {
-  $order = wc_get_order( $order_id );
-  $eet_podminka = zkontrolovat_nastavenou_hodnotu( $order, array( 'wc_ceske_sluzby_nastaveni_pokladna', 'wc_ceske_sluzby_nastaveni_pokladna_doprava' ), 'wc_ceske_sluzby_eet_podminka', 'eet_podminka', 'ceske_sluzby_eet_podminka' );
-  if ( ! empty( $eet_podminka ) && ( $eet_podminka == 'platba' || $eet_podminka == 'dokonceno' ) ) {
-    $eet = new Ceske_Sluzby_EET();
-    $odeslana_trzba = $eet->ziskat_odeslanou_trzbu( $order );
-    if ( $odeslana_trzba > 0 ) {
-      $eet->ceske_sluzby_ziskat_eet_uctenku( $order );
-    }
   }
 }
 

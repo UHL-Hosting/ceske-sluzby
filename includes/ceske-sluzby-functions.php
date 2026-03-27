@@ -667,7 +667,7 @@ function zkontrolovat_nastavenou_hodnotu( $order, $context, $global_option, $set
   if ( in_array( 'wc_ceske_sluzby_nastaveni_pokladna', $context ) ) {
     $moznosti_nastaveni = get_option( 'wc_ceske_sluzby_nastaveni_pokladna' );
     if ( is_array( $moznosti_nastaveni ) && in_array( $settings_option, $moznosti_nastaveni ) ) {
-      if ( isset( $payment_gateway ) && ! empty( $payment_gateway ) && array_key_exists( $specific_option, $payment_gateway->settings ) && ! empty( $payment_gateway->settings[$specific_option] ) ) {
+      if ( isset( $payment_gateway ) && ! empty( $payment_gateway ) && isset( $payment_gateway->settings ) && array_key_exists( $specific_option, $payment_gateway->settings ) && ! empty( $payment_gateway->settings[$specific_option] ) ) {
         $hodnota = $payment_gateway->settings[$specific_option];
       }
     }
@@ -805,14 +805,6 @@ function zkontrolovat_nastavenou_hodnotu( $order, $context, $global_option, $set
     }
   }
 
-  if ( isset( $payment_gateway ) && ! empty( $payment_gateway ) ) {
-    if ( $settings_option == 'zaokrouhlovani' && empty( $hodnota ) && $payment_gateway->id == 'cod' && GOOGLE_MENA == 'CZK' ) {
-      $aktivace_eet = get_option( 'wc_ceske_sluzby_dalsi_nastaveni_eet-aktivace' );
-      if ( $aktivace_eet == "yes" ) {
-        $hodnota = 'nahoru';
-      }
-    }
-  }
   return $hodnota;
 }
 

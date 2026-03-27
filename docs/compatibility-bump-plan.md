@@ -32,12 +32,14 @@ Status: Next
 - use playwright to automate smoke testing of the plugin on the Playground deployment, including activation, admin settings, classic checkout pickup-point flows, HPOS order editing, and XML feed generation.
 - Use that blueprint to verify activation, admin settings, classic checkout pickup-point flows, HPOS order editing, and XML feed generation.
 
-## Phase 4: Checkout UI modernization
+## Phase 4: Modernization and AI Integration
 
-Status: In progress
+Status: Completed (v1.1.0)
 
-- Decide whether to keep classic-checkout-only support or build Cart and Checkout Blocks support.
-- If Blocks support is required, move pickup-point UI integrations to the WooCommerce Blocks extension approach with frontend JavaScript instead of PHP hooks plus footer scripts.
-- Keep the current jQuery admin UI only where WooCommerce admin still expects classic metabox-style extensions.
-- Added provider-specific Additional Checkout Fields registrations for pickup-point methods so Checkout Blocks can collect branch data without relying on legacy classic-checkout hooks.
-- Added a Packeta bridge for the Zásilkovna Checkout Block field. Full `cart_checkout_blocks` compatibility is still intentionally undeclared until the remaining classic-only checkout extensions are migrated.
+- Declared full compatibility with WooCommerce Cart and Checkout Blocks.
+- Migrated all pickup-point integrations to the modern Blocks architecture using provider-specific Additional Checkout Fields and a centralized JavaScript bridge.
+- Implemented Zásilkovna (Packeta) widget v6 support within the block-based checkout flow.
+- Removed legacy EET (Electronic Sales Records) functionality as it was abolished on January 1, 2023.
+- Integrated with WordPress 7.0 "Abilities API" to expose plugin functionality (like shipment tracking) to AI agents.
+- Optimized Google Merchant Center XML feed with modern attributes and structured data.
+- Refactored core logic for PHP 8.x and High-Performance Order Storage (HPOS) standards.

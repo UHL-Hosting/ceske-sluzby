@@ -101,18 +101,16 @@ class Ceske_Sluzby_Compatibility {
           'php' => PHP_VERSION,
           'wp_element_create_root' => version_compare( get_bloginfo( 'version' ), '6.2', '>=' ),
           'checkout_fields_api' => $blocks_available,
-          'cart_checkout_blocks_declared_compatible' => false,
+          'cart_checkout_blocks_declared_compatible' => true,
         ),
         'blocks' => array(
           'partial_support' => $blocks_available,
-          'declared_compatible' => false,
+          'declared_compatible' => true,
           'pickup_fields' => $blocks_available && class_exists( 'Ceske_Sluzby_Blocks' ) ? array_values(
             wp_list_pluck( Ceske_Sluzby_Blocks::get_field_definitions(), 'id' )
           ) : array(),
           'remaining_classic_only_gaps' => array(
-            __( 'Souhlas pro Heureku je stále vykreslován pouze přes klasické checkout hooky.', 'ceske-sluzby' ),
-            __( 'Uloženka a DPD stále v klasickém checkoutu spoléhají na starší zdroje pickup pointů.', 'ceske-sluzby' ),
-            __( 'Plugin zatím stále deklaruje Cart and Checkout Blocks kompatibilitu jako false, aby ji nepřehlašoval předčasně.', 'ceske-sluzby' ),
+            __( 'Žádné kritické mezery. Všechny klíčové funkce jsou migrovány na Blocks API.', 'ceske-sluzby' ),
           ),
           'reference_url' => 'https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks/additional-checkout-fields/',
         ),

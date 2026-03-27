@@ -3,34 +3,57 @@
 // http://speakinginbytes.com/2014/07/woocommerce-settings-tab/
 class WC_Shipping_Ceske_Sluzby_Ulozenka extends WC_Shipping_Method {
 
-  public function __construct() {
+  public function __construct( $instance_id = 0 ) {
      $this->id = 'ceske_sluzby_ulozenka';
+     $this->instance_id = absint( $instance_id );
      $this->method_title = 'Uloženka';
      $this->method_description = 'Základní možnosti nastavení.';
-     $this->title = $this->get_option( 'ulozenka_nazev' );
-     $this->enabled = $this->get_option( 'enabled' );
+     $this->supports = array(
+       'shipping-zones',
+       'settings',
+       'instance-settings',
+       'instance-settings-modal',
+     );
      $this->init();
    }
  
   function init() {
     $this->init_form_fields();
     $this->init_settings();
+    $this->init_instance_form_fields();
+    $this->init_instance_settings();
+    $this->title = $this->get_option( 'ulozenka_nazev' );
+    $this->enabled = $this->get_option( 'enabled' );
     add_action( 'woocommerce_update_options_shipping_' . $this->id, array( $this, 'process_admin_options' ) );
   }
  
   public function calculate_shipping( $package = array() ) {
-    $zeme = WC()->customer->get_shipping_country();
+    $zeme = isset( $package['destination']['country'] ) ? $package['destination']['country'] : WC()->customer->get_shipping_country();
+    $cena = 0;
     if ( $zeme == "CZ" ) { $cena = $this->get_option( 'ulozenka_zakladni-cena' ); }
     if ( $zeme == "SK" ) { $cena = $this->get_option( 'ulozenka_zakladni-cena-slovensko' ); }
     $rate = array(
-      'id' => $this->id,
+      'id' => $this->get_rate_id(),
       'label' => $this->title,
-      'cost' => $cena
+      'cost' => $cena,
+      'package' => $package,
     );
     $this->add_rate( $rate );
   }
-      
+
   public function init_form_fields() {
+    $this->form_fields = array(
+      'ulozenka_id-obchodu' => array(
+				'title'       => 'ID obchodu',
+				'type'        => 'text',
+				'description' => 'Zadejte ID obchodu z administrace Uloženka.',
+				'default'     => '',
+				'css'         => 'width: 100px;'
+      ),
+    );
+  }
+
+  public function init_instance_form_fields() {
     $zakladni = array(
       'enabled' => array(
 				'title'   => 'Povolit',
@@ -44,13 +67,6 @@ class WC_Shipping_Ceske_Sluzby_Ulozenka extends WC_Shipping_Method {
 				'description' => 'Název pro zobrazení v eshopu.',
 				'default'     => 'Uloženka',
 				'css'         => 'width: 300px;'
-      ),
-      'ulozenka_id-obchodu' => array(
-				'title'       => 'ID obchodu',
-				'type'        => 'text',
-				'description' => 'Zadejte ID obchodu z administrace Uloženka.',
-				'default'     => '',
-				'css'         => 'width: 100px;'
       ),
       'ulozenka_zakladni-cena' => array(
 				'title'       => 'Základní cena',
@@ -91,9 +107,9 @@ class WC_Shipping_Ceske_Sluzby_Ulozenka extends WC_Shipping_Method {
 
     $zvolene_zeme = WC()->countries->get_shipping_countries();
     if ( array_key_exists( 'SK', $zvolene_zeme ) ) {
-      $this->form_fields = array_merge( $zakladni, $slovensko );
+      $this->instance_form_fields = array_merge( $zakladni, $slovensko );
     } else {
-      $this->form_fields = $zakladni;
+      $this->instance_form_fields = $zakladni;
     }
   }      
 }

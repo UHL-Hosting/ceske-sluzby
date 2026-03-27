@@ -1,0 +1,69 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "3c5b18cba862aea44480dc06b6ea8ee1",
+    "packages": [
+        {
+            "name": "heureka/overeno-zakazniky",
+            "version": "v4.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/heureka/overeno-zakazniky.git",
+                "reference": "30eb6f7ab47ee3068f71efbdbde4a0d4b019a0a2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/heureka/overeno-zakazniky/zipball/30eb6f7ab47ee3068f71efbdbde4a0d4b019a0a2",
+                "reference": "30eb6f7ab47ee3068f71efbdbde4a0d4b019a0a2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.3"
+            },
+            "require-dev": {
+                "mockery/mockery": "~1.4.3",
+                "phpunit/phpunit": "~9.5.0"
+            },
+            "suggest": {
+                "ext-curl": "Simplifies the library usage (you don't have to provide your own requester)"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Heureka\\": [
+                        "src/",
+                        "tests"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Heureka.cz",
+                    "email": "podpora@heureka.cz"
+                }
+            ],
+            "description": "Heureka 'Ověřeno zákazníky' (ShopCertification) service API implementation",
+            "support": {
+                "issues": "https://github.com/heureka/overeno-zakazniky/issues",
+                "source": "https://github.com/heureka/overeno-zakazniky/tree/v4.0.2"
+            },
+            "time": "2023-10-16T07:06:56+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {},
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
+}
