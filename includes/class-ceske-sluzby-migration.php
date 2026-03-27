@@ -13,6 +13,9 @@ class Ceske_Sluzby_Migration {
 
 	public static function check_migration() {
 		$current_version = get_option( 'ceske_sluzby_version' );
+		if ( ! is_string( $current_version ) ) {
+			$current_version = '0.0.0';
+		}
 		if ( version_compare( $current_version, '1.1.0', '<' ) ) {
 			self::migrate_shipping_settings();
 			update_option( 'ceske_sluzby_version', '1.1.0' );
