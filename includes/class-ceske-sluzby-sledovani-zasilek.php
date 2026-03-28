@@ -219,11 +219,12 @@ class Ceske_Sluzby_Sledovani_Zasilek {
 
     <label for="ceske_sluzby_sledovani_zasilek_id_zasilky">ID zásilky: </label>
     <input type="text" id="ceske_sluzby_sledovani_zasilek_id_zasilky" name="ceske_sluzby_sledovani_zasilek_id_zasilky" value="<?php echo esc_attr( $id_zasilky ); ?>" size="20" />
+    <button type="button" class="button cancel_tracking_id" aria-label="Zrušit ID zásilky" style="<?php echo ( empty( $id_zasilky ) ? 'display:none' : '' ); ?>">Zrušit</button>
     <br />
     <br />
     <label for="ceske_sluzby_sledovani_zasilek_dopravce">Dopravce: </label>
     <select name="ceske_sluzby_sledovani_zasilek_dopravce" id="ceske_sluzby_sledovani_zasilek_dopravce">
-    <option value="">- Vyberte dopravce -</option>
+    <option value="" data-url="">- Vyberte dopravce -</option>
     <?php
     foreach ( $dostupni_dopravci as $id => $dostupny_dopravce ) {
       if ( $id == $dopravce ) {
@@ -231,7 +232,7 @@ class Ceske_Sluzby_Sledovani_Zasilek {
       } else {
         $selected = "";
       }
-      echo '<option value="' . $id . '"' . $selected . '>' . $dostupny_dopravce['nazev'] . '</option>';
+      echo '<option value="' . $id . '"' . $selected . ' data-url="' . esc_attr( $dostupny_dopravce['url'] ) . '">' . $dostupny_dopravce['nazev'] . '</option>';
     } ?>
     </select>
     <?php
@@ -251,11 +252,13 @@ class Ceske_Sluzby_Sledovani_Zasilek {
     else {
       echo '<p>Kontrolní odkaz zatím není možné odesílat jako samostatný email, protože ještě nebyl <a href="' . admin_url(). 'admin.php?page=wc-settings&tab=email&section=wc_email_ceske_sluzby_sledovani_zasilek">aktivován</a>.';
     }
+    echo '<div id="ceske_sluzby_sledovani_zasilek_link_preview">';
     if ( ! empty( $id_zasilky ) && ! empty( $dopravce ) ) {
       echo '<p>Kontrolní odkaz: <a href="' . $odkaz . '" target="_blank">' . $dostupni_dopravci[$dopravce]['nazev'] . '</a></p>';
     }
     else {
       echo '<p>Nejdříve musíte doplnit obě hodnoty, aby se zobrazil kontrolní odkaz a mohl být ručně odeslán notifikační email.</p>';
     }
+    echo '</div>';
   }
 }
