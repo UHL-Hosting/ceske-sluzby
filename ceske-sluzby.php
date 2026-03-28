@@ -1821,6 +1821,10 @@ function ceske_sluzby_load_admin_scripts() {
   $predobjednavka = get_option( 'wc_ceske_sluzby_preorder-aktivace' );
   if ( ( in_array( $screen_id, array( 'product', 'edit-product' ), true ) && $predobjednavka == "yes" ) || ceske_sluzby_is_order_admin_screen( $screen ) ) {
     wp_register_script( 'wc-admin-ceske-sluzby', untrailingslashit( plugins_url( '/', __FILE__ ) ) . '/js/ceske-sluzby-admin.js', array( 'jquery-ui-datepicker' ), CS_VERSION );
+    wp_localize_script( 'wc-admin-ceske-sluzby', 'ceske_sluzby_admin', array(
+      'tracking_link_label' => __( 'Kontrolní odkaz', 'ceske-sluzby' ),
+      'tracking_link_missing' => __( 'Nejdříve musíte doplnit obě hodnoty, aby se zobrazil kontrolní odkaz a mohl být ručně odeslán notifikační email.', 'ceske-sluzby' ),
+    ) );
     wp_enqueue_script( 'wc-admin-ceske-sluzby' );
   }
 }

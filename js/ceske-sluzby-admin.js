@@ -46,4 +46,43 @@ jQuery( function( $ ) {
       $( 'select[name="wc_order_action"] option[value="' + cs_email_value + '"]' ).prop( "disabled", false );
     }
   });
+
+  // Dynamická aktualizace odkazu pro sledování zásilky a tlačítko pro smazání ID.
+  function update_tracking_link() {
+    var tracking_id = $( '#ceske_sluzby_sledovani_zasilek_id_zasilky' ).val();
+    var $carrier_option = $( '#ceske_sluzby_sledovani_zasilek_dopravce' ).find( ':selected' );
+    var carrier_url = $carrier_option.data( 'url' );
+    var carrier_name = $carrier_option.text();
+    var $preview_container = $( '#ceske_sluzby_sledovani_zasilek_link_preview' );
+    var $cancel_button = $( '.cancel_tracking_id' );
+
+    if ( tracking_id ) {
+      $cancel_button.show();
+    } else {
+      $cancel_button.hide();
+    }
+
+    $preview_container.empty();
+    if ( tracking_id && carrier_url ) {
+      var final_url = carrier_url.replace( '%ID%', encodeURIComponent( tracking_id ) );
+      var $p = $( '<p>' ).text( ceske_sluzby_admin.tracking_link_label + ': ' );
+      var $a = $( '<a>' )
+        .attr( 'href', final_url )
+        .attr( 'target', '_blank' )
+        .text( carrier_name );
+      $p.append( $a );
+      $preview_container.append( $p );
+    } else {
+      $preview_container.append( $( '<p>' ).text( ceske_sluzby_admin.tracking_link_missing ) );
+    }
+  }
+
+  $( 'body' ).on( 'keyup change', '#ceske_sluzby_sledovani_zasilek_id_zasilky, #ceske_sluzby_sledovani_zasilek_dopravce', function() {
+    update_tracking_link();
+  });
+
+  $( 'body' ).on( 'click', '.cancel_tracking_id', function() {
+    $( '#ceske_sluzby_sledovani_zasilek_id_zasilky' ).val( '' ).trigger( 'change' );
+    return false;
+  });
 });
