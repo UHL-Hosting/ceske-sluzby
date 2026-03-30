@@ -25,7 +25,7 @@ jQuery( function( $ ) {
   $( '#woocommerce-product-data' ).on( 'click', '.cancel_preorder', function() {
     var $wrap = $( this ).closest( 'div, table' );
     $( this ).hide();
-    $wrap.find( '.ceske_sluzby_xml_preorder_datum_field' ).find( 'input' ).val('').trigger( 'change' );
+    $wrap.find( '.ceske_sluzby_xml_preorder_datum_field' ).find( 'input' ).val('').trigger( 'change' ).focus();
     return false;
   });
 
@@ -39,7 +39,7 @@ jQuery( function( $ ) {
   } else {
     $( 'select[name="wc_order_action"] option[value="' + cs_email_value + '"]' ).prop( "disabled", false );
   }
-  $( '#ceske_sluzby_sledovani_zasilek_id_zasilky, #ceske_sluzby_sledovani_zasilek_dopravce' ).change( function() {
+  $( '#ceske_sluzby_sledovani_zasilek_id_zasilky, #ceske_sluzby_sledovani_zasilek_dopravce' ).on( 'input change', function() {
     if( ! $( '#ceske_sluzby_sledovani_zasilek_id_zasilky' ).val() || ! $( '#ceske_sluzby_sledovani_zasilek_dopravce' ).val() ) {
       $( 'select[name="wc_order_action"] option[value="' + cs_email_value + '"]' ).prop( "disabled", true );
     } else {
@@ -77,12 +77,12 @@ jQuery( function( $ ) {
     }
   }
 
-  $( 'body' ).on( 'keyup change', '#ceske_sluzby_sledovani_zasilek_id_zasilky, #ceske_sluzby_sledovani_zasilek_dopravce', function() {
+  $( 'body' ).on( 'input change', '#ceske_sluzby_sledovani_zasilek_id_zasilky, #ceske_sluzby_sledovani_zasilek_dopravce', function() {
     update_tracking_link();
   });
 
   $( 'body' ).on( 'click', '.cancel_tracking_id', function() {
-    $( '#ceske_sluzby_sledovani_zasilek_id_zasilky' ).val( '' ).trigger( 'change' );
+    $( '#ceske_sluzby_sledovani_zasilek_id_zasilky' ).val( '' ).trigger( 'change' ).focus();
     return false;
   });
 });

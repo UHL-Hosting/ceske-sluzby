@@ -16,18 +16,19 @@
       multiple: false
     }).on('select', function() { 
       var attachment = custom_uploader.state().get('selection').first().toJSON();
-      $( '.ceske_sluzby_upload_button').before('<span class="nazev-souboru" style="padding-right:10px;"><strong>' + attachment.filename + '</strong></span>');
-      $(button).next().val(attachment.id).next().show();
-      $( '.ceske_sluzby_remove_button').show();
-      $( '.ceske_sluzby_upload_button').hide();
+      button.siblings( '.nazev-souboru' ).remove();
+      button.before('<span class="nazev-souboru" style="padding-right:10px;"><strong>' + attachment.filename + '</strong></span>');
+      button.next().val(attachment.id).next().show();
+      button.hide();
     }).open();
   });
   $('body').on('click', '.ceske_sluzby_remove_button', function(e){
     e.preventDefault();
-    $('.nazev-souboru').hide();
-    var $upload_button = $(this).parent().find('.ceske_sluzby_upload_button');
-    $(this).hide().prev().val('');
-    $upload_button.show();
+    var $remove_button = $(this);
+    $remove_button.siblings('.nazev-souboru').remove();
+    var $upload_button = $remove_button.siblings('.ceske_sluzby_upload_button');
+    $remove_button.hide().prev().val('');
+    $upload_button.show().focus();
     return false;
   });
 });

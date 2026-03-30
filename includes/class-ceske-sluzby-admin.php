@@ -430,7 +430,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           <?php } ?>
           <button type="button" style="display:<?php echo $display; ?>" class="ceske_sluzby_upload_button button"><?php echo $upload_button; ?></button>
           <input type="hidden" name="<?php echo $value['id']; ?>" id="<?php echo $value['id']; ?>" value="<?php echo $selected_value; ?>" />
-          <button type="button" class="ceske_sluzby_remove_button button-link" style="font-size:13px;display:<?php echo $display_remove; ?>"><?php echo $remove_button; ?></button>
+          <button type="button" class="ceske_sluzby_remove_button button-link" aria-label="<?php echo esc_attr( $remove_button ); ?>" style="font-size:13px;display:<?php echo $display_remove; ?>"><?php echo $remove_button; ?></button>
         </div>
         <?php echo $description; ?>
       </td>
