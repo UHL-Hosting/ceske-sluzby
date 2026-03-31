@@ -348,7 +348,7 @@ class WC_Product_Tab_Ceske_Sluzby_Admin {
         echo '<p class="form-field ceske_sluzby_xml_preorder_datum_field">
                 <label for="ceske_sluzby_xml_preorder_datum">Předobjednávka</label>
                 <input type="text" class="short" name="ceske_sluzby_xml_preorder_datum" id="ceske_sluzby_xml_preorder_datum" value="' . esc_attr( $datum_predobjednavky ) . '" placeholder="Požadovaný formát: YYYY-MM-DD" maxlength="10" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" />
-                <button type="button" class="button cancel_preorder" aria-label="Zrušit datum předobjednávky" style="' . ( empty( $datum_predobjednavky ) ? 'display:none' : '' ) . '">Zrušit</button>' . wc_help_tip( 'Zadejte datum, kdy bude možné dodat produkt zákazníkovi.' ) . '
+                <button type="button" class="button cancel_preorder" aria-label="Zrušit datum předobjednávky" style="margin-left:5px;' . ( empty( $datum_predobjednavky ) ? 'display:none' : '' ) . '">Zrušit</button>' . wc_help_tip( 'Zadejte datum, kdy bude možné dodat produkt zákazníkovi.' ) . '
               </p>';
       }
     }

@@ -219,7 +219,7 @@ class Ceske_Sluzby_Sledovani_Zasilek {
 
     <label for="ceske_sluzby_sledovani_zasilek_id_zasilky">ID zásilky: </label>
     <input type="text" id="ceske_sluzby_sledovani_zasilek_id_zasilky" name="ceske_sluzby_sledovani_zasilek_id_zasilky" value="<?php echo esc_attr( $id_zasilky ); ?>" size="20" />
-    <button type="button" class="button cancel_tracking_id" aria-label="Zrušit ID zásilky" style="<?php echo ( empty( $id_zasilky ) ? 'display:none' : '' ); ?>">Zrušit</button>
+    <button type="button" class="button cancel_tracking_id" aria-label="Zrušit ID zásilky" style="margin-left:5px;<?php echo ( empty( $id_zasilky ) ? 'display:none' : '' ); ?>">Zrušit</button>
     <br />
     <br />
     <label for="ceske_sluzby_sledovani_zasilek_dopravce">Dopravce: </label>
@@ -235,7 +235,7 @@ class Ceske_Sluzby_Sledovani_Zasilek {
       echo '<option value="' . $id . '"' . $selected . ' data-url="' . esc_attr( $dostupny_dopravce['url'] ) . '">' . $dostupny_dopravce['nazev'] . '</option>';
     } ?>
     </select>
-    <button type="button" class="button cancel_carrier" aria-label="Zrušit dopravce" style="<?php echo ( empty( $dopravce ) ? "display:none" : "" ); ?>">Zrušit</button>
+    <button type="button" class="button cancel_carrier" aria-label="Zrušit dopravce" style="margin-left:5px;<?php echo ( empty( $dopravce ) ? "display:none" : "" ); ?>">Zrušit</button>
     <?php
     $aktivace_email = get_option( 'woocommerce_wc_email_ceske_sluzby_sledovani_zasilek_settings' );
     if ( isset ( $aktivace_email['enabled'] ) && $aktivace_email['enabled'] == "yes" ) {
