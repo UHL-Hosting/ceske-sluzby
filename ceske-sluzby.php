@@ -3,7 +3,7 @@
  * Plugin Name: České služby pro WordPress
  * Plugin URI: https://www.separatista.net
  * Description: Implementace různých českých služeb do WordPressu.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Pavel Hejn
  * Author URI: https://www.separatista.net
  * GitHub Plugin URI: pavelevap/ceske-sluzby 
@@ -13,10 +13,10 @@
  * Requires at least: 6.6
  * Requires PHP: 8.1
  * WC requires at least: 8.6
- * WC tested up to: 10.6
+ * WC tested up to: 11.0
  */
 
-define( 'CS_VERSION', '1.1.0' );
+define( 'CS_VERSION', '1.2.0' );
 
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
   require_once __DIR__ . '/vendor/autoload.php';
@@ -53,14 +53,14 @@ function ceske_sluzby_register_abilities() {
         if ( ! $order ) {
           return new WP_Error( 'invalid_order', __( 'Neplatné ID objednávky.', 'ceske-sluzby' ) );
         }
-        $shipping = $order->get_shipping_methods();
-        if ( empty( $shipping ) ) {
+        $shipping_methods = $order->get_shipping_methods();
+        if ( empty( $shipping_methods ) ) {
            return array( 'tracking_id' => '', 'carrier' => '' );
         }
-        $shipping_item_id = key( $shipping );
+        $shipping_method = reset( $shipping_methods );
         return array(
-          'tracking_id' => wc_get_order_item_meta( $shipping_item_id, 'ceske_sluzby_sledovani_zasilek_id_zasilky', true ),
-          'carrier' => wc_get_order_item_meta( $shipping_item_id, 'ceske_sluzby_sledovani_zasilek_dopravce', true ),
+          'tracking_id' => $shipping_method->get_meta( 'ceske_sluzby_sledovani_zasilek_id_zasilky', true ),
+          'carrier'     => $shipping_method->get_meta( 'ceske_sluzby_sledovani_zasilek_dopravce', true ),
         );
       },
       'permissions' => array( 'manage_woocommerce' ),
@@ -95,13 +95,14 @@ function ceske_sluzby_register_abilities() {
         if ( ! $order ) {
           return new WP_Error( 'invalid_order', __( 'Neplatné ID objednávky.', 'ceske-sluzby' ) );
         }
-        $shipping = $order->get_shipping_methods();
-        if ( empty( $shipping ) ) {
+        $shipping_methods = $order->get_shipping_methods();
+        if ( empty( $shipping_methods ) ) {
            return new WP_Error( 'no_shipping', __( 'Objednávka nemá žádnou metodu dopravy.', 'ceske-sluzby' ) );
         }
-        $shipping_item_id = key( $shipping );
-        wc_update_order_item_meta( $shipping_item_id, 'ceske_sluzby_sledovani_zasilek_id_zasilky', sanitize_text_field( $params['tracking_id'] ) );
-        wc_update_order_item_meta( $shipping_item_id, 'ceske_sluzby_sledovani_zasilek_dopravce', sanitize_text_field( $params['carrier'] ) );
+        $shipping_method = reset( $shipping_methods );
+        $shipping_method->update_meta_data( 'ceske_sluzby_sledovani_zasilek_id_zasilky', sanitize_text_field( $params['tracking_id'] ) );
+        $shipping_method->update_meta_data( 'ceske_sluzby_sledovani_zasilek_dopravce', sanitize_text_field( $params['carrier'] ) );
+        $shipping_method->save();
 
         $order->add_order_note( sprintf( __( 'Informace o sledování zásilky byly aktualizovány pomocí AI: %s (%s)', 'ceske-sluzby' ), $params['tracking_id'], $params['carrier'] ) );
         return true;
@@ -109,6 +110,37 @@ function ceske_sluzby_register_abilities() {
       'permissions' => array( 'manage_woocommerce' ),
     )
   );
+  // Ability to get product availability (delivery time)
+  wp_register_ability(
+    'ceske-sluzby/get-product-availability',
+    array(
+      'category' => 'ecommerce',
+      'description' => __( 'Získat informace o dostupnosti a dodací době produktu.', 'ceske-sluzby' ),
+      'parameters' => array(
+        'product_id' => array(
+          'type' => 'integer',
+          'description' => __( 'ID produktu nebo varianty', 'ceske-sluzby' ),
+          'required' => true,
+        ),
+      ),
+      'callback' => function( $params ) {
+        $product = wc_get_product( $params['product_id'] );
+        if ( ! $product ) {
+          return new WP_Error( 'invalid_product', __( 'Neplatné ID produktu.', 'ceske-sluzby' ) );
+        }
+        $availability = ceske_sluzby_ziskat_nastavenou_dostupnost_produktu( $product, false );
+        if ( empty( $availability ) ) {
+           return array( 'delivery_time' => '', 'value' => '' );
+        }
+        return array(
+          'delivery_time' => $availability['text'],
+          'value'         => $availability['value'],
+        );
+      },
+      'permissions' => array( 'read' ),
+    )
+  );
+
 }
 add_action( 'init', 'ceske_sluzby_register_abilities' );
 

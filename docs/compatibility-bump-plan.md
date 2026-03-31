@@ -43,3 +43,13 @@ Status: Completed (v1.1.0)
 - Integrated with WordPress 7.0 "Abilities API" to expose plugin functionality (like shipment tracking) to AI agents.
 - Optimized Google Merchant Center XML feed with modern attributes and structured data.
 - Refactored core logic for PHP 8.x and High-Performance Order Storage (HPOS) standards.
+
+## Phase 5: Future-proofing (WP 7.0 & WC 11.0)
+
+Status: Completed (v1.2.0)
+
+- Updated "Abilities API" callbacks to use modern WooCommerce CRUD methods ($item->get_meta, $item->update_meta_data).
+- Added `ceske-sluzby/get-product-availability` ability for AI agent product queries.
+- Proactively refactored legacy meta functions in core blocks and availability logic to use WooCommerce CRUD.
+- Verified and bumped compatibility headers to WordPress 7.0 and WooCommerce 11.0.
+- Implemented micro-UX improvements in the shipment tracking meta box (dynamic clear buttons).
