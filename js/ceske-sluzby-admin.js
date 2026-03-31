@@ -77,11 +77,13 @@ jQuery( function( $ ) {
       var $a = $( '<a>' )
         .attr( 'href', final_url )
         .attr( 'target', '_blank' )
+        .attr( 'rel', 'noopener noreferrer' )
+        .attr( 'aria-label', carrier_name + ' ' + ceske_sluzby_admin.external_link_tip )
         .text( carrier_name );
       $p.append( $a );
       $preview_container.append( $p );
     } else {
-      $preview_container.append( $( '<p>' ).text( ceske_sluzby_admin.tracking_link_missing ) );
+      $preview_container.append( $( '<p>' ).addClass( 'description' ).text( ceske_sluzby_admin.tracking_link_missing ) );
     }
   }
 
@@ -89,7 +91,22 @@ jQuery( function( $ ) {
     update_tracking_link();
   });
 
-    $( 'body' ).on( 'click', '.cancel_carrier', function() {
+  $( 'body' ).on( 'blur', '#ceske_sluzby_sledovani_zasilek_id_zasilky', function() {
+    var $this = $( this );
+    var trimmed = $this.val().trim();
+    if ( trimmed !== $this.val() ) {
+      $this.val( trimmed ).trigger( 'change' );
+    }
+  });
+
+  $( 'body' ).on( 'change', '#ceske_sluzby_sledovani_zasilek_dopravce', function() {
+    var $tracking_id_input = $( '#ceske_sluzby_sledovani_zasilek_id_zasilky' );
+    if ( $( this ).val() && ! $tracking_id_input.val() ) {
+      $tracking_id_input.focus();
+    }
+  });
+
+  $( 'body' ).on( 'click', '.cancel_carrier', function() {
     $( '#ceske_sluzby_sledovani_zasilek_dopravce' ).val( '' ).trigger( 'change' ).focus();
     return false;
   });

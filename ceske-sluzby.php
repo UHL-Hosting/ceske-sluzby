@@ -1856,6 +1856,7 @@ function ceske_sluzby_load_admin_scripts() {
     wp_localize_script( 'wc-admin-ceske-sluzby', 'ceske_sluzby_admin', array(
       'tracking_link_label' => __( 'Kontrolní odkaz', 'ceske-sluzby' ),
       'tracking_link_missing' => __( 'Nejdříve musíte doplnit obě hodnoty, aby se zobrazil kontrolní odkaz a mohl být ručně odeslán notifikační email.', 'ceske-sluzby' ),
+      'external_link_tip' => __( '(otevře se v novém okně)', 'ceske-sluzby' ),
     ) );
     wp_enqueue_script( 'wc-admin-ceske-sluzby' );
   }
