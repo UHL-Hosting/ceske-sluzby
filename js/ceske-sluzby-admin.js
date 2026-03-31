@@ -55,11 +55,19 @@ jQuery( function( $ ) {
     var carrier_name = $carrier_option.text();
     var $preview_container = $( '#ceske_sluzby_sledovani_zasilek_link_preview' );
     var $cancel_button = $( '.cancel_tracking_id' );
+    var $cancel_carrier_button = $( '.cancel_carrier' );
+    var carrier_id = $( '#ceske_sluzby_sledovani_zasilek_dopravce' ).val();
 
     if ( tracking_id ) {
       $cancel_button.show();
     } else {
       $cancel_button.hide();
+    }
+
+    if ( carrier_id ) {
+      $cancel_carrier_button.show();
+    } else {
+      $cancel_carrier_button.hide();
     }
 
     $preview_container.empty();
@@ -81,8 +89,13 @@ jQuery( function( $ ) {
     update_tracking_link();
   });
 
+    $( 'body' ).on( 'click', '.cancel_carrier', function() {
+    $( '#ceske_sluzby_sledovani_zasilek_dopravce' ).val( '' ).trigger( 'change' ).focus();
+    return false;
+  });
+
   $( 'body' ).on( 'click', '.cancel_tracking_id', function() {
-    $( '#ceske_sluzby_sledovani_zasilek_id_zasilky' ).val( '' ).trigger( 'change' );
+    $( '#ceske_sluzby_sledovani_zasilek_id_zasilky' ).val( '' ).trigger( 'change' ).focus();
     return false;
   });
 });

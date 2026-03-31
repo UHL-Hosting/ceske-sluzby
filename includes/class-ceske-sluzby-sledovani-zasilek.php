@@ -235,6 +235,7 @@ class Ceske_Sluzby_Sledovani_Zasilek {
       echo '<option value="' . $id . '"' . $selected . ' data-url="' . esc_attr( $dostupny_dopravce['url'] ) . '">' . $dostupny_dopravce['nazev'] . '</option>';
     } ?>
     </select>
+    <button type="button" class="button cancel_carrier" aria-label="Zrušit dopravce" style="<?php echo ( empty( $dopravce ) ? "display:none" : "" ); ?>">Zrušit</button>
     <?php
     $aktivace_email = get_option( 'woocommerce_wc_email_ceske_sluzby_sledovani_zasilek_settings' );
     if ( isset ( $aktivace_email['enabled'] ) && $aktivace_email['enabled'] == "yes" ) {

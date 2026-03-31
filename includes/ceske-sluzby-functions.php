@@ -268,7 +268,7 @@ function ceske_sluzby_ziskat_nastavenou_dostupnost_produktu( $product, $dodatek 
   $global_data = ceske_sluzby_xml_ziskat_globalni_hodnoty();
   if ( get_class( $product ) == "WC_Product_Variation" ) {
     $varianta_id = is_callable( array( $product, 'get_id' ) ) ? $product->get_id() : $product->id;
-    $dodaci_doba_varianta = get_post_meta( $varianta_id, 'ceske_sluzby_dodaci_doba', true );
+    $dodaci_doba_varianta = $product->get_meta( 'ceske_sluzby_dodaci_doba', true );
     if ( ! empty( $global_data['vlastni_dodaci_doba'] ) && empty( $dodaci_doba_varianta ) && $dodaci_doba_varianta !== '0' ) {
       if ( $global_data['vlastni_dodaci_doba'] == 'ang_stock_status' ) {
         // Plugin: ang-custom-stock-options
@@ -305,7 +305,7 @@ function ceske_sluzby_ziskat_nastavenou_dostupnost_produktu( $product, $dodatek 
   }
   elseif ( get_class( $product ) == "WC_Product_Simple" ) {
     $product_id = is_callable( array( $product, 'get_id' ) ) ? $product->get_id() : $product->id;
-    $dodaci_doba_produkt = get_post_meta( $product_id, 'ceske_sluzby_dodaci_doba', true );
+    $dodaci_doba_produkt = $product->get_meta( 'ceske_sluzby_dodaci_doba', true );
     if ( ! empty( $global_data['vlastni_dodaci_doba'] ) && empty( $dodaci_doba_produkt ) && $dodaci_doba_produkt !== '0' ) {
       $dodaci_doba_produkt = get_post_meta( $product_id, $global_data['vlastni_dodaci_doba'], true );
       if ( ! empty( $dodaci_doba_produkt ) || $dodaci_doba_produkt === '0' ) {
@@ -315,7 +315,7 @@ function ceske_sluzby_ziskat_nastavenou_dostupnost_produktu( $product, $dodatek 
   }
   elseif ( get_class( $product ) == "WC_Product_Variable" ) {
     $product_id = is_callable( array( $product, 'get_id' ) ) ? $product->get_id() : $product->id;
-    $dodaci_doba_produkt = get_post_meta( $product_id, 'ceske_sluzby_dodaci_doba', true );
+    $dodaci_doba_produkt = $product->get_meta( 'ceske_sluzby_dodaci_doba', true );
     if ( ! empty( $global_data['vlastni_dodaci_doba'] ) && empty( $dodaci_doba_produkt ) && $dodaci_doba_produkt !== '0' ) {
       $dodaci_doba_produkt = get_post_meta( $product_id, $global_data['vlastni_dodaci_doba'], true );
       if ( ! empty( $dodaci_doba_produkt ) || $dodaci_doba_produkt === '0' ) {

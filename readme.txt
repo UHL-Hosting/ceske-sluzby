@@ -3,7 +3,7 @@ Donate link: http://www.separatista.net
 Tags: Heureka.cz, Sklik.cz, WooCommerce, Ulozenka.cz, Srovname.cz, DPD, Zbozi.cz, Pricemania.cz, Google
 Requires at least: 6.6
 Requires PHP: 8.1
-Tested up to: 6.9
+Tested up to: 7.0
 Stable tag: 1.1.0
 
 Implementace různých českých služeb do WordPressu (zejména pro WooCommerce)
@@ -57,6 +57,13 @@ Fórum podpory: http://www.separatista.net/forum
 Aktivovat plugin a přejít do menu WooCommerce - Nastavení - záložka České služby.
 
 == Changelog ==
+
+= 1.2.0 =
+* Modernizace "Abilities API" pro lepší kompatibilitu s AI agenty.
+* Přidána nová "Ability" pro zjištění dostupnosti produktu.
+* Proaktivní přechod na WooCommerce CRUD metody pro lepší podporu HPOS.
+* Aktualizována deklarovaná kompatibilita pro WordPress 7.0 a WooCommerce 11.0.
+* Vylepšení uživatelského rozhraní v administraci sledování zásilek (tlačítka pro smazání).
 
 = 1.1.0 =
 * Plná kompatibilita s WooCommerce Cart and Checkout Blocks.

@@ -266,7 +266,7 @@ class Ceske_Sluzby_Blocks {
           $availability = ceske_sluzby_ziskat_nastavenou_dostupnost_produktu( $product, false );
           return array(
             'delivery_time' => $availability ? $availability['text'] : '',
-            'ean'           => get_post_meta( $product->get_id(), 'ceske_sluzby_hodnota_ean', true ),
+            'ean'           => $product->get_meta( 'ceske_sluzby_hodnota_ean', true ),
           );
         },
         'schema_callback' => function() {
