@@ -457,7 +457,11 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'API klíč: Ověřeno zákazníky',
           'type' => 'text',
-          'desc' => 'API klíč pro službu Ověřeno zákazníky naleznete <a href="https://sluzby.' . HEUREKA_URL . '/n/sluzby/certifikat-spokojenosti/">zde</a>.',
+          'desc' => sprintf(
+            __( 'API klíč pro službu Ověřeno zákazníky naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">v nápovědě Heureky</a>.', 'ceske-sluzby' ),
+            'https://sluzby.' . HEUREKA_URL . '/n/sluzby/certifikat-spokojenosti/',
+            esc_attr__( 'Nápověda Heureky (otevře se v novém okně)', 'ceske-sluzby' )
+          ),
           'id' => 'wc_ceske_sluzby_heureka_overeno-api',
           'css' => 'width: 300px'
         ),
@@ -477,14 +481,23 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'API klíč: Měření konverzí',
           'type' => 'text',
-          'desc' => 'API klíč pro službu Měření konverzí naleznete <a href="https://sluzby.' . HEUREKA_URL . '/obchody/mereni-konverzi/">zde</a>. Heureka může ještě nějaký čas hlásit, že nebyla služba zprovozněna (dokud neproběhne nějaká objednávka zákazníka z Heureky).',
+          'desc' => sprintf(
+            __( 'API klíč pro službu Měření konverzí naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">v nápovědě Heureky</a>. Heureka může ještě nějaký čas hlásit, že nebyla služba zprovozněna (dokud neproběhne nějaká objednávka zákazníka z Heureky).', 'ceske-sluzby' ),
+            'https://sluzby.' . HEUREKA_URL . '/obchody/mereni-konverzi/',
+            esc_attr__( 'Nápověda Heureky (otevře se v novém okně)', 'ceske-sluzby' )
+          ),
           'id'   => 'wc_ceske_sluzby_heureka_konverze-api',
           'css'   => 'width: 300px'
         ),
         array(
           'title' => 'Aktivovat certifikát',
           'type' => 'checkbox',
-          'desc' => 'Nastavení pro zobrazení certifikátu spokojenosti bude po aktivaci dostupné <a href="' . admin_url(). 'admin.php?page=wc-settings&tab=ceske-sluzby&section=certifikat-spokojenosti">zde</a>. Obchod musí certifikát nejdříve získat, což snadno ověříte <a href="https://sluzby.' . HEUREKA_URL . '/sluzby/certifikat-spokojenosti/">zde</a>',
+          'desc' => sprintf(
+            __( 'Nastavení pro zobrazení certifikátu spokojenosti bude po aktivaci dostupné <a href="%s">v nastavení</a>. Obchod musí certifikát nejdříve získat, což snadno ověříte <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">v administraci Heureky</a>.', 'ceske-sluzby' ),
+            admin_url( 'admin.php?page=wc-settings&tab=ceske-sluzby&section=certifikat-spokojenosti' ),
+            'https://sluzby.' . HEUREKA_URL . '/sluzby/certifikat-spokojenosti/',
+            esc_attr__( 'Administrace Heureky (otevře se v novém okně)', 'ceske-sluzby' )
+          ),
           'id' => 'wc_ceske_sluzby_heureka_certifikat_spokojenosti-aktivace'
         ),
         array(
@@ -514,7 +527,11 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'ID obchodu',
           'type' => 'text',
-          'desc' => 'Identifikační číslo obchodu pro měření konverzí naleznete <a href="https://admin.zbozi.cz/premiseListScreen">zde</a>.',
+          'desc' => sprintf(
+            __( 'Identifikační číslo obchodu pro měření konverzí naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">v administraci Zboží.cz</a>.', 'ceske-sluzby' ),
+            'https://admin.zbozi.cz/premiseListScreen',
+            esc_attr__( 'Administrace Zboží.cz (otevře se v novém okně)', 'ceske-sluzby' )
+          ),
           'id'   => 'wc_ceske_sluzby_zbozi_konverze_id-obchodu',                                                             
           'css'   => 'width: 300px'
         ),
@@ -560,7 +577,11 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'Identifikační klíč',
           'type' => 'text',
-          'desc' => 'Identifikační klíč pro měření konverzí naleznete <a href="https://www.srovname.cz/muj-obchod">zde</a>.',
+          'desc' => sprintf(
+            __( 'Identifikační klíč pro měření konverzí naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">v administraci Srovnáme.cz</a>.', 'ceske-sluzby' ),
+            'https://www.srovname.cz/muj-obchod',
+            esc_attr__( 'Administrace Srovnáme.cz (otevře se v novém okně)', 'ceske-sluzby' )
+          ),
           'id' => 'wc_ceske_sluzby_srovname_konverze-objednavky'
         ),
         array(
