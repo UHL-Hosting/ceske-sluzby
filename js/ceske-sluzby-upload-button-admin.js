@@ -18,7 +18,7 @@
       var attachment = custom_uploader.state().get('selection').first().toJSON();
       button.siblings( '.nazev-souboru' ).remove();
       button.before('<span class="nazev-souboru" style="padding-right:10px;"><strong>' + attachment.filename + '</strong></span>');
-      button.next().val(attachment.id).next().show();
+      button.next().val(attachment.id).next().show().focus();
       button.hide();
     }).open();
   });

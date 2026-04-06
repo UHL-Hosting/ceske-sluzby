@@ -195,6 +195,10 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
     return $value; 
   }
 
+  public static function admin_external_link_tip() {
+    return __( '(otevře se v novém okně)', 'ceske-sluzby' );
+  }
+
   public static function get_settings_shipping( $current_section = '' ) {
     global $current_section, $hide_save_button;
     $settings = array();
@@ -457,7 +461,10 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'API klíč: Ověřeno zákazníky',
           'type' => 'text',
-          'desc' => 'API klíč pro službu Ověřeno zákazníky naleznete <a href="https://sluzby.' . HEUREKA_URL . '/n/sluzby/certifikat-spokojenosti/">zde</a>.',
+          'desc' => sprintf(
+            __( 'API klíč pro službu Ověřeno zákazníky naleznete %s.', 'ceske-sluzby' ),
+            '<a href="https://sluzby.' . HEUREKA_URL . '/n/sluzby/certifikat-spokojenosti/" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'v administraci Heureky', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip() . '">' . esc_html__( 'v administraci Heureky', 'ceske-sluzby' ) . '</a>'
+          ),
           'id' => 'wc_ceske_sluzby_heureka_overeno-api',
           'css' => 'width: 300px'
         ),
@@ -477,20 +484,32 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'API klíč: Měření konverzí',
           'type' => 'text',
-          'desc' => 'API klíč pro službu Měření konverzí naleznete <a href="https://sluzby.' . HEUREKA_URL . '/obchody/mereni-konverzi/">zde</a>. Heureka může ještě nějaký čas hlásit, že nebyla služba zprovozněna (dokud neproběhne nějaká objednávka zákazníka z Heureky).',
+          'desc' => sprintf(
+            __( 'API klíč pro službu Měření konverzí naleznete %s.', 'ceske-sluzby' ),
+            '<a href="https://sluzby.' . HEUREKA_URL . '/obchody/mereni-konverzi/" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'v administraci Heureky', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip() . '">' . esc_html__( 'v administraci Heureky', 'ceske-sluzby' ) . '</a>'
+          ) . ' ' . __( 'Heureka může ještě nějaký čas hlásit, že nebyla služba zprovozněna (dokud neproběhne nějaká objednávka zákazníka z Heureky).', 'ceske-sluzby' ),
           'id'   => 'wc_ceske_sluzby_heureka_konverze-api',
           'css'   => 'width: 300px'
         ),
         array(
           'title' => 'Aktivovat certifikát',
           'type' => 'checkbox',
-          'desc' => 'Nastavení pro zobrazení certifikátu spokojenosti bude po aktivaci dostupné <a href="' . admin_url(). 'admin.php?page=wc-settings&tab=ceske-sluzby&section=certifikat-spokojenosti">zde</a>. Obchod musí certifikát nejdříve získat, což snadno ověříte <a href="https://sluzby.' . HEUREKA_URL . '/sluzby/certifikat-spokojenosti/">zde</a>',
+          'desc' => sprintf(
+            __( 'Nastavení pro zobrazení certifikátu spokojenosti bude po aktivaci dostupné %s.', 'ceske-sluzby' ),
+            '<a href="' . admin_url(). 'admin.php?page=wc-settings&tab=ceske-sluzby&section=certifikat-spokojenosti">' . esc_html__( 'v samostatné sekci', 'ceske-sluzby' ) . '</a>'
+          ) . ' ' . sprintf(
+            __( 'Obchod musí certifikát nejdříve získat, což snadno ověříte %s.', 'ceske-sluzby' ),
+            '<a href="https://sluzby.' . HEUREKA_URL . '/sluzby/certifikat-spokojenosti/" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'v administraci Heureky', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip() . '">' . esc_html__( 'v administraci Heureky', 'ceske-sluzby' ) . '</a>'
+          ),
           'id' => 'wc_ceske_sluzby_heureka_certifikat_spokojenosti-aktivace'
         ),
         array(
           'title' => 'Aktivovat XML feed',
           'type' => 'checkbox',
-          'desc' => 'Nastavení pro XML feed bude po aktivaci dostupné <a href="' . admin_url(). 'admin.php?page=wc-settings&tab=ceske-sluzby&section=xml-feed">zde</a>.',
+          'desc' => sprintf(
+            __( 'Nastavení pro XML feed bude po aktivaci dostupné %s.', 'ceske-sluzby' ),
+            '<a href="' . admin_url(). 'admin.php?page=wc-settings&tab=ceske-sluzby&section=xml-feed">' . esc_html__( 'v samostatné sekci', 'ceske-sluzby' ) . '</a>'
+          ),
           'id' => 'wc_ceske_sluzby_heureka_xml_feed-aktivace'
         ),
         array(
@@ -514,7 +533,10 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'ID obchodu',
           'type' => 'text',
-          'desc' => 'Identifikační číslo obchodu pro měření konverzí naleznete <a href="https://admin.zbozi.cz/premiseListScreen">zde</a>.',
+          'desc' => sprintf(
+            __( 'Identifikační číslo obchodu pro měření konverzí naleznete %s.', 'ceske-sluzby' ),
+            '<a href="https://admin.zbozi.cz/premiseListScreen" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'v administraci Zboží.cz', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip() . '">' . esc_html__( 'v administraci Zboží.cz', 'ceske-sluzby' ) . '</a>'
+          ),
           'id'   => 'wc_ceske_sluzby_zbozi_konverze_id-obchodu',                                                             
           'css'   => 'width: 300px'
         ),
@@ -538,13 +560,22 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'ID konverzního kódu',
           'type' => 'text',
-          'desc' => 'ID získaného kódu pro měření konverzí naleznete <a href="https://www.sklik.cz/seznam-konverzi">zde</a>. Je třeba vytvořit konverzní kód typu "vytvoření objednávky" a z něho získat potřebné ID.',
+          'desc' => sprintf(
+            __( 'ID získaného kódu pro měření konverzí naleznete %s.', 'ceske-sluzby' ),
+            '<a href="https://www.sklik.cz/seznam-konverzi" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'v administraci Skliku', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip() . '">' . esc_html__( 'v administraci Skliku', 'ceske-sluzby' ) . '</a>'
+          ) . ' ' . __( 'Je třeba vytvořit konverzní kód typu "vytvoření objednávky" a z něho získat potřebné ID.', 'ceske-sluzby' ),
           'id' => 'wc_ceske_sluzby_sklik_konverze-objednavky'
         ),
         array(
           'title' => 'ID pro retargeting',
           'type' => 'text',
-          'desc' => 'ID získaného kódu pro retargeting naleznete <a href="https://www.sklik.cz/retargeting">zde</a>. Je třeba kliknout na odkaz "Zobrazit retargetingový kód" a z něho získat potřebné ID. Manuál pro použití této služby naleznete <a href="https://napoveda.sklik.cz/typy-cileni/retargeting/">zde</a>.',
+          'desc' => sprintf(
+            __( 'ID získaného kódu pro retargeting naleznete %s.', 'ceske-sluzby' ),
+            '<a href="https://www.sklik.cz/retargeting" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'v administraci Skliku', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip() . '">' . esc_html__( 'v administraci Skliku', 'ceske-sluzby' ) . '</a>'
+          ) . ' ' . sprintf(
+            __( 'Je třeba kliknout na odkaz "Zobrazit retargetingový kód" a z něho získat potřebné ID. Manuál pro použití této služby naleznete %s.', 'ceske-sluzby' ),
+            '<a href="https://napoveda.sklik.cz/typy-cileni/retargeting/" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'v nápovědě Skliku', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip() . '">' . esc_html__( 'v nápovědě Skliku', 'ceske-sluzby' ) . '</a>'
+          ),
           'id' => 'wc_ceske_sluzby_sklik_retargeting'
         ),
         array(
@@ -560,7 +591,10 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'Identifikační klíč',
           'type' => 'text',
-          'desc' => 'Identifikační klíč pro měření konverzí naleznete <a href="https://www.srovname.cz/muj-obchod">zde</a>.',
+          'desc' => sprintf(
+            __( 'Identifikační klíč pro měření konverzí naleznete %s.', 'ceske-sluzby' ),
+            '<a href="https://www.srovname.cz/muj-obchod" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'v administraci Srovnáme.cz', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip() . '">' . esc_html__( 'v administraci Srovnáme.cz', 'ceske-sluzby' ) . '</a>'
+          ),
           'id' => 'wc_ceske_sluzby_srovname_konverze-objednavky'
         ),
         array(
@@ -576,7 +610,10 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'Sledování zásilek',
           'type' => 'checkbox',
-          'desc' => 'Aktivovat možnost zadávání informací pro sledování zásilek u každé objednávky. Speciální notifikační email můžete nastavit <a href="' . admin_url(). 'admin.php?page=wc-settings&tab=email&section=wc_email_ceske_sluzby_sledovani_zasilek">zde</a>.',
+          'desc' => __( 'Aktivovat možnost zadávání informací pro sledování zásilek u každé objednávky.', 'ceske-sluzby' ) . ' ' . sprintf(
+            __( 'Speciální notifikační email můžete nastavit %s.', 'ceske-sluzby' ),
+            '<a href="' . admin_url(). 'admin.php?page=wc-settings&tab=email&section=wc_email_ceske_sluzby_sledovani_zasilek">' . esc_html__( 'v nastavení emailů', 'ceske-sluzby' ) . '</a>'
+          ),
           'id' => 'wc_ceske_sluzby_dalsi_nastaveni_sledovani-zasilek'
         ),
         array(
@@ -601,7 +638,10 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'Dodací doba',
           'type' => 'checkbox',
-          'desc' => 'Aktivovat možnost podrobného nastavení dodací doby, které bude dostupné <a href="' . admin_url(). 'admin.php?page=wc-settings&tab=ceske-sluzby&section=dodaci-doba">zde</a>.',
+          'desc' => sprintf(
+            __( 'Aktivovat možnost podrobného nastavení dodací doby, které bude dostupné %s.', 'ceske-sluzby' ),
+            '<a href="' . admin_url(). 'admin.php?page=wc-settings&tab=ceske-sluzby&section=dodaci-doba">' . esc_html__( 'v samostatné sekci', 'ceske-sluzby' ) . '</a>'
+          ),
           'id' => 'wc_ceske_sluzby_dalsi_nastaveni_dodaci_doba-aktivace'
         ),
         array(
