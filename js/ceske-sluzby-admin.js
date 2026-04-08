@@ -115,4 +115,13 @@ jQuery( function( $ ) {
     $( '#ceske_sluzby_sledovani_zasilek_id_zasilky' ).val( '' ).trigger( 'change' ).focus();
     return false;
   });
+
+  // Automatické ořezávání mezer pro konfigurační pole.
+  $( 'body' ).on( 'blur', 'input[id*="-api"], input[id*="-klic"], input[id*="-id"]', function() {
+    var $this = $( this );
+    var trimmed = $this.val().trim();
+    if ( trimmed !== $this.val() ) {
+      $this.val( trimmed ).trigger( 'change' );
+    }
+  });
 });
