@@ -91,11 +91,14 @@ jQuery( function( $ ) {
     update_tracking_link();
   });
 
-  $( 'body' ).on( 'blur', '#ceske_sluzby_sledovani_zasilek_id_zasilky', function() {
+  $( 'body' ).on( 'blur', 'input[id*="-api"], input[id*="-klic"], input[id*="-id"], #ceske_sluzby_sledovani_zasilek_id_zasilky', function() {
     var $this = $( this );
-    var trimmed = $this.val().trim();
-    if ( trimmed !== $this.val() ) {
-      $this.val( trimmed ).trigger( 'change' );
+    var value = $this.val();
+    if ( typeof value === 'string' ) {
+      var trimmed = value.trim();
+      if ( trimmed !== value ) {
+        $this.val( trimmed ).trigger( 'change' );
+      }
     }
   });
 
