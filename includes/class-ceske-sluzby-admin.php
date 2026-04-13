@@ -18,6 +18,10 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
     add_action( 'woocommerce_update_options_shipping', __CLASS__ . '::update_settings_shipping' );
   }
 
+  public static function admin_external_link_tip() {
+    return __( '(otevře se v novém okně)', 'ceske-sluzby' );
+  }
+
   public static function ceske_sluzby_ziskat_aktivovane_platebni_metody() {
     $available_gateways = array();
     if ( ! is_null( WC()->payment_gateways ) ) {
@@ -430,7 +434,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           <?php } ?>
           <button type="button" style="display:<?php echo $display; ?>" class="ceske_sluzby_upload_button button"><?php echo $upload_button; ?></button>
           <input type="hidden" name="<?php echo $value['id']; ?>" id="<?php echo $value['id']; ?>" value="<?php echo $selected_value; ?>" />
-          <button type="button" class="ceske_sluzby_remove_button button-link" aria-label="<?php echo esc_attr( $remove_button ); ?>" style="font-size:13px;display:<?php echo $display_remove; ?>"><?php echo $remove_button; ?></button>
+          <button type="button" class="ceske_sluzby_remove_button button-link" aria-label="<?php echo esc_attr( $remove_button ); ?>" style="font-size:13px;display:<?php echo $display_remove; ?>;margin-left:5px;"><?php echo esc_html( $remove_button ); ?></button>
         </div>
         <?php echo $description; ?>
       </td>
@@ -457,7 +461,12 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'API klíč: Ověřeno zákazníky',
           'type' => 'text',
-          'desc' => 'API klíč pro službu Ověřeno zákazníky naleznete <a href="https://sluzby.' . HEUREKA_URL . '/n/sluzby/certifikat-spokojenosti/">zde</a>.',
+          'desc' => sprintf(
+            'API klíč pro službu Ověřeno zákazníky naleznete <a href="https://sluzby.%s/n/sluzby/certifikat-spokojenosti/" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>.',
+            HEUREKA_URL,
+            esc_attr( 'v administraci Heureky ' . self::admin_external_link_tip() ),
+            'v administraci Heureky'
+          ),
           'id' => 'wc_ceske_sluzby_heureka_overeno-api',
           'css' => 'width: 300px'
         ),
@@ -514,7 +523,11 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'ID obchodu',
           'type' => 'text',
-          'desc' => 'Identifikační číslo obchodu pro měření konverzí naleznete <a href="https://admin.zbozi.cz/premiseListScreen">zde</a>.',
+          'desc' => sprintf(
+            'Identifikační číslo obchodu pro měření konverzí naleznete <a href="https://admin.zbozi.cz/premiseListScreen" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>.',
+            esc_attr( 'v administraci Zboží.cz ' . self::admin_external_link_tip() ),
+            'v administraci Zboží.cz'
+          ),
           'id'   => 'wc_ceske_sluzby_zbozi_konverze_id-obchodu',                                                             
           'css'   => 'width: 300px'
         ),
@@ -538,7 +551,11 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'ID konverzního kódu',
           'type' => 'text',
-          'desc' => 'ID získaného kódu pro měření konverzí naleznete <a href="https://www.sklik.cz/seznam-konverzi">zde</a>. Je třeba vytvořit konverzní kód typu "vytvoření objednávky" a z něho získat potřebné ID.',
+          'desc' => sprintf(
+            'ID získaného kódu pro měření konverzí naleznete <a href="https://www.sklik.cz/seznam-konverzi" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>. Je třeba vytvořit konverzní kód typu "vytvoření objednávky" a z něho získat potřebné ID.',
+            esc_attr( 'v administraci Skliku ' . self::admin_external_link_tip() ),
+            'v administraci Skliku'
+          ),
           'id' => 'wc_ceske_sluzby_sklik_konverze-objednavky'
         ),
         array(
