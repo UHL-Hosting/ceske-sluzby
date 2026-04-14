@@ -9,3 +9,12 @@
 ## 2025-05-16 - [Descriptive navigation and focus persistence]
 **Learning:** Generic link labels like "zde" (here) fail to provide context for screen readers and users scanning the page. Additionally, maintaining focus after asynchronous UI changes (like file uploads) is critical for keyboard accessibility.
 **Action:** Replace non-descriptive links with labels that identify the destination. When an action reveals a new UI element (e.g., a "Remove" button after upload), programmatically shift focus to it immediately.
+## 2025-05-16 - [Focus management in Media API interactions]
+**Learning:** When using the WordPress Media API to pick files, focus is often lost because the original trigger (the "Upload" button) is hidden or the modal closure resets focus to the body. Programmatically shifting focus to the newly revealed secondary action (the "Remove" button) maintains keyboard context.
+**Action:** Always call `.focus()` on the next logical interactive element after a media library selection if the original trigger is removed or hidden.
+## 2026-04-13 - [Descriptive link labels and focus management]
+**Learning:** Generic link labels like "zde" (here) are a common accessibility pitfall. Replacing them with descriptive destination labels improves context for all users, especially those using screen readers. Furthermore, programmatically shifting focus to newly revealed interactive elements (like a "Remove" button after upload) maintains keyboard navigation continuity.
+**Action:** Always replace generic navigation text with descriptive labels. After a user action reveals a new primary interaction point, use `.focus()` to guide the keyboard focus to that element.
+## 2025-05-16 - [Descriptive Link Text and External Link Accessibility]
+**Learning:** Generic link labels like "zde" (here) are a significant accessibility barrier for screen reader users and provide poor context for all users. In complex admin settings with many external documentation links, descriptive labels combined with explicit external link hints and security attributes (`rel="noopener noreferrer"`) are essential.
+**Action:** Always replace generic "zde" or "here" with descriptive labels (e.g., "v administraci Heureky"). For links opening in new tabs, add `target="_blank"`, `rel="noopener noreferrer"`, and an `aria-label` that includes both the link's purpose and a localized hint like `(otevře se v novém okně)`. Use `sprintf()` and `__()` for clean, translatable link templates in PHP.

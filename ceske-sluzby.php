@@ -1253,7 +1253,11 @@ function ceske_sluzby_xml_kategorie_pridat_pole() {
       <label for="ceske-sluzby-xml-heureka-kategorie">Kategorie</label>
       <input name="ceske-sluzby-xml-heureka-kategorie" id="ceske-sluzby-xml-heureka-kategorie" type="text" value="" placeholder="CATEGORYTEXT" size="70"/>
       <p>
-        Zatím je nutné doplnit příslušnou kategorii z Heureky ručně (aktuální přehled naleznete <a href="https://www.<?php echo HEUREKA_URL; ?>/direct/xml-export/shops/heureka-sekce.xml">zde</a>).<br />
+<<<<<<< palette-ux-accessibility-improvements-12260817839403926927
+        Zatím je nutné doplnit příslušnou kategorii z Heureky ručně (aktuální přehled naleznete <a href="https://www.<?php echo HEUREKA_URL; ?>/direct/xml-export/shops/heureka-sekce.xml" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'v přehledu kategorií Heureky (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v přehledu kategorií Heureky', 'ceske-sluzby' ); ?></a>).<br />
+=======
+        Zatím je nutné doplnit příslušnou kategorii z Heureky ručně (aktuální přehled naleznete <a href="https://www.<?php echo HEUREKA_URL; ?>/direct/xml-export/shops/heureka-sekce.xml" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'Oficiální přehled kategorií Heureka (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v oficiálním přehledu', 'ceske-sluzby' ); ?></a>).<br />
+>>>>>>> master
         Příklad: <strong>Elektronika | Počítače a kancelář | Software | Antiviry</strong><br />
         Poznámka: Z <code>CATEGORY_FULLNAME</code> je třeba vynechat část <code><?php echo ucfirst( HEUREKA_URL ); ?> | </code>.
       </p>
@@ -1263,7 +1267,11 @@ function ceske_sluzby_xml_kategorie_pridat_pole() {
         <label for="ceske-sluzby-xml-heureka-productname">Název produktů</label>
         <input name="ceske-sluzby-xml-heureka-productname" id="ceske-sluzby-xml-heureka-productname" type="text" value="" placeholder="PRODUCTNAME" size="70"/>
         <p>
-          Pomocí placeholderů můžete doplnit obecný název pro všechny produkty z příslušné kategorie Heureky (aktuální přehled naleznete <a href="https://sluzby.<?php echo HEUREKA_URL; ?>/napoveda/povinne-nazvy/" target="_blank">zde</a>).<br />
+<<<<<<< palette-ux-accessibility-improvements-12260817839403926927
+          Pomocí placeholderů můžete doplnit obecný název pro všechny produkty z příslušné kategorie Heureky (aktuální přehled naleznete <a href="https://sluzby.<?php echo HEUREKA_URL; ?>/napoveda/povinne-nazvy/" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'v nápovědě Heureky (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v nápovědě Heureky', 'ceske-sluzby' ); ?></a>).<br />
+=======
+          Pomocí placeholderů můžete doplnit obecný název pro všechny produkty z příslušné kategorie Heureky (aktuální přehled naleznete <a href="https://sluzby.<?php echo HEUREKA_URL; ?>/napoveda/povinne-nazvy/" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'Manuál pro povinné názvy na Heurece (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v manuálu Heureky', 'ceske-sluzby' ); ?></a>).<br />
+>>>>>>> master
           Příklad (Svatební dekorace): <strong>Výrobce | Druh | Barva</strong><br />
           Pokud používáte nastavení výrobce, druh máte jako název produktu a barvu zase uloženou jako vlastnost v podobě taxonomie, tak můžete zadat: <code>{MANUFACTURER} {NAZEV} {pa_barva}</code>
         </p>
@@ -1276,7 +1284,11 @@ function ceske_sluzby_xml_kategorie_pridat_pole() {
       <label for="ceske-sluzby-xml-zbozi-kategorie">Kategorie</label>
       <input name="ceske-sluzby-xml-zbozi-kategorie" id="ceske-sluzby-xml-zbozi-kategorie" type="text" value="" placeholder="CATEGORYTEXT" size="70" />
       <p>
-        Zatím je nutné doplnit příslušnou kategorii ze Zbozi.cz ručně (aktuální přehled naleznete <a href="https://www.zbozi.cz/static/categories.csv">zde</a>).<br />
+<<<<<<< palette-ux-accessibility-improvements-12260817839403926927
+        Zatím je nutné doplnit příslušnou kategorii ze Zbozi.cz ručně (aktuální přehled naleznete <a href="https://www.zbozi.cz/static/categories.csv" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'v přehledu kategorií Zboží.cz (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v přehledu kategorií Zboží.cz', 'ceske-sluzby' ); ?></a>).<br />
+=======
+        Zatím je nutné doplnit příslušnou kategorii ze Zbozi.cz ručně (aktuální přehled naleznete <a href="https://www.zbozi.cz/static/categories.csv" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'Oficiální přehled kategorií Zboží.cz (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v oficiálním přehledu', 'ceske-sluzby' ); ?></a>).<br />
+>>>>>>> master
         Příklad: <strong>Počítače | Software | Grafický a video software</strong><br />
       </p>
     </div>
@@ -1285,7 +1297,11 @@ function ceske_sluzby_xml_kategorie_pridat_pole() {
         <label for="ceske-sluzby-xml-zbozi-productname">Název produktů</label>
         <input name="ceske-sluzby-xml-zbozi-productname" id="ceske-sluzby-xml-zbozi-productname" type="text" value="" placeholder="PRODUCTNAME" size="70" />
         <p>
-          Pomocí placeholderů můžete doplnit obecný název pro všechny produkty z příslušné kategorie Zboží.cz (aktuální přehled naleznete <a href="https://napoveda.seznam.cz/cz/zbozi/specifikace-xml-pro-obchody/pravidla-pojmenovani-nabidek/" target="_blank">zde</a>).<br />
+<<<<<<< palette-ux-accessibility-improvements-12260817839403926927
+          Pomocí placeholderů můžete doplnit obecný název pro všechny produkty z příslušné kategorie Zboží.cz (aktuální přehled naleznete <a href="https://napoveda.seznam.cz/cz/zbozi/specifikace-xml-pro-obchody/pravidla-pojmenovani-nabidek/" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'v nápovědě Zboží.cz (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v nápovědě Zboží.cz', 'ceske-sluzby' ); ?></a>).<br />
+=======
+          Pomocí placeholderů můžete doplnit obecný název pro všechny produkty z příslušné kategorie Zboží.cz (aktuální přehled naleznete <a href="https://napoveda.seznam.cz/cz/zbozi/specifikace-xml-pro-obchody/pravidla-pojmenovani-nabidek/" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'Pravidla pojmenování nabídek na Zboží.cz (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v pravidlech Zboží.cz', 'ceske-sluzby' ); ?></a>).<br />
+>>>>>>> master
           Příklad pro konrétní kategorii: <strong>Výrobce | Druh | Barva</strong><br />
           Pokud používáte nastavení výrobce, druh máte jako název produktu a barvu zase uloženou jako vlastnost v podobě taxonomie, tak můžete zadat: <code>{MANUFACTURER} {NAZEV} {pa_barva}</code>
         </p>
@@ -1320,7 +1336,11 @@ function ceske_sluzby_xml_kategorie_pridat_pole() {
       <label for="ceske-sluzby-xml-glami-kategorie">Kategorie</label>
       <input name="ceske-sluzby-xml-glami-kategorie" id="ceske-sluzby-xml-glami-kategorie" type="text" value="" placeholder="CATEGORYTEXT" size="70"/>
       <p>
-        Zatím je nutné doplnit příslušnou kategorii z Glami ručně (aktuální přehled naleznete <a href="https://www.<?php echo GLAMI_URL; ?>/category-xml/">zde</a>).<br />
+<<<<<<< palette-ux-accessibility-improvements-12260817839403926927
+        Zatím je nutné doplnit příslušnou kategorii z Glami ručně (aktuální přehled naleznete <a href="https://www.<?php echo GLAMI_URL; ?>/category-xml/" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'v přehledu kategorií Glami (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v přehledu kategorií Glami', 'ceske-sluzby' ); ?></a>).<br />
+=======
+        Zatím je nutné doplnit příslušnou kategorii z Glami ručně (aktuální přehled naleznete <a href="https://www.<?php echo GLAMI_URL; ?>/category-xml/" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'Oficiální přehled kategorií Glami (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v oficiálním přehledu', 'ceske-sluzby' ); ?></a>).<br />
+>>>>>>> master
         Příklad: <strong>Dámské oblečení a obuv | Dámské boty | Dámské outdoorové boty</strong><br />
         Poznámka: Z <code>CATEGORY_FULLNAME</code> je třeba vynechat část <code><?php echo ucfirst( GLAMI_URL ); ?> | </code>.
       </p>
@@ -1397,7 +1417,11 @@ function ceske_sluzby_xml_kategorie_upravit_pole( $term ) {
       <td> 
         <input name="ceske-sluzby-xml-heureka-kategorie" id="ceske-sluzby-xml-heureka-kategorie" type="text" value="<?php echo esc_attr( $heureka_kategorie ); ?>" placeholder="CATEGORYTEXT" />
         <p class="description">
-          Zatím je nutné doplnit příslušnou kategorii z Heureky ručně (aktuální přehled naleznete <a href="http://www.<?php echo HEUREKA_URL; ?>/direct/xml-export/shops/heureka-sekce.xml">zde</a>).<br />
+<<<<<<< palette-ux-accessibility-improvements-12260817839403926927
+          Zatím je nutné doplnit příslušnou kategorii z Heureky ručně (aktuální přehled naleznete <a href="http://www.<?php echo HEUREKA_URL; ?>/direct/xml-export/shops/heureka-sekce.xml" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'v přehledu kategorií Heureky (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v přehledu kategorií Heureky', 'ceske-sluzby' ); ?></a>).<br />
+=======
+          Zatím je nutné doplnit příslušnou kategorii z Heureky ručně (aktuální přehled naleznete <a href="http://www.<?php echo HEUREKA_URL; ?>/direct/xml-export/shops/heureka-sekce.xml" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'Oficiální přehled kategorií Heureka (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v oficiálním přehledu', 'ceske-sluzby' ); ?></a>).<br />
+>>>>>>> master
           Příklad: <strong>Elektronika | Počítače a kancelář | Software | Antiviry</strong><br />
           Poznámka: Z <code>CATEGORY_FULLNAME</code> je třeba vynechat část <code><?php echo ucfirst( HEUREKA_URL ); ?> | </code>.
         </p>
@@ -1409,7 +1433,11 @@ function ceske_sluzby_xml_kategorie_upravit_pole( $term ) {
         <td> 
           <input name="ceske-sluzby-xml-heureka-productname" id="ceske-sluzby-xml-heureka-productname" type="text" value="<?php echo esc_attr( $heureka_productname ); ?>" placeholder="PRODUCTNAME" />
             <p class="description">
-              Pomocí placeholderů můžete doplnit obecný název pro všechny produkty z příslušné kategorie Heureky (aktuální přehled naleznete <a href="http://sluzby.<?php echo HEUREKA_URL; ?>/napoveda/povinne-nazvy/" target="_blank">zde</a>).<br />
+<<<<<<< palette-ux-accessibility-improvements-12260817839403926927
+              Pomocí placeholderů můžete doplnit obecný název pro všechny produkty z příslušné kategorie Heureky (aktuální přehled naleznete <a href="http://sluzby.<?php echo HEUREKA_URL; ?>/napoveda/povinne-nazvy/" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'v nápovědě Heureky (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v nápovědě Heureky', 'ceske-sluzby' ); ?></a>).<br />
+=======
+              Pomocí placeholderů můžete doplnit obecný název pro všechny produkty z příslušné kategorie Heureky (aktuální přehled naleznete <a href="http://sluzby.<?php echo HEUREKA_URL; ?>/napoveda/povinne-nazvy/" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'Manuál pro povinné názvy na Heurece (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v manuálu Heureky', 'ceske-sluzby' ); ?></a>).<br />
+>>>>>>> master
               Příklad (Svatební dekorace): <strong>Výrobce | Druh | Barva</strong><br />
               Pokud používáte nastavení výrobce, druh máte jako název produktu a barvu zase uloženou jako vlastnost v podobě taxonomie, tak můžete zadat: <code>{MANUFACTURER} {NAZEV} {pa_barva}</code>
             </p>
@@ -1426,7 +1454,11 @@ function ceske_sluzby_xml_kategorie_upravit_pole( $term ) {
       <td> 
         <input name="ceske-sluzby-xml-zbozi-kategorie" id="ceske-sluzby-xml-zbozi-kategorie" type="text" value="<?php echo esc_attr( $zbozi_kategorie ); ?>" placeholder="CATEGORYTEXT" />
         <p class="description">
-          Zatím je nutné doplnit příslušnou kategorii ze Zbozi.cz ručně (aktuální přehled naleznete <a href="http://www.zbozi.cz/static/categories.csv">zde</a>).<br />
+<<<<<<< palette-ux-accessibility-improvements-12260817839403926927
+          Zatím je nutné doplnit příslušnou kategorii ze Zbozi.cz ručně (aktuální přehled naleznete <a href="http://www.zbozi.cz/static/categories.csv" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'v přehledu kategorií Zboží.cz (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v přehledu kategorií Zboží.cz', 'ceske-sluzby' ); ?></a>).<br />
+=======
+          Zatím je nutné doplnit příslušnou kategorii ze Zbozi.cz ručně (aktuální přehled naleznete <a href="http://www.zbozi.cz/static/categories.csv" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'Oficiální přehled kategorií Zboží.cz (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v oficiálním přehledu', 'ceske-sluzby' ); ?></a>).<br />
+>>>>>>> master
           Příklad: <strong>Počítače | Software | Grafický a video software</strong><br />
         </p>
       </td>
@@ -1437,7 +1469,11 @@ function ceske_sluzby_xml_kategorie_upravit_pole( $term ) {
         <td> 
           <input name="ceske-sluzby-xml-zbozi-productname" id="ceske-sluzby-xml-zbozi-productname" type="text" value="<?php echo esc_attr( $zbozi_productname ); ?>" placeholder="PRODUCTNAME" />
             <p class="description">
-              Pomocí placeholderů můžete doplnit obecný název pro všechny produkty z příslušné kategorie Zboží.cz (aktuální přehled naleznete <a href="http://napoveda.seznam.cz/cz/zbozi/specifikace-xml-pro-obchody/pravidla-pojmenovani-nabidek/" target="_blank">zde</a>).<br />
+<<<<<<< palette-ux-accessibility-improvements-12260817839403926927
+              Pomocí placeholderů můžete doplnit obecný název pro všechny produkty z příslušné kategorie Zboží.cz (aktuální přehled naleznete <a href="http://napoveda.seznam.cz/cz/zbozi/specifikace-xml-pro-obchody/pravidla-pojmenovani-nabidek/" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'v nápovědě Zboží.cz (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v nápovědě Zboží.cz', 'ceske-sluzby' ); ?></a>).<br />
+=======
+              Pomocí placeholderů můžete doplnit obecný název pro všechny produkty z příslušné kategorie Zboží.cz (aktuální přehled naleznete <a href="http://napoveda.seznam.cz/cz/zbozi/specifikace-xml-pro-obchody/pravidla-pojmenovani-nabidek/" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'Pravidla pojmenování nabídek na Zboží.cz (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v pravidlech Zboží.cz', 'ceske-sluzby' ); ?></a>).<br />
+>>>>>>> master
               Příklad pro konrétní kategorii: <strong>Výrobce | Druh | Barva</strong><br />
               Pokud používáte nastavení výrobce, druh máte jako název produktu a barvu zase uloženou jako vlastnost v podobě taxonomie, tak můžete zadat: <code>{MANUFACTURER} {NAZEV} {pa_barva}</code>
             </p>
@@ -1485,7 +1521,11 @@ function ceske_sluzby_xml_kategorie_upravit_pole( $term ) {
       <td> 
         <input name="ceske-sluzby-xml-glami-kategorie" id="ceske-sluzby-xml-glami-kategorie" type="text" value="<?php echo esc_attr( $glami_kategorie ); ?>" placeholder="CATEGORYTEXT" />
         <p class="description">
-          Zatím je nutné doplnit příslušnou kategorii z Glami ručně (aktuální přehled naleznete <a href="http://www.<?php echo GLAMI_URL; ?>/category-xml/">zde</a>).<br />
+<<<<<<< palette-ux-accessibility-improvements-12260817839403926927
+          Zatím je nutné doplnit příslušnou kategorii z Glami ručně (aktuální přehled naleznete <a href="http://www.<?php echo GLAMI_URL; ?>/category-xml/" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'v přehledu kategorií Glami (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v přehledu kategorií Glami', 'ceske-sluzby' ); ?></a>).<br />
+=======
+          Zatím je nutné doplnit příslušnou kategorii z Glami ručně (aktuální přehled naleznete <a href="http://www.<?php echo GLAMI_URL; ?>/category-xml/" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr__( 'Oficiální přehled kategorií Glami (otevře se v novém okně)', 'ceske-sluzby' ); ?>"><?php echo esc_html__( 'v oficiálním přehledu', 'ceske-sluzby' ); ?></a>).<br />
+>>>>>>> master
           Příklad: <strong>Dámské oblečení a obuv | Dámské boty | Dámské outdoorové boty</strong><br />
           Poznámka: Z <code>CATEGORY_FULLNAME</code> je třeba vynechat část <code><?php echo ucfirst( GLAMI_URL ); ?> | </code>.
         </p>
@@ -1851,7 +1891,8 @@ function ceske_sluzby_load_admin_scripts() {
   $screen = get_current_screen();
   $screen_id = $screen ? $screen->id : '';
   $predobjednavka = get_option( 'wc_ceske_sluzby_preorder-aktivace' );
-  if ( ( in_array( $screen_id, array( 'product', 'edit-product' ), true ) && $predobjednavka == "yes" ) || ceske_sluzby_is_order_admin_screen( $screen ) ) {
+  $is_ceske_sluzby_settings = ( $screen_id === 'woocommerce_page_wc-settings' && isset( $_GET['tab'] ) && $_GET['tab'] === 'ceske-sluzby' );
+  if ( ( in_array( $screen_id, array( 'product', 'edit-product' ), true ) && $predobjednavka == "yes" ) || ceske_sluzby_is_order_admin_screen( $screen ) || $is_ceske_sluzby_settings ) {
     wp_register_script( 'wc-admin-ceske-sluzby', untrailingslashit( plugins_url( '/', __FILE__ ) ) . '/js/ceske-sluzby-admin.js', array( 'jquery-ui-datepicker' ), CS_VERSION );
     wp_localize_script( 'wc-admin-ceske-sluzby', 'ceske_sluzby_admin', array(
       'tracking_link_label' => __( 'Kontrolní odkaz', 'ceske-sluzby' ),
