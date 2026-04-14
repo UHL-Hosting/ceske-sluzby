@@ -41,7 +41,7 @@ class WC_Shipping_Ceske_Sluzby_Zasilkovna extends WC_Shipping_Method {
       'zasilkovna_api-klic' => array(
         'title' => 'API klíč',
         'type' => 'text',
-        'description' => 'API klíč naleznete v administraci Zásilkovny (<a href="https://client.packeta.com/cs/support/">zde</a>).',
+        'description' => 'API klíč naleznete v administraci Zásilkovny (<a href="https://client.packeta.com/cs/support/" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'v administraci Zásilkovny (otevře se v novém okně)', 'ceske-sluzby' ) . '">' . esc_html__( 'v administraci Zásilkovny', 'ceske-sluzby' ) . '</a>).',
         'default' => '',
         'css' => 'width: 300px;'
       ),
