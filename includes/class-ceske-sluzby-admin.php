@@ -1067,4 +1067,5 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
 
     return $settings;
   }
+
 }
