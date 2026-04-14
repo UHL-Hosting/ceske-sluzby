@@ -1851,7 +1851,8 @@ function ceske_sluzby_load_admin_scripts() {
   $screen = get_current_screen();
   $screen_id = $screen ? $screen->id : '';
   $predobjednavka = get_option( 'wc_ceske_sluzby_preorder-aktivace' );
-  if ( ( in_array( $screen_id, array( 'product', 'edit-product' ), true ) && $predobjednavka == "yes" ) || ceske_sluzby_is_order_admin_screen( $screen ) ) {
+  $is_ceske_sluzby_settings = ( $screen_id === 'woocommerce_page_wc-settings' && isset( $_GET['tab'] ) && $_GET['tab'] === 'ceske-sluzby' );
+  if ( ( in_array( $screen_id, array( 'product', 'edit-product' ), true ) && $predobjednavka == "yes" ) || ceske_sluzby_is_order_admin_screen( $screen ) || $is_ceske_sluzby_settings ) {
     wp_register_script( 'wc-admin-ceske-sluzby', untrailingslashit( plugins_url( '/', __FILE__ ) ) . '/js/ceske-sluzby-admin.js', array( 'jquery-ui-datepicker' ), CS_VERSION );
     wp_localize_script( 'wc-admin-ceske-sluzby', 'ceske_sluzby_admin', array(
       'tracking_link_label' => __( 'Kontrolní odkaz', 'ceske-sluzby' ),
