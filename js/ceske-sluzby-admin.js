@@ -91,7 +91,7 @@ jQuery( function( $ ) {
     update_tracking_link();
   });
 
-  $( 'body' ).on( 'blur', 'input[id*="-api"], input[id*="-klic"], input[id*="-id"]', function() {
+  $( 'body' ).on( 'blur', 'input[id*="-api"], input[id*="-klic"], input[id*="-id"], #ceske_sluzby_sledovani_zasilek_id_zasilky', function() {
     var $this = $( this );
     if ( typeof $this.val() === 'string' ) {
       var trimmed = $this.val().trim();
