@@ -118,7 +118,7 @@ jQuery( function( $ ) {
     return false;
   });
 
-  // Automatické odstraňování mezer u důležitých polí (API klíče, ID, atd).
+  // Automatické ořezávání mezer pro konfigurační pole.
   $( 'body' ).on( 'blur', 'input[id*="-api"], input[id*="-klic"], input[id*="-id"]', function() {
     var $this = $( this );
     var trimmed = $this.val().trim();
