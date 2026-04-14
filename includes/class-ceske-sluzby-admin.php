@@ -457,7 +457,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'API klíč: Ověřeno zákazníky',
           'type' => 'text',
-          'desc' => 'API klíč pro službu Ověřeno zákazníky naleznete <a href="https://sluzby.' . HEUREKA_URL . '/n/sluzby/certifikat-spokojenosti/">zde</a>.',
+          'desc' => 'API klíč pro službu Ověřeno zákazníky naleznete <a href="https://sluzby.' . HEUREKA_URL . '/n/sluzby/certifikat-spokojenosti/" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr( 'v administraci Heureky ' . ceske_sluzby_admin_external_link_tip() ) . '">v administraci Heureky</a>.',
           'id' => 'wc_ceske_sluzby_heureka_overeno-api',
           'css' => 'width: 300px'
         ),
@@ -477,7 +477,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'API klíč: Měření konverzí',
           'type' => 'text',
-          'desc' => 'API klíč pro službu Měření konverzí naleznete <a href="https://sluzby.' . HEUREKA_URL . '/obchody/mereni-konverzi/">zde</a>. Heureka může ještě nějaký čas hlásit, že nebyla služba zprovozněna (dokud neproběhne nějaká objednávka zákazníka z Heureky).',
+          'desc' => 'API klíč pro službu Měření konverzí naleznete <a href="https://sluzby.' . HEUREKA_URL . '/obchody/mereni-konverzi/" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr( 'v administraci Heureky ' . ceske_sluzby_admin_external_link_tip() ) . '">v administraci Heureky</a>. Heureka může ještě nějaký čas hlásit, že nebyla služba zprovozněna (dokud neproběhne nějaká objednávka zákazníka z Heureky).',
           'id'   => 'wc_ceske_sluzby_heureka_konverze-api',
           'css'   => 'width: 300px'
         ),
@@ -514,7 +514,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'ID obchodu',
           'type' => 'text',
-          'desc' => 'Identifikační číslo obchodu pro měření konverzí naleznete <a href="https://admin.zbozi.cz/premiseListScreen">zde</a>.',
+          'desc' => 'Identifikační číslo obchodu pro měření konverzí naleznete <a href="https://admin.zbozi.cz/premiseListScreen" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr( 'v administraci Zboží.cz ' . ceske_sluzby_admin_external_link_tip() ) . '">v administraci Zboží.cz</a>.',
           'id'   => 'wc_ceske_sluzby_zbozi_konverze_id-obchodu',                                                             
           'css'   => 'width: 300px'
         ),
@@ -538,7 +538,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'ID konverzního kódu',
           'type' => 'text',
-          'desc' => 'ID získaného kódu pro měření konverzí naleznete <a href="https://www.sklik.cz/seznam-konverzi">zde</a>. Je třeba vytvořit konverzní kód typu "vytvoření objednávky" a z něho získat potřebné ID.',
+          'desc' => 'ID získaného kódu pro měření konverzí naleznete <a href="https://www.sklik.cz/seznam-konverzi" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr( 'v administraci Skliku ' . ceske_sluzby_admin_external_link_tip() ) . '">v administraci Skliku</a>. Je třeba vytvořit konverzní kód typu "vytvoření objednávky" a z něho získat potřebné ID.',
           'id' => 'wc_ceske_sluzby_sklik_konverze-objednavky'
         ),
         array(
@@ -560,7 +560,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'Identifikační klíč',
           'type' => 'text',
-          'desc' => 'Identifikační klíč pro měření konverzí naleznete <a href="https://www.srovname.cz/muj-obchod">zde</a>.',
+          'desc' => 'Identifikační klíč pro měření konverzí naleznete <a href="https://www.srovname.cz/muj-obchod" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr( 'v administraci Srovnáme.cz ' . ceske_sluzby_admin_external_link_tip() ) . '">v administraci Srovnáme.cz</a>.',
           'id' => 'wc_ceske_sluzby_srovname_konverze-objednavky'
         ),
         array(
@@ -1067,4 +1067,5 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
 
     return $settings;
   }
+
 }
