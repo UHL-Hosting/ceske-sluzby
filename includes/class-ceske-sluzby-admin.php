@@ -18,6 +18,10 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
     add_action( 'woocommerce_update_options_shipping', __CLASS__ . '::update_settings_shipping' );
   }
 
+  public static function admin_external_link_tip() {
+    return __( '(otevře se v novém okně)', 'ceske-sluzby' );
+  }
+
   public static function ceske_sluzby_ziskat_aktivovane_platebni_metody() {
     $available_gateways = array();
     if ( ! is_null( WC()->payment_gateways ) ) {
@@ -193,6 +197,10 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
       $value = wp_kses( $raw_value, wp_kses_allowed_html( 'post' ) );
     }
     return $value; 
+  }
+
+  public static function admin_external_link_tip() {
+    return __( '(otevře se v novém okně)', 'ceske-sluzby' );
   }
 
   public static function get_settings_shipping( $current_section = '' ) {
@@ -1021,7 +1029,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
         array(
           'title' => 'Dodatečné označení produktů',
           'type' => 'title',
-          'desc' => 'Produkty je možné rozdělit do speciálních skupin, např. podle prodejnosti, marže, atd (manuál pro <a href="https://napoveda.seznam.cz/cz/zbozi/specifikace-xml-pro-obchody/specifikace-xml-feedu/#CUSTOM_LABEL">Zbozi.cz</a> a <a href="https://support.google.com/merchants/answer/188494?hl=cs#customlabel">Google</a>).
+          'desc' => 'Produkty je možné rozdělit do speciálních skupin, např. podle prodejnosti, marže, atd (manuál pro <a href="https://napoveda.seznam.cz/cz/zbozi/specifikace-xml-pro-obchody/specifikace-xml-feedu/#CUSTOM_LABEL" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'v nápovědě Zboží.cz (otevře se v novém okně)', 'ceske-sluzby' ) . '">Zbozi.cz</a> a <a href="https://support.google.com/merchants/answer/188494?hl=cs#customlabel" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'v nápovědě Google (otevře se v novém okně)', 'ceske-sluzby' ) . '">Google</a>).
                      Dostupné taxonomie: ' . ceske_sluzby_zobrazit_dostupne_taxonomie( 'obecne', false ) . '
                      Dostupné vlastnosti v podobě taxonomií: ' . ceske_sluzby_zobrazit_dostupne_taxonomie( 'vlastnosti', false ) . '
                      Podporovány jsou také názvy jednoduchých textových vlastností nebo uživatelských polí.',
@@ -1170,4 +1178,5 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
 
     return $settings;
   }
+
 }

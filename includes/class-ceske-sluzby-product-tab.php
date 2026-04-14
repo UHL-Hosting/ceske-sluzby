@@ -133,12 +133,12 @@ class WC_Product_Tab_Ceske_Sluzby_Admin {
 
     if ( $xml_feed_heureka == "yes" ) {
       echo '<div class="options_group">'; // hide_if_grouped - skrýt u seskupených produktů
-      echo '<div class="nadpis" style="margin-left: 12px; margin-top: 10px;"><strong>Heureka</strong> (<a href="https://sluzby.' . HEUREKA_URL . '/napoveda/xml-feed/" target="_blank">obecný manuál</a>, <a target="_blank" href="' . site_url() . '/?feed=heureka&pid=' . $post->ID . '">XML produktu</a>)</div>';
+      echo '<div class="nadpis" style="margin-left: 12px; margin-top: 10px;"><strong>Heureka</strong> (<a href="https://sluzby.' . HEUREKA_URL . '/napoveda/xml-feed/" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'Obecný manuál Heureka (otevře se v novém okně)', 'ceske-sluzby' ) . '">obecný manuál</a>, <a target="_blank" rel="noopener noreferrer" href="' . site_url() . '/?feed=heureka&pid=' . $post->ID . '" aria-label="' . esc_attr__( 'XML feed Heureka pro tento produkt (otevře se v novém okně)', 'ceske-sluzby' ) . '">XML produktu</a>)</div>';
       if ( empty( $global_data['nazev_produktu'] ) || strpos( $global_data['nazev_produktu'], '{PRODUCTNAME}' ) !== false ) {
         woocommerce_wp_text_input(
           array( 
             'id' => 'ceske_sluzby_xml_heureka_productname', 
-            'label' => 'Přesný název (<a href="https://sluzby.' . HEUREKA_URL . '/napoveda/povinne-nazvy/" target="_blank">manuál</a>)', 
+            'label' => 'Přesný název (<a href="https://sluzby.' . HEUREKA_URL . '/napoveda/povinne-nazvy/" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'Manuál pro povinné názvy na Heurece (otevře se v novém okně)', 'ceske-sluzby' ) . '">manuál</a>)',
             'placeholder' => 'PRODUCTNAME',
             'desc_tip' => 'true',
             'description' => 'Zadejte přesný název produktu, pokud chcete aby byl odlišný od aktuálního názvu.' 
@@ -149,7 +149,7 @@ class WC_Product_Tab_Ceske_Sluzby_Admin {
       woocommerce_wp_text_input(
         array( 
           'id' => 'ceske_sluzby_xml_heureka_product', 
-          'label' => 'Doplněný název (<a href="https://sluzby.' . HEUREKA_URL . '/napoveda/xml-feed/#PRODUCT" target="_blank">manuál</a>)', 
+          'label' => 'Doplněný název (<a href="https://sluzby.' . HEUREKA_URL . '/napoveda/xml-feed/#PRODUCT" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'Manuál pro doplněný název na Heurece (otevře se v novém okně)', 'ceske-sluzby' ) . '">manuál</a>)',
           'placeholder' => 'PRODUCT',
           'desc_tip' => 'true',
           'description' => 'Zadejte doplněk názvu produktu, mezera je zobrazena automaticky (použito i pro feed Zboží.cz).' 
@@ -168,7 +168,7 @@ class WC_Product_Tab_Ceske_Sluzby_Admin {
       woocommerce_wp_text_input(
         array( 
           'id' => 'ceske_sluzby_xml_heureka_kategorie', 
-          'label' => 'Kategorie (<a href="https://www.' . HEUREKA_URL . '/direct/xml-export/shops/heureka-sekce.xml" target="_blank">přehled</a>)', 
+          'label' => 'Kategorie (<a href="https://www.' . HEUREKA_URL . '/direct/xml-export/shops/heureka-sekce.xml" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'Přehled kategorií na Heurece (otevře se v novém okně)', 'ceske-sluzby' ) . '">přehled</a>)',
           'placeholder' => 'CATEGORYTEXT',
           'desc_tip' => 'true',
           'description' => 'Příklad: Elektronika | Počítače a kancelář | Software | Multimediální software' 
@@ -182,12 +182,12 @@ class WC_Product_Tab_Ceske_Sluzby_Admin {
 
     if ( $xml_feed_zbozi == "yes" ) {
       echo '<div class="options_group">';
-      echo '<div class="nadpis" style="margin-left: 12px; margin-top: 10px;"><strong>Zbozi.cz</strong> (<a href="https://napoveda.seznam.cz/cz/zbozi/specifikace-xml-pro-obchody/specifikace-xml-feedu/" target="_blank">obecný manuál</a>, <a target="_blank" href="' . site_url() . '/?feed=zbozi&pid=' . $post->ID . '">XML produktu</a>)</div>';
+      echo '<div class="nadpis" style="margin-left: 12px; margin-top: 10px;"><strong>Zbozi.cz</strong> (<a href="https://napoveda.seznam.cz/cz/zbozi/specifikace-xml-pro-obchody/specifikace-xml-feedu/" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'Obecný manuál Zboží.cz (otevře se v novém okně)', 'ceske-sluzby' ) . '">obecný manuál</a>, <a target="_blank" rel="noopener noreferrer" href="' . site_url() . '/?feed=zbozi&pid=' . $post->ID . '" aria-label="' . esc_attr__( 'XML feed Zboží.cz pro tento produkt (otevře se v novém okně)', 'ceske-sluzby' ) . '">XML produktu</a>)</div>';
       if ( empty( $global_data['nazev_produktu'] ) || strpos( $global_data['nazev_produktu'], '{PRODUCTNAME}' ) !== false ) {
         woocommerce_wp_text_input(
           array( 
             'id' => 'ceske_sluzby_xml_zbozi_productname', 
-            'label' => 'Přesný název (<a href="https://napoveda.seznam.cz/cz/zbozi/specifikace-xml-pro-obchody/pravidla-pojmenovani-nabidek/" target="_blank">manuál</a>)', 
+            'label' => 'Přesný název (<a href="https://napoveda.seznam.cz/cz/zbozi/specifikace-xml-pro-obchody/pravidla-pojmenovani-nabidek/" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'Pravidla pojmenování nabídek na Zboží.cz (otevře se v novém okně)', 'ceske-sluzby' ) . '">manuál</a>)',
             'placeholder' => 'PRODUCTNAME',
             'desc_tip' => 'true',
             'description' => 'Zadejte přesný název produktu, pokud chcete aby byl odlišný od aktuálního názvu.' 
@@ -199,7 +199,7 @@ class WC_Product_Tab_Ceske_Sluzby_Admin {
         woocommerce_wp_text_input(
           array( 
             'id' => 'ceske_sluzby_xml_heureka_product', 
-            'label' => 'Doplněný název (<a href="https://napoveda.seznam.cz/cz/zbozi/specifikace-xml-pro-obchody/specifikace-xml-feedu/#PRODUCT" target="_blank">manuál</a>)', 
+            'label' => 'Doplněný název (<a href="https://napoveda.seznam.cz/cz/zbozi/specifikace-xml-pro-obchody/specifikace-xml-feedu/#PRODUCT" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'Specifikace XML feedu pro Zboží.cz (otevře se v novém okně)', 'ceske-sluzby' ) . '">manuál</a>)',
             'placeholder' => 'PRODUCT',
             'desc_tip' => 'true',
             'description' => 'Zadejte doplněk názvu produktu, mezera je zobrazena automaticky..' 
@@ -219,7 +219,7 @@ class WC_Product_Tab_Ceske_Sluzby_Admin {
       woocommerce_wp_text_input(
         array( 
           'id' => 'ceske_sluzby_xml_zbozi_kategorie', 
-          'label' => 'Kategorie (<a href="https://www.zbozi.cz/static/categories.csv" target="_blank">přehled</a>)', 
+          'label' => 'Kategorie (<a href="https://www.zbozi.cz/static/categories.csv" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'Přehled kategorií na Zboží.cz (otevře se v novém okně)', 'ceske-sluzby' ) . '">přehled</a>)',
           'placeholder' => 'CATEGORYTEXT',
           'desc_tip' => 'true',
           'description' => 'Příklad: Počítače | Software | Grafický a video software' 
@@ -267,7 +267,7 @@ class WC_Product_Tab_Ceske_Sluzby_Admin {
 
     if ( $xml_feed_glami == "yes" ) {
       echo '<div class="options_group">'; // hide_if_grouped - skrýt u seskupených produktů
-      echo '<div class="nadpis" style="margin-left: 12px; margin-top: 10px;"><strong>Glami</strong> (<a href="https://www.' . GLAMI_URL . '/info/feed/" target="_blank">obecný manuál</a>, <a target="_blank" href="' . site_url() . '/?feed=glami&pid=' . $post->ID . '">XML produktu</a>)</div>';
+      echo '<div class="nadpis" style="margin-left: 12px; margin-top: 10px;"><strong>Glami</strong> (<a href="https://www.' . GLAMI_URL . '/info/feed/" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'Obecný manuál Glami (otevře se v novém okně)', 'ceske-sluzby' ) . '">obecný manuál</a>, <a target="_blank" rel="noopener noreferrer" href="' . site_url() . '/?feed=glami&pid=' . $post->ID . '" aria-label="' . esc_attr__( 'XML feed Glami pro tento produkt (otevře se v novém okně)', 'ceske-sluzby' ) . '">XML produktu</a>)</div>';
       $kategorie_glami = "";
       foreach ( $product_categories as $kategorie_produktu ) {
         $kategorie = ceske_sluzby_get_term_meta( $kategorie_produktu->term_id, 'ceske-sluzby-xml-glami-kategorie', true );
@@ -281,7 +281,7 @@ class WC_Product_Tab_Ceske_Sluzby_Admin {
       woocommerce_wp_text_input(
         array( 
           'id' => 'ceske_sluzby_xml_glami_kategorie', 
-          'label' => 'Kategorie (<a href="https://www.' . GLAMI_URL . '/category-xml/" target="_blank">přehled</a>)', 
+          'label' => 'Kategorie (<a href="https://www.' . GLAMI_URL . '/category-xml/" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr__( 'Přehled kategorií na Glami (otevře se v novém okně)', 'ceske-sluzby' ) . '">přehled</a>)',
           'placeholder' => 'CATEGORYTEXT',
           'desc_tip' => 'true',
           'description' => 'Příklad: Dámské oblečení a obuv | Dámské boty | Dámské outdoorové boty' 
