@@ -255,10 +255,12 @@ class Ceske_Sluzby_Sledovani_Zasilek {
     }
     echo '<div id="ceske_sluzby_sledovani_zasilek_link_preview">';
     if ( ! empty( $id_zasilky ) && ! empty( $dopravce ) ) {
-      echo '<p>Kontrolní odkaz: <a href="' . $odkaz . '" target="_blank">' . $dostupni_dopravci[$dopravce]['nazev'] . '</a></p>';
+      $carrier_name = $dostupni_dopravci[$dopravce]['nazev'];
+      $external_link_tip = __( '(otevře se v novém okně)', 'ceske-sluzby' );
+      echo '<p>' . esc_html__( 'Kontrolní odkaz', 'ceske-sluzby' ) . ': <a href="' . esc_url( $odkaz ) . '" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr( $carrier_name . ' ' . $external_link_tip ) . '">' . esc_html( $carrier_name ) . '</a></p>';
     }
     else {
-      echo '<p>Nejdříve musíte doplnit obě hodnoty, aby se zobrazil kontrolní odkaz a mohl být ručně odeslán notifikační email.</p>';
+      echo '<p class="description">' . esc_html__( 'Nejdříve musíte doplnit obě hodnoty, aby se zobrazil kontrolní odkaz a mohl být ručně odeslán notifikační email.', 'ceske-sluzby' ) . '</p>';
     }
     echo '</div>';
   }
