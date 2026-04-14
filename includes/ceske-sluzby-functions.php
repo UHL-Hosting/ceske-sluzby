@@ -837,3 +837,7 @@ function ceske_sluzby_xml_ziskat_globalni_hodnoty() {
   );
   return $data;
 }
+
+function ceske_sluzby_admin_external_link_tip() {
+  return __( '(otevře se v novém okně)', 'ceske-sluzby' );
+}
