@@ -91,11 +91,14 @@ jQuery( function( $ ) {
     update_tracking_link();
   });
 
-  $( 'body' ).on( 'blur', '#ceske_sluzby_sledovani_zasilek_id_zasilky', function() {
+  $( 'body' ).on( 'blur', '#ceske_sluzby_sledovani_zasilek_id_zasilky, [id*="-api"], [id*="-klic"], [id*="id-"], [id*="-id"]', function() {
     var $this = $( this );
-    var trimmed = $this.val().trim();
-    if ( trimmed !== $this.val() ) {
-      $this.val( trimmed ).trigger( 'change' );
+    var value = $this.val();
+    if ( typeof value === 'string' ) {
+      var trimmed = value.trim();
+      if ( trimmed !== value ) {
+        $this.val( trimmed ).trigger( 'change' );
+      }
     }
   });
 
@@ -114,5 +117,14 @@ jQuery( function( $ ) {
   $( 'body' ).on( 'click', '.cancel_tracking_id', function() {
     $( '#ceske_sluzby_sledovani_zasilek_id_zasilky' ).val( '' ).trigger( 'change' ).focus();
     return false;
+  });
+
+  // Automatické odstraňování mezer u důležitých polí (API klíče, ID, atd).
+  $( 'body' ).on( 'blur', 'input[id*="-api"], input[id*="-klic"], input[id*="-id"]', function() {
+    var $this = $( this );
+    var trimmed = $this.val().trim();
+    if ( trimmed !== $this.val() ) {
+      $this.val( trimmed ).trigger( 'change' );
+    }
   });
 });
