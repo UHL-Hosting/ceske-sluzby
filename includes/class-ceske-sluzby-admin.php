@@ -18,9 +18,6 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
     add_action( 'woocommerce_update_options_shipping', __CLASS__ . '::update_settings_shipping' );
   }
 
-  public static function admin_external_link_tip() {
-    return __( '(otevře se v novém okně)', 'ceske-sluzby' );
-  }
 
   public static function ceske_sluzby_ziskat_aktivovane_platebni_metody() {
     $available_gateways = array();
@@ -199,9 +196,6 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
     return $value; 
   }
 
-  public static function admin_external_link_tip() {
-    return __( '(otevře se v novém okně)', 'ceske-sluzby' );
-  }
 
   public static function get_settings_shipping( $current_section = '' ) {
     global $current_section, $hide_save_button;
@@ -294,9 +288,6 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
     return $options;
   }
 
-  public static function admin_external_link_tip() {
-    return __( '(otevře se v novém okně)', 'ceske-sluzby' );
-  }
 
   public static function zobrazit_zvolene_nastaveni( $settings ) {
     $description = 'Na úrovni eshopu zatím není nic nastaveno.';
@@ -472,7 +463,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'desc' => sprintf(
             __( 'API klíč pro službu Ověřeno zákazníky naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>.', 'ceske-sluzby' ),
             'https://sluzby.' . HEUREKA_URL . '/n/sluzby/certifikat-spokojenosti/',
-            esc_attr__( 'v administraci Heureky', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            esc_attr__( 'v administraci Heureky', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'v administraci Heureky', 'ceske-sluzby' )
           ),
           'id' => 'wc_ceske_sluzby_heureka_overeno-api',
@@ -497,7 +488,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'desc' => sprintf(
             __( 'API klíč pro službu Měření konverzí naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>. Heureka může ještě nějaký čas hlásit, že nebyla služba zprovozněna (dokud neproběhne nějaká objednávka zákazníka z Heureky).', 'ceske-sluzby' ),
             'https://sluzby.' . HEUREKA_URL . '/obchody/mereni-konverzi/',
-            esc_attr__( 'v administraci Heureky', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            esc_attr__( 'v administraci Heureky', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'v administraci Heureky', 'ceske-sluzby' )
           ),
           'id'   => 'wc_ceske_sluzby_heureka_konverze-api',
@@ -509,9 +500,9 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'desc' => sprintf(
             __( 'Nastavení pro zobrazení certifikátu spokojenosti bude po aktivaci dostupné <a href="%s">%s</a>. Obchod musí certifikát nejdříve získat, což snadno ověříte <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>.', 'ceske-sluzby' ),
             admin_url( 'admin.php?page=wc-settings&tab=ceske-sluzby&section=certifikat-spokojenosti' ),
-            __( 'na této adrese', 'ceske-sluzby' ),
+            __( 'v nastavení certifikátu spokojenosti', 'ceske-sluzby' ),
             'https://sluzby.' . HEUREKA_URL . '/sluzby/certifikat-spokojenosti/',
-            esc_attr__( 'v administraci Heureky', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            esc_attr__( 'v administraci Heureky', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'v administraci Heureky', 'ceske-sluzby' )
           ),
           'id' => 'wc_ceske_sluzby_heureka_certifikat_spokojenosti-aktivace'
@@ -522,7 +513,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'desc' => sprintf(
             __( 'Nastavení pro XML feed bude po aktivaci dostupné <a href="%s">%s</a>.', 'ceske-sluzby' ),
             admin_url( 'admin.php?page=wc-settings&tab=ceske-sluzby&section=xml-feed' ),
-            __( 'na této adrese', 'ceske-sluzby' )
+            __( 'v nastavení XML feedu', 'ceske-sluzby' )
           ),
           'id' => 'wc_ceske_sluzby_heureka_xml_feed-aktivace'
         ),
@@ -550,7 +541,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'desc' => sprintf(
             __( 'Identifikační číslo obchodu pro měření konverzí naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>.', 'ceske-sluzby' ),
             'https://admin.zbozi.cz/premiseListScreen',
-            esc_attr__( 'v administraci Zboží.cz', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            esc_attr__( 'v administraci Zboží.cz', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'v administraci Zboží.cz', 'ceske-sluzby' )
           ),
           'id'   => 'wc_ceske_sluzby_zbozi_konverze_id-obchodu',                                                             
@@ -579,7 +570,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'desc' => sprintf(
             __( 'ID získaného kódu pro měření konverzí naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>. Je třeba vytvořit konverzní kód typu "vytvoření objednávky" a z něho získat potřebné ID.', 'ceske-sluzby' ),
             'https://www.sklik.cz/seznam-konverzi',
-            esc_attr__( 'v administraci Skliku', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            esc_attr__( 'v administraci Skliku', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'v administraci Skliku', 'ceske-sluzby' )
           ),
           'id' => 'wc_ceske_sluzby_sklik_konverze-objednavky'
@@ -590,10 +581,10 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'desc' => sprintf(
             __( 'ID získaného kódu pro retargeting naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>. Je třeba kliknout na odkaz "Zobrazit retargetingový kód" a z něho získat potřebné ID. Manuál pro použití této služby naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>.', 'ceske-sluzby' ),
             'https://www.sklik.cz/retargeting',
-            esc_attr__( 'v administraci Skliku', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            esc_attr__( 'v administraci Skliku', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'v administraci Skliku', 'ceske-sluzby' ),
             'https://napoveda.sklik.cz/typy-cileni/retargeting/',
-            esc_attr__( 'v nápovědě Skliku', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            esc_attr__( 'v nápovědě Skliku', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'v nápovědě Skliku', 'ceske-sluzby' )
           ),
           'id' => 'wc_ceske_sluzby_sklik_retargeting'
@@ -614,7 +605,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'desc' => sprintf(
             __( 'Identifikační klíč pro měření konverzí naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>.', 'ceske-sluzby' ),
             'https://www.srovname.cz/muj-obchod',
-            esc_attr__( 'v administraci Srovnáme.cz', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            esc_attr__( 'v administraci Srovnáme.cz', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'v administraci Srovnáme.cz', 'ceske-sluzby' )
           ),
           'id' => 'wc_ceske_sluzby_srovname_konverze-objednavky'
@@ -635,7 +626,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'desc' => sprintf(
             __( 'Aktivovat možnost zadávání informací pro sledování zásilek u každé objednávky. Speciální notifikační email můžete nastavit <a href="%s">%s</a>.', 'ceske-sluzby' ),
             admin_url( 'admin.php?page=wc-settings&tab=email&section=wc_email_ceske_sluzby_sledovani_zasilek' ),
-            __( 'na této adrese', 'ceske-sluzby' )
+            __( 'v nastavení emailových notifikací', 'ceske-sluzby' )
           ),
           'id' => 'wc_ceske_sluzby_dalsi_nastaveni_sledovani-zasilek'
         ),
@@ -664,7 +655,7 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'desc' => sprintf(
             __( 'Aktivovat možnost podrobného nastavení dodací doby, které bude dostupné <a href="%s">%s</a>.', 'ceske-sluzby' ),
             admin_url( 'admin.php?page=wc-settings&tab=ceske-sluzby&section=dodaci-doba' ),
-            __( 'na této adrese', 'ceske-sluzby' )
+            __( 'v nastavení dodací doby', 'ceske-sluzby' )
           ),
           'id' => 'wc_ceske_sluzby_dalsi_nastaveni_dodaci_doba-aktivace'
         ),
@@ -777,13 +768,13 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'desc' => sprintf(
             __( 'Průběžně generovaný feed je dostupný <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>. Pro větší eshopy je ale vhodná spíše varianta v podobě <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>, který je aktualizován automaticky jednou denně a v případě velkého množství produktů postupně po částech (1000 produktů). Podrobný manuál naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>.', 'ceske-sluzby' ),
             site_url( '/?feed=heureka' ),
-            __( 'v XML feedu Heureky', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
-            __( 'na této adrese', 'ceske-sluzby' ),
+            __( 'v XML feedu Heureky', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
+            __( 'v XML feedu Heureky', 'ceske-sluzby' ),
             WP_CONTENT_URL . '/heureka.xml',
-            __( 'v XML souboru Heureky', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            __( 'v XML souboru Heureky', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'souboru', 'ceske-sluzby' ),
             'https://sluzby.' . HEUREKA_URL . '/napoveda/xml-feed/',
-            __( 'v nápovědě Heureky', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            __( 'v nápovědě Heureky', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'v nápovědě Heureky', 'ceske-sluzby' )
           ),
           'id' => 'wc_ceske_sluzby_xml_feed_heureka_title'
@@ -887,13 +878,13 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'desc' => sprintf(
             __( 'Průběžně generovaný feed je dostupný <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>. Pro větší eshopy je ale vhodná spíše varianta v podobě <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>, který je aktualizován automaticky jednou denně a v případě velkého množství produktů postupně po částech (1000 produktů). Podrobný manuál naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>. Základní nastavení je stejné jako pro Heureka.cz.', 'ceske-sluzby' ),
             site_url( '/?feed=zbozi' ),
-            __( 'v XML feedu Zboží.cz', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
-            __( 'na této adrese', 'ceske-sluzby' ),
+            __( 'v XML feedu Zboží.cz', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
+            __( 'v XML feedu Zboží.cz', 'ceske-sluzby' ),
             WP_CONTENT_URL . '/zbozi.xml',
-            __( 'v XML souboru Zboží.cz', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            __( 'v XML souboru Zboží.cz', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'souboru', 'ceske-sluzby' ),
             'https://napoveda.seznam.cz/cz/zbozi/specifikace-xml-pro-obchody/specifikace-xml-feedu/',
-            __( 'v nápovědě Zboží.cz', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            __( 'v nápovědě Zboží.cz', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'v nápovědě Zboží.cz', 'ceske-sluzby' )
           ),
           'id' => 'wc_ceske_sluzby_xml_feed_zbozi_title'
@@ -952,10 +943,10 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'desc' => sprintf(
             __( 'Generovaný feed je dostupný v podobě .xml <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>. Aktualizace probíhá automaticky jednou denně a v případě velkého množství produktů postupně po částech (1000 produktů). Podrobný manuál naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>. Základní nastavení je stejné jako pro Heureka.cz.', 'ceske-sluzby' ),
             WP_CONTENT_URL . '/pricemania.xml',
-            __( 'v XML souboru Pricemania', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            __( 'v XML souboru Pricemania', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'souboru', 'ceske-sluzby' ),
             'http://files.pricemania.sk/pricemania-struktura-xml-feedu.pdf',
-            __( 'v nápovědě Pricemania', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            __( 'v nápovědě Pricemania', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'v nápovědě Pricemania', 'ceske-sluzby' )
           ),
           'id' => 'wc_ceske_sluzby_xml_feed_pricemania_title'
@@ -987,13 +978,13 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'desc' => sprintf(
             __( 'Průběžně generovaný feed je dostupný <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>. Pro větší eshopy je ale vhodná spíše varianta v podobě <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>, který je aktualizován automaticky jednou denně a v případě velkého množství produktů postupně po částech (1000 produktů). Podrobný manuál naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>. Automaticky je použito nastavení z ostatních feedů.', 'ceske-sluzby' ),
             site_url( '/?feed=glami' ),
-            __( 'v XML feedu Glami', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
-            __( 'na této adrese', 'ceske-sluzby' ),
+            __( 'v XML feedu Glami', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
+            __( 'v XML feedu Glami', 'ceske-sluzby' ),
             WP_CONTENT_URL . '/glami.xml',
-            __( 'v XML souboru Glami', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            __( 'v XML souboru Glami', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'souboru', 'ceske-sluzby' ),
             'https://www.' . GLAMI_URL . '/info/feed/',
-            __( 'v nápovědě Glami', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            __( 'v nápovědě Glami', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'v nápovědě Glami', 'ceske-sluzby' )
           ),
           'id' => 'wc_ceske_sluzby_xml_feed_glami_title'
@@ -1014,10 +1005,10 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
           'desc' => sprintf(
             __( 'Průběžně generovaný feed je dostupný <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>. Podrobný manuál naleznete <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">%s</a>. Automaticky je použito nastavení z ostatních feedů.', 'ceske-sluzby' ),
             site_url( '/?feed=google' ),
-            __( 'v XML feedu Google', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
-            __( 'na této adrese', 'ceske-sluzby' ),
+            __( 'v XML feedu Google', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
+            __( 'v XML feedu Google', 'ceske-sluzby' ),
             'https://support.google.com/merchants/answer/7052112',
-            __( 'v nápovědě Google Merchant Center', 'ceske-sluzby' ) . ' ' . self::admin_external_link_tip(),
+            __( 'v nápovědě Google Merchant Center', 'ceske-sluzby' ) . ' ' . ceske_sluzby_admin_external_link_tip(),
             __( 'v nápovědě Google Merchant Center', 'ceske-sluzby' )
           ),
           'id' => 'wc_ceske_sluzby_xml_feed_google_title'
