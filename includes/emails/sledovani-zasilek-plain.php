@@ -8,13 +8,14 @@ echo "= " . $email_heading . " =\n\n";
 $order_id = is_callable( array( $order, 'get_id' ) ) ? $order->get_id() : $order->id;
 $id_zasilky = get_post_meta( $order_id, '_ceske_sluzby_sledovani_zasilek_id_zasilky', true );
 $dopravce = get_post_meta( $order_id, '_ceske_sluzby_sledovani_zasilek_dopravce', true );
-$dostupni_dopravci = ceske_sluzby_sledovani_zasilek_dostupni_dopravci();
+$zeme_doruceni = is_callable( array( $order, 'get_shipping_country' ) ) ? $order->get_shipping_country() : $order->shipping_country;
+$dostupni_dopravci = ceske_sluzby_sledovani_zasilek_dostupni_dopravci( $zeme_doruceni );
 if ( ! empty( $id_zasilky ) && ! empty( $dopravce ) ) {
   $odkaz = str_replace( '%ID%', $id_zasilky , $dostupni_dopravci[$dopravce]['url'] );
-}
 
-echo 'Objednávka byla odeslána a můžete ji sledovat:' . "\r\n";
-echo $odkaz . "\n\n";
+  echo __( 'Objednávka byla odeslána a můžete ji sledovat na stránkách dopravce:', 'ceske-sluzby' ) . "\r\n";
+  echo $odkaz . "\n\n";
+}
 
 echo "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
 
