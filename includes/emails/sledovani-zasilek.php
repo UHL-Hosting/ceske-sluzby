@@ -19,10 +19,13 @@ $zeme_doruceni = is_callable( array( $order, 'get_shipping_country' ) ) ? $order
 $dostupni_dopravci = ceske_sluzby_sledovani_zasilek_dostupni_dopravci( $zeme_doruceni );
 if ( ! empty( $id_zasilky ) && ! empty( $dopravce ) ) {
   $odkaz = str_replace( '%ID%', $id_zasilky , $dostupni_dopravci[$dopravce]['url'] );
-  $odkaz_html = '<a href="' . $odkaz . '" target="_blank">' . $dostupni_dopravci[$dopravce]['nazev'] . '</a>';
-} ?>
+  $carrier_name = $dostupni_dopravci[$dopravce]['nazev'];
+  $external_link_tip = ceske_sluzby_admin_external_link_tip();
+  $odkaz_html = '<a href="' . esc_url( $odkaz ) . '" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr( $carrier_name . ' ' . $external_link_tip ) . '">' . esc_html( $carrier_name ) . '</a>';
+?>
 <p>
-  Objednávka byla odeslána a můžete ji sledovat zde: <?php echo $odkaz_html; ?>.
+  <?php echo esc_html__( 'Objednávka byla odeslána a můžete ji sledovat na stránkách dopravce:', 'ceske-sluzby' ) . ' ' . $odkaz_html; ?>.
 </p>
+<?php } ?>
 
 <?php do_action( 'woocommerce_email_footer', $email ); ?>
