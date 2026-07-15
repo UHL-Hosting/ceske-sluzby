@@ -21,3 +21,7 @@
 ## 2025-05-16 - [Descriptive Link Text and External Link Accessibility]
 **Learning:** Generic link labels like "zde" (here) are a significant accessibility barrier for screen reader users and provide poor context for all users. In complex admin settings with many external documentation links, descriptive labels combined with explicit external link hints and security attributes (`rel="noopener noreferrer"`) are essential.
 **Action:** Always replace generic "zde" or "here" with descriptive labels (e.g., "v administraci Heureky"). For links opening in new tabs, add `target="_blank"`, `rel="noopener noreferrer"`, and an `aria-label` that includes both the link's purpose and a localized hint like `(otevře se v novém okně)`. Use `sprintf()` and `__()` for clean, translatable link templates in PHP.
+
+## 2025-05-16 - [Balancing Micro-UX Scope and Persona Constraints]
+**Learning:** In a "Palette" persona role, it's critical to strictly adhere to the < 50 lines constraint and focus on a single, high-impact micro-UX win. Sweeping refactors, even if they improve accessibility across many pages, can violate persona boundaries and increase the risk of introducing regressions or breaking existing localizations.
+**Action:** Prioritize the single most impactful UX improvement (e.g., fixing a broken sentence logic in a key email) and ensure it's implemented with proper security (escaping) and accessibility (ARIA) within the line limit. Avoid changing widely used translation strings unless absolutely necessary for clarity.
