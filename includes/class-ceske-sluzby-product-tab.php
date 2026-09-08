@@ -57,7 +57,7 @@ class WC_Product_Tab_Ceske_Sluzby_Admin {
         if ( ! empty( $vynechane_kategorie ) ) {
           $vynechane_kategorie .= ", ";
         }
-        $vynechane_kategorie .= '<a href="' . admin_url(). 'edit-tags.php?action=edit&taxonomy=product_cat&tag_ID=' . $kategorie_produktu->term_id . '">' . $kategorie_produktu->name . '</a>';
+        $vynechane_kategorie .= '<a href="' . esc_url( admin_url( 'edit-tags.php?action=edit&taxonomy=product_cat&tag_ID=' . $kategorie_produktu->term_id ) ) . '">' . esc_html( $kategorie_produktu->name ) . '</a>';
       }
       if ( ! empty( $xml_feed_vynechano ) ) {
         $feeds = ceske_sluzby_prehled_xml_feedu();
@@ -65,7 +65,7 @@ class WC_Product_Tab_Ceske_Sluzby_Admin {
           if ( ! empty( $vynechane_kategorie_feed ) ) {
             $vynechane_kategorie_feed .= ", ";
           }
-          $vynechane_kategorie_feed .= '<a href="' . admin_url(). 'edit-tags.php?action=edit&taxonomy=product_cat&tag_ID=' . $kategorie_produktu->term_id . '">' . $kategorie_produktu->name . '</a> (' . $feeds[$feed] . ')';
+          $vynechane_kategorie_feed .= '<a href="' . esc_url( admin_url( 'edit-tags.php?action=edit&taxonomy=product_cat&tag_ID=' . $kategorie_produktu->term_id ) ) . '">' . esc_html( $kategorie_produktu->name ) . '</a> (' . esc_html( $feeds[$feed] ) . ')';
         }
       }
       if ( ! empty( $stav_produktu ) ) {
@@ -77,13 +77,13 @@ class WC_Product_Tab_Ceske_Sluzby_Admin {
         if ( ! empty( $stav_produktu_kategorie ) ) {
           $stav_produktu_kategorie .= ", ";
         }
-        $stav_produktu_kategorie .= '<a href="' . admin_url(). 'edit-tags.php?action=edit&taxonomy=product_cat&tag_ID=' . $kategorie_produktu->term_id . '">' . $kategorie_produktu->name . '</a>: <strong>' . $stav_produktu_hodnota . '</strong>';
+        $stav_produktu_kategorie .= '<a href="' . esc_url( admin_url( 'edit-tags.php?action=edit&taxonomy=product_cat&tag_ID=' . $kategorie_produktu->term_id ) ) . '">' . esc_html( $kategorie_produktu->name ) . '</a>: <strong>' . esc_html( $stav_produktu_hodnota ) . '</strong>';
       }
       if ( ! empty( $kategorie_extra_message_ulozeno ) ) {
         if ( ! empty( $extra_message_kategorie_odkaz ) ) {
           $extra_message_kategorie_odkaz .= ", ";
         }
-        $extra_message_kategorie_odkaz .= '<a href="' . admin_url(). 'edit-tags.php?action=edit&taxonomy=product_cat&tag_ID=' . $kategorie_produktu->term_id . '">' . $kategorie_produktu->name . '</a>';
+        $extra_message_kategorie_odkaz .= '<a href="' . esc_url( admin_url( 'edit-tags.php?action=edit&taxonomy=product_cat&tag_ID=' . $kategorie_produktu->term_id ) ) . '">' . esc_html( $kategorie_produktu->name ) . '</a>';
         foreach ( $kategorie_extra_message_ulozeno as $key => $value ) {
           $extra_message_kategorie_array[] = $key;
         }
