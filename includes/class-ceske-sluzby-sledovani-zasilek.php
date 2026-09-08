@@ -17,7 +17,7 @@ if ( is_admin() ) {
   }
 }
 
-function ceske_sluzby_sledovani_zasilek_dostupni_dopravci( $lang ) {
+function ceske_sluzby_sledovani_zasilek_dostupni_dopravci( $lang = "" ) {
   $dopravci = array(
     'CPOST' => array(
       'nazev' => 'Česká pošta',

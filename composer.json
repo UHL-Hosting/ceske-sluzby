@@ -1,6 +1,9 @@
 {
     "name": "pavelevap/ceske-sluzby",
     "description": "Implementace různých českých služeb do WordPressu.",
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    },
     "require": {
         "heureka/overeno-zakazniky": "^4.0"
     },
