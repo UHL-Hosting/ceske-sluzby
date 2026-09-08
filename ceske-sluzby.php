@@ -384,14 +384,12 @@ var _srt = _srt || [];
   }
 }
 
-function ceske_sluzby_zbozi_mereni_konverzi( $order_id ) {
-  $id_obchodu = get_option( 'wc_ceske_sluzby_zbozi_konverze_id-obchodu' );
-  $tajny_klic = get_option( 'wc_ceske_sluzby_zbozi_konverze_tajny-klic' );
-  if ( ! empty( $id_obchodu ) ) {
-    $order = wc_get_order( $order_id );
-    $hodnota_objednavky = number_format( (float)( $order->get_total() ), 2, '.', '' );
-    $email = $order->get_billing_email();
-    ?>
+function ceske_sluzby_zbozi_mereni_konverzi_frontend( $order_id, $id_obchodu, $order, $email ) {
+  if ( ! is_object( $order ) ) {
+    return;
+  }
+  $hodnota_objednavky = number_format( (float)( $order->get_total() ), 2, '.', '' );
+  ?>
 
 <script>
 (function(w,d,s,u,n,k,c,t){w.ZboziConversionObject=n;w[n]=w[n]||function(){
@@ -408,35 +406,58 @@ zbozi("send");
 </script>
 
 <?php
-    if ( ! empty( $tajny_klic ) ) {
-      $data = array(
-        'orderId' => $order_id,
-        'email' => $email,
-        'totalPrice' => $order->get_total(),
+}
+
+function ceske_sluzby_zbozi_mereni_konverzi_backend( $order_id, $id_obchodu, $tajny_klic, $order, $email ) {
+  if ( ! is_object( $order ) ) {
+    return;
+  }
+  $data = array(
+    'orderId' => $order_id,
+    'email' => $email,
+    'totalPrice' => $order->get_total(),
+  );
+
+  $items = $order->get_items();
+  foreach ( $items as $item ) {
+    $product = $item->get_product();
+    if ( $product ) {
+      $data['cart'][] = array(
+        'itemId' => $product->get_id(),
+        'productName' => $product->get_name(),
+        'unitPrice' => $order->get_item_subtotal( $item ),
+        'quantity' => $item->get_quantity(),
       );
+    }
+  }
 
-      $items = $order->get_items();
-      foreach ( $items as $item ) {
-        $product = $item->get_product();
-        if ( $product ) {
-          $data['cart'][] = array(
-            'itemId' => $product->get_id(),
-            'productName' => $product->get_name(),
-            'unitPrice' => $order->get_item_subtotal( $item ),
-            'quantity' => $item->get_quantity(),
-          );
-        }
-      }
+  $json_data = wp_json_encode( $data );
+  wp_remote_post( 'https://www.zbozi.cz/action/' . $id_obchodu . '/conversion/backend', array(
+    'headers' => array(
+      'Content-Type' => 'application/json',
+      'Authorization' => 'Bearer ' . $tajny_klic,
+    ),
+    'body' => $json_data,
+    'blocking' => false,
+  ) );
+}
 
-      $json_data = wp_json_encode( $data );
-      wp_remote_post( 'https://www.zbozi.cz/action/' . $id_obchodu . '/conversion/backend', array(
-        'headers' => array(
-          'Content-Type' => 'application/json',
-          'Authorization' => 'Bearer ' . $tajny_klic,
-        ),
-        'body' => $json_data,
-        'blocking' => false,
-      ) );
+function ceske_sluzby_zbozi_mereni_konverzi( $order_id ) {
+  $id_obchodu = get_option( 'wc_ceske_sluzby_zbozi_konverze_id-obchodu' );
+  $tajny_klic = get_option( 'wc_ceske_sluzby_zbozi_konverze_tajny-klic' );
+
+  if ( ! empty( $id_obchodu ) ) {
+    $order = wc_get_order( $order_id );
+    if ( ! $order ) {
+      return;
+    }
+
+    $email = $order->get_billing_email();
+
+    ceske_sluzby_zbozi_mereni_konverzi_frontend( $order_id, $id_obchodu, $order, $email );
+
+    if ( ! empty( $tajny_klic ) ) {
+      ceske_sluzby_zbozi_mereni_konverzi_backend( $order_id, $id_obchodu, $tajny_klic, $order, $email );
     }
   }
 }
