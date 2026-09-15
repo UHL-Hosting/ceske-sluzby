@@ -21,3 +21,6 @@
 ## 2025-05-16 - [Descriptive Link Text and External Link Accessibility]
 **Learning:** Generic link labels like "zde" (here) are a significant accessibility barrier for screen reader users and provide poor context for all users. In complex admin settings with many external documentation links, descriptive labels combined with explicit external link hints and security attributes (`rel="noopener noreferrer"`) are essential.
 **Action:** Always replace generic "zde" or "here" with descriptive labels (e.g., "v administraci Heureky"). For links opening in new tabs, add `target="_blank"`, `rel="noopener noreferrer"`, and an `aria-label` that includes both the link's purpose and a localized hint like `(otevře se v novém okně)`. Use `sprintf()` and `__()` for clean, translatable link templates in PHP.
+## 2026-04-13 - [Popup dialog ARIA semantics on buttons with visible text]
+**Learning:** Overriding the visible label text of a button with `aria-label` when it already has clear text can create inconsistency for screen reader users or voice input software. Instead, use `aria-haspopup="dialog"` to convey that the action opens a modal window while preserving visible text.
+**Action:** Set `aria-haspopup="dialog"` on buttons that trigger modal popups/widgets without overriding visible button labels.

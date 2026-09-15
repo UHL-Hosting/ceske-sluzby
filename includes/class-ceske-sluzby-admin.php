@@ -199,10 +199,6 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
     return $value; 
   }
 
-  public static function admin_external_link_tip() {
-    return __( '(otevře se v novém okně)', 'ceske-sluzby' );
-  }
-
   public static function get_settings_shipping( $current_section = '' ) {
     global $current_section, $hide_save_button;
     $settings = array();
@@ -292,10 +288,6 @@ class WC_Settings_Tab_Ceske_Sluzby_Admin {
       }
     }
     return $options;
-  }
-
-  public static function admin_external_link_tip() {
-    return __( '(otevře se v novém okně)', 'ceske-sluzby' );
   }
 
   public static function zobrazit_zvolene_nastaveni( $settings ) {
