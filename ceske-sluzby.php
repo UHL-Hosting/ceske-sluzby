@@ -27,6 +27,74 @@ function ceske_sluzby_load_textdomain() {
 }
 add_action( 'init', 'ceske_sluzby_load_textdomain' );
 
+
+/**
+ * Callback to get shipping tracking info
+ *
+ * @param array $params
+ * @return array|\WP_Error
+ */
+function ceske_sluzby_ability_get_tracking_info_callback( array $params ): array|\WP_Error {
+  $order = wc_get_order( $params['order_id'] );
+  if ( ! $order ) {
+    return new WP_Error( 'invalid_order', __( 'Neplatné ID objednávky.', 'ceske-sluzby' ) );
+  }
+  $shipping_methods = $order->get_shipping_methods();
+  if ( empty( $shipping_methods ) ) {
+     return array( 'tracking_id' => '', 'carrier' => '' );
+  }
+  $shipping_method = reset( $shipping_methods );
+  return array(
+    'tracking_id' => $shipping_method->get_meta( 'ceske_sluzby_sledovani_zasilek_id_zasilky', true ),
+    'carrier'     => $shipping_method->get_meta( 'ceske_sluzby_sledovani_zasilek_dopravce', true ),
+  );
+}
+
+/**
+ * Callback to set shipping tracking info
+ *
+ * @param array $params
+ * @return bool|\WP_Error
+ */
+function ceske_sluzby_ability_set_tracking_info_callback( array $params ): bool|\WP_Error {
+  $order = wc_get_order( $params['order_id'] );
+  if ( ! $order ) {
+    return new WP_Error( 'invalid_order', __( 'Neplatné ID objednávky.', 'ceske-sluzby' ) );
+  }
+  $shipping_methods = $order->get_shipping_methods();
+  if ( empty( $shipping_methods ) ) {
+     return new WP_Error( 'no_shipping', __( 'Objednávka nemá žádnou metodu dopravy.', 'ceske-sluzby' ) );
+  }
+  $shipping_method = reset( $shipping_methods );
+  $shipping_method->update_meta_data( 'ceske_sluzby_sledovani_zasilek_id_zasilky', sanitize_text_field( $params['tracking_id'] ) );
+  $shipping_method->update_meta_data( 'ceske_sluzby_sledovani_zasilek_dopravce', sanitize_text_field( $params['carrier'] ) );
+  $shipping_method->save();
+
+  $order->add_order_note( sprintf( __( 'Informace o sledování zásilky byly aktualizovány pomocí AI: %s (%s)', 'ceske-sluzby' ), $params['tracking_id'], $params['carrier'] ) );
+  return true;
+}
+
+/**
+ * Callback to get product availability
+ *
+ * @param array $params
+ * @return array|\WP_Error
+ */
+function ceske_sluzby_ability_get_product_availability_callback( array $params ): array|\WP_Error {
+  $product = wc_get_product( $params['product_id'] );
+  if ( ! $product ) {
+    return new WP_Error( 'invalid_product', __( 'Neplatné ID produktu.', 'ceske-sluzby' ) );
+  }
+  $availability = ceske_sluzby_ziskat_nastavenou_dostupnost_produktu( $product, false );
+  if ( empty( $availability ) ) {
+     return array( 'delivery_time' => '', 'value' => '' );
+  }
+  return array(
+    'delivery_time' => $availability['text'],
+    'value'         => $availability['value'],
+  );
+}
+
 /**
  * Register abilities for WP 7.0 AI Integration
  */
@@ -48,21 +116,7 @@ function ceske_sluzby_register_abilities() {
           'required' => true,
         ),
       ),
-      'callback' => function( $params ) {
-        $order = wc_get_order( $params['order_id'] );
-        if ( ! $order ) {
-          return new WP_Error( 'invalid_order', __( 'Neplatné ID objednávky.', 'ceske-sluzby' ) );
-        }
-        $shipping_methods = $order->get_shipping_methods();
-        if ( empty( $shipping_methods ) ) {
-           return array( 'tracking_id' => '', 'carrier' => '' );
-        }
-        $shipping_method = reset( $shipping_methods );
-        return array(
-          'tracking_id' => $shipping_method->get_meta( 'ceske_sluzby_sledovani_zasilek_id_zasilky', true ),
-          'carrier'     => $shipping_method->get_meta( 'ceske_sluzby_sledovani_zasilek_dopravce', true ),
-        );
-      },
+      'callback' => 'ceske_sluzby_ability_get_tracking_info_callback',
       'permissions' => array( 'manage_woocommerce' ),
     )
   );
@@ -90,23 +144,7 @@ function ceske_sluzby_register_abilities() {
           'required' => true,
         ),
       ),
-      'callback' => function( $params ) {
-        $order = wc_get_order( $params['order_id'] );
-        if ( ! $order ) {
-          return new WP_Error( 'invalid_order', __( 'Neplatné ID objednávky.', 'ceske-sluzby' ) );
-        }
-        $shipping_methods = $order->get_shipping_methods();
-        if ( empty( $shipping_methods ) ) {
-           return new WP_Error( 'no_shipping', __( 'Objednávka nemá žádnou metodu dopravy.', 'ceske-sluzby' ) );
-        }
-        $shipping_method = reset( $shipping_methods );
-        $shipping_method->update_meta_data( 'ceske_sluzby_sledovani_zasilek_id_zasilky', sanitize_text_field( $params['tracking_id'] ) );
-        $shipping_method->update_meta_data( 'ceske_sluzby_sledovani_zasilek_dopravce', sanitize_text_field( $params['carrier'] ) );
-        $shipping_method->save();
-
-        $order->add_order_note( sprintf( __( 'Informace o sledování zásilky byly aktualizovány pomocí AI: %s (%s)', 'ceske-sluzby' ), $params['tracking_id'], $params['carrier'] ) );
-        return true;
-      },
+      'callback' => 'ceske_sluzby_ability_set_tracking_info_callback',
       'permissions' => array( 'manage_woocommerce' ),
     )
   );
@@ -123,20 +161,7 @@ function ceske_sluzby_register_abilities() {
           'required' => true,
         ),
       ),
-      'callback' => function( $params ) {
-        $product = wc_get_product( $params['product_id'] );
-        if ( ! $product ) {
-          return new WP_Error( 'invalid_product', __( 'Neplatné ID produktu.', 'ceske-sluzby' ) );
-        }
-        $availability = ceske_sluzby_ziskat_nastavenou_dostupnost_produktu( $product, false );
-        if ( empty( $availability ) ) {
-           return array( 'delivery_time' => '', 'value' => '' );
-        }
-        return array(
-          'delivery_time' => $availability['text'],
-          'value'         => $availability['value'],
-        );
-      },
+      'callback' => 'ceske_sluzby_ability_get_product_availability_callback',
       'permissions' => array( 'read' ),
     )
   );
