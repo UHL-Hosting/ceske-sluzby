@@ -10,5 +10,8 @@
             "name": "Pavel Hejn",
             "email": "pavel@separatista.net"
         }
-    ]
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    }
 }
