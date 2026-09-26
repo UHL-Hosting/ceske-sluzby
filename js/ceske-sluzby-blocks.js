@@ -60,6 +60,7 @@
       button = document.createElement( 'button' );
       button.type = 'button';
       button.className = 'button button-secondary ceske-sluzby-blocks__packeta-button';
+      button.setAttribute( 'aria-haspopup', 'dialog' );
       button.textContent = __( 'Zvolit pobočku Zásilkovny', 'ceske-sluzby' );
       button.addEventListener( 'click', function() {
         if ( typeof Packeta !== 'undefined' && Packeta.Widget && Packeta.Widget.pick ) {
