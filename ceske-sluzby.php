@@ -205,27 +205,7 @@ function ceske_sluzby_heureka_overeno_zakazniky( $order_id, $posted ) {
     $order = wc_get_order( $order_id );
     $language = get_locale();
     try {
-      $options = array();
-      if ( $language == "sk_SK" ) {
-        $options['service'] = \Heureka\ShopCertification::HEUREKA_SK;
-      }
-
-      $overeno = new \Heureka\ShopCertification( $api, $options );
-      $overeno->setEmail( $order->get_billing_email() );
-
-      foreach ( $order->get_items() as $item ) {
-        $aktivace_xml = get_option( 'wc_ceske_sluzby_heureka_xml_feed-aktivace' );
-        $product = $item->get_product();
-        if ( ! $product ) {
-          continue;
-        }
-        if ( $aktivace_xml == "yes" ) {
-          $overeno->addProductItemId( $product->get_id() );
-        }
-      }
-
-      $overeno->setOrderId( $order_id );
-      $overeno->logOrder();
+      ceske_sluzby_send_heureka_overeno_api( $order, $api, $language );
 
       $order->update_meta_data( 'ceske_sluzby_heureka_overeno_zakazniky_souhlas', $souhlas_check );
       $order->add_order_note( $souhlas_text );
@@ -236,6 +216,40 @@ function ceske_sluzby_heureka_overeno_zakazniky( $order_id, $posted ) {
     }
   }
 }
+
+/**
+ * Odešle data do služby Heureka Ověřeno zákazníky.
+ *
+ * @param WC_Order $order Objednávka
+ * @param string   $api API klíč
+ * @param string   $language Jazyk (locale)
+ *
+ * @throws \Heureka\ShopCertification\Exception
+ */
+function ceske_sluzby_send_heureka_overeno_api( $order, $api, $language ) {
+  $options = array();
+  if ( $language == "sk_SK" ) {
+    $options['service'] = \Heureka\ShopCertification::HEUREKA_SK;
+  }
+
+  $overeno = new \Heureka\ShopCertification( $api, $options );
+  $overeno->setEmail( $order->get_billing_email() );
+
+  foreach ( $order->get_items() as $item ) {
+    $aktivace_xml = get_option( 'wc_ceske_sluzby_heureka_xml_feed-aktivace' );
+    $product = $item->get_product();
+    if ( ! $product ) {
+      continue;
+    }
+    if ( $aktivace_xml == "yes" ) {
+      $overeno->addProductItemId( $product->get_id() );
+    }
+  }
+
+  $overeno->setOrderId( $order->get_id() );
+  $overeno->logOrder();
+}
+
 
 function ceske_sluzby_heureka_mereni_konverzi( $order_id ) {
   $api = get_option( 'wc_ceske_sluzby_heureka_konverze-api' );
