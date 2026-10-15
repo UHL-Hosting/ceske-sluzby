@@ -12,7 +12,7 @@ jQuery( function( $ ) {
       }
     });
 
-    $input.on( 'change', function() {
+    $input.on( 'input change', function() {
       if ( $( this ).val() ) {
         $( this ).nextAll( '.cancel_preorder' ).show();
       } else {
